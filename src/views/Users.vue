@@ -52,10 +52,10 @@ with this file. If not, see
             {{ item.userName }}
           </div>
           <div style="width: 78%" class="content-list">
-            <div v-for="(platform, index) in item.platformList"  class="stateButton-container">
+            <!-- <div v-for="(platform, index) in item.platformList"  class="stateButton-container">
               <StateButton :obj="'bos'" :content1="item.platformList[index].platformName" :content2="''" :icon="'mdi-chip'" />
               <StateButton :obj="'app'" :content1="item.platformList[index].userProfile.userProfileName" :content2="''" :icon="'mdi-apps'" />
-            </div>
+            </div> -->
           </div>
           <div class="content-list rounded-r-lg hover">
             <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -94,7 +94,7 @@ export default {
       this.$store.dispatch('users/getUsers')
     },
 
-    //Route : 
+    //Route :
     displayDetail(item) {
       this.$router.push({ name: "DetailUser", query: { id: item.id } });
     },

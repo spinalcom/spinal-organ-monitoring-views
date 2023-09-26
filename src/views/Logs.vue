@@ -56,7 +56,7 @@ with this file. If not, see
 </template>
 
 <script>
-[object Promise]</script>
+</script>
 
 <style scoped>
 .app {

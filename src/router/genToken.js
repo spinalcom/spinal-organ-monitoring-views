@@ -26,14 +26,16 @@ const router = require('../router');
 const instanceAxios = require('../services/axiosConfig');
 async function getToken(user, pass) {
   let userparams = {
-    userName: user,
+    email: user,
     password: pass,
   };
   // console.error(process.env.SPINAL_HOST_API);
   const { data } = await instanceAxios.instanceAxios.post(
-    '/users/loginAuthAdmin',
+    '/users/login',
     userparams
   );
+  console.log(data);
+
   if (data) {
     // localstorage set
     localStorage.setItem(TOKEN, data.token);
