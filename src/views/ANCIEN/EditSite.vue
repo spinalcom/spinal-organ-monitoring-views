@@ -1,35 +1,37 @@
 <template>
   <v-app>
     <v-main>
-      <BachupInformation style="max-height: 87vh;" title="ADD USER">
+      <BachupInformation style="max-height: 87vh;" title="EDIT SITE">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
           <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
-          <InputUser title="SITE NAME" id="userName" v-model="formUser.name" />
-          <span class="errors" v-if="$v.formUser.name.$error"> User Name is required</span>
-          <InputUser title="SITE TYPE" id="password" v-model="formUser.email" />
-          <span class="errors" v-if="$v.formUser.email.$error"> User email is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.userType" />
-          <span class="errors" v-if="$v.formUser.userType.$error"> User userType is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.password" />
-          <span class="errors" v-if="$v.formUser.password.$error"> User password is required</span>
-
-          <div style="display: flex;" v-for="(platform, index) in formUser.platform" :key="index">
-            <SelectUser :tab="platforms" :value="platform.name" title="PLATFORM"></SelectUser>
-            <button @click="deletePlatform(index)" type="button" class="red-cross">X</button>
+          <InputUser title="SITE NAME" id="userName" v-model="formUser.NAME" />
+          <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.name.required">Un nom est
+            requis</span>
+          <InputUser title="SITE TYPE" id="password" v-model="formUser.type" />
+          <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.type.required">Le type
+            obligatoire.</span>
+          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.address" />
+          <span title="ADD CONTACT" class="errors" :class="{ 'showspan': iserrors }"
+            v-if="!$v.formUser.address.required">Un Email est
+            requis</span>
+          <div style="display: flex;" v-for="(contact, index) in contacts" :key="index">
+            <SelectUser title="SLAS"></SelectUser>
+            <button @click="deleteContact(index)" type="button" class="red-cross">X</button>
           </div>
+
           <div class="d-flex justify-end">
-            <button @click="addPlatforms" type="button" class="btn-ajout-platform">+ ADD PLATFORM</button>
+            <button @click="addContact" type="button" class="btn-ajout-platform">+ ADD CONTACT</button>
           </div>
           <div class="d-flex justify-end">
             <button class="btn-retour" @click="cancelAdd()">RETOUR</button>
-            <button type="submit" class="btn-creer">CREATE USER</button>
+            <button type="submit" class="btn-creer">CREATE CUSTOMER</button>
           </div>
         </form>
       </BachupInformation>
     </v-main>
   </v-app>
 </template>
-    
+  
 <script >
 import InputUser from "../Components/InputUser";
 import SelectUser from "../Components/SelectUser.vue";
@@ -56,19 +58,19 @@ export default {
     return {
       formUser: {
         name: null,
-        email: null,
-        userType: null,
-        password: null,
-        platform: []
+        type: null,
+        address: null,
       },
-      platforms: [{
-        name: "sla1",
-        type: "type 1",
+      contacts: [1],
+      error_platform: false,
+      iserrors: true,
+      userType: [{
+        name: 'Simple User'
       },
       {
-        name: "sla2",
-        type: "type 2",
-      }]
+        name: 'Super User'
+      }],
+      conf_pass: false,
     };
   },
 
@@ -77,13 +79,10 @@ export default {
       name: {
         required,
       },
-      email: {
+      type: {
         required,
       },
-      userType: {
-        required,
-      },
-      password: {
+      address: {
         required,
       },
     },
@@ -91,29 +90,62 @@ export default {
 
   methods: {
     cancelAdd() {
-      this.$router.push("/UserList");
+      this.$router.push({ name: 'DetailSite', query: { id: this.$route.query.id } });
     },
-    addPlatforms() {
-      this.formUser.platform.push({}); // Ajoute un nouvel élément au tableau pour afficher un nouveau composant SelectUser
+    addContact() {
+      this.contacts.push(1); // Ajoute un nouvel élément au tableau pour afficher un nouveau composant SelectUser
     },
-    deletePlatform(index) {
-      this.formUser.platform.splice(index, 1); // Supprime l'élément du tableau à l'index donné
+    deleteContact(index) {
+      this.contacts.splice(index, 1); // Supprime l'élément du tableau à l'index donné
     },
+
+    ...mapActions({ saveUser: 'users/saveUser' }),
 
     async validateUser() {
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        console.log('valid form');
+      await this.$refs.refplatform.maFonction();
 
+
+      this.$v.$touch();
+
+
+      if (!this.$v.$invalid && this.formUser.confirm_password == this.formUser.password) {
+        console.log('valid form');
+        var objectBody = {
+          userName: this.formUser.userName,
+          password: this.formUser.password,
+          email: this.formUser.email,
+          telephone: this.formUser.telephone,
+          info: this.formUser.info,
+          userType: this.formUser.userType.name,
+          platformList: this.platformObjectList.map(el => {
+            return {
+              platformId: el.platformId,
+              userProfile: {
+                name: el.userProfile.name,
+                userProfileId: el.userProfile.userProfileId
+              }
+            };
+          })
+        };
+        this.saveUser(objectBody);
+      } else {
+        this.iserrors = false;
+        if (this.formUser.confirm_password != this.formUser.password) {
+          this.conf_pass = true;
+        } else {
+          this.conf_pass = false;
+        }
       }
     },
   },
   computed: {
-
+    ...mapGetters({
+      platformObjectList: 'users/selectedplatformObjectList',
+    }),
   },
 }
 </script>
-    
+  
 <style scoped>
 .errors {
   margin: 0;

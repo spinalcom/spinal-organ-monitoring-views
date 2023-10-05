@@ -11,10 +11,11 @@
             </div>
         </v-card>
 
-        <v-card v-if="btn != 'off'" class="d-flex flex-column ml-2 pt-2 pb-2 bar-bloc-right justify-center rounded-lg" elevation="2">
-            <BlueButton @click.native="$emit('btn1')" :icon="'mdi-plus'" title="AJOUTER À PLATFORME" :val="'blue'" />
-            <BlueButton @click.native="$emit('btn2')" :icon="'mdi-pencil-outline'" title="EDITER" :val="'blue'" />
-            <BlueButton @click.native="$emit('btn3')" :icon="'mdi-close'" title="SUPPRMIER" :val="'red'" class="mb-2" />
+        <v-card v-if="btn != 'off'" class="d-flex flex-column ml-2 pt-2 pb-2 bar-bloc-right justify-center rounded-lg"
+            elevation="2">
+            <BlueButton @click.native="$emit('btn1')" :icon="'mdi-plus'" :title="btn1Title" :val="'blue'" />
+            <BlueButton @click.native="$emit('btn2')" :icon="'mdi-pencil-outline'" :title="btn2Title" :val="'blue'" />
+            <BlueButton @click.native="$emit('btn3')" :icon="'mdi-close'" :title="btn3Title" :val="'red'" class="mb-2" />
         </v-card>
     </div>
 </template>
@@ -26,7 +27,36 @@ export default {
     components: {
         BlueButton
     },
-    props: ['title', 'title2', 'icon', 'btn'],
+    props: {
+        title: {
+            type: String,
+            default: 'Titre par défaut'
+        },
+        title2: {
+            type: String,
+            default: 'Deuxième titre par défaut'
+        },
+        icon: {
+            type: String,
+            default: 'icone-par-defaut.png'
+        },
+        btn: {
+            type: String,
+            default: 'Bouton'
+        },
+        btn1Title: {
+            type: String,
+            default: 'AJOUTER À PLATFORME'
+        },
+        btn2Title: {
+            type: String,
+            default: 'EDITER'
+        },
+        btn3Title: {
+            type: String,
+            default: 'SUPPRMIER'
+        },
+    }
 };
 </script>
   

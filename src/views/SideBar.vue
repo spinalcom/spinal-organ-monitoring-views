@@ -47,10 +47,11 @@ with this file. If not, see
           </span>
           <div class="navBarSelectorTitle">APPLICATION</div>
           <div v-if="menuIsOpen" class="navBarItemSelection">
-            <div @click="gotoView(index)" v-for="(item, index) in menuList" :key="item.menuList"
-              class="navBarItemElement">
-              <v-icon class="mr-2" color="black">{{ iconList[index] }}</v-icon>
-              {{ item }}
+            <div @click="gotoView(index)" v-for="(item, index) in menuList" :key="item.menuList">
+              <div class="navBarItemElement" v-if="index != selectionMenu">
+                <v-icon class="mr-2" color="black">{{ iconList[index] }}</v-icon>
+                {{ item }}
+              </div>
             </div>
           </div>
         </div>
@@ -64,9 +65,9 @@ export default {
 
   data() {
     return {
-      menuList: ['TOUTE L’ADMINISTRATION', 'GESTION UTILISATEUR', 'GESTION APPLICATION', 'GESTION PLATFORME', 'LOGS'],
-      iconList: ['mdi-chart-tree', 'mdi-cog', 'mdi-cog', 'mdi-cog', 'mdi-chart-timeline-variant-shimmer'],
-      routeList: ['', 'users', 'Application', 'platforms', 'Logs'],
+      menuList: ['TOUTE L’ADMINISTRATION', 'Customers', 'Sites', 'Buidings', 'Platforms', 'Organs', 'Server', 'Users'],
+      iconList: ['mdi-chart-tree', 'mdi-cog', 'mdi-cog', 'mdi-cog', 'mdi-cog', 'mdi-cog', 'mdi-cog', 'mdi-cog'],
+      routeList: ['', 'Customers', 'Site', 'Buildings', 'platforms', 'Organ', 'Server', 'UserList'],
       menuIsOpen: false,
       menu2IsOpen: false,
       selectionMenu: false,
@@ -79,6 +80,7 @@ export default {
   methods: {
 
     gotoView(page) {
+      console.log(page, 'la page ');
       let currentPath = this.$route.path;
       if (currentPath != "/" + this.routeList[page]) {
         this.$router.push("/" + this.routeList[page]);
@@ -87,17 +89,10 @@ export default {
     },
 
     checkroute() {
-      if (this.$route.path == '/DetailUser' || this.$route.path == '/users'|| this.$route.path == '/AddUser' || this.$route.path == '/EditUser' ) {
-        this.selectionMenu = 1
-      } else if (this.$route.path == '/Application' || this.$route.path == '/DetailApp' || this.$route.path == '/AddApp'|| this.$route.path == '/EditApp') {
-        this.selectionMenu = 2
-      } else if (this.$route.path == '/platforms' || this.$route.path == '/DetailPlatform') {
-        this.selectionMenu = 3
-      } else if(this.$route.path == '/'){
-        this.selectionMenu = 0
-      }
-      else {
-        this.selectionMenu = 4
+      let pathWithoutSlash = this.$route.path.substring(1);
+      let matchingRouteIndex = this.routeList.findIndex(route => route === pathWithoutSlash);
+      if (matchingRouteIndex != -1) {
+        this.selectionMenu = matchingRouteIndex
       }
     },
     ...mapActions({

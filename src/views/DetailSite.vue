@@ -2,51 +2,85 @@
     <v-app>
         <v-main>
 
-            <InformationBar :btn1Title="'ADD PLATFORM'" :btn2Title="'EDIT USER'" :btn3Title="'DELETE USER'"
-                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="USER INFORMATION"
-                :title2="this.user.name" :icon="require('../assets/image/USE_icon.svg')">
+            <InformationBar :btn1Title="'ADD BUILDING'" :btn2Title="'EDIT SITE'" :btn3Title="'DELETE SITE'"
+                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="SITE INFORMATION"
+                :title2="this.site.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">NAME</span>
-                        <span class=" bar-information">{{ this.user.name }}</span>
+                        <span class=" bar-information">{{ this.site.name }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">TYPE</span>
-                        <span class="bar-information">{{ this.user.type }}</span>
+                        <span class="bar-information">{{ this.site.type }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ADRESS</span>
-                        <span class="bar-information">{{ this.user.address }}</span>
+                        <span class="bar-information">{{ this.site.address }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ID</span>
-                        <span class="bar-information">{{ this.user.id }}</span>
+                        <span class="bar-information">{{ this.site.id }}</span>
                     </div>
                 </div>
             </InformationBar>
 
 
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="PLATFORM">
-                <div class="d-flex mb-2 mt-4 ml-1">
-                    <div style="width: 100%">Building Id</div>
-                    <div style="width: 100%">Building Name</div>
-                </div>
-                <div v-for="item in this.user.platform" :key="item.id">
-                    <div class="d-flex mb-2">
-                        <div style="width: 100%" class="content-list rounded-l-lg pl-10">
-                            {{ item.id }}
+            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="SLAS">
+                <Tabs :items="items">
+                    <v-tab-item>
+                        <div class="d-flex mb-2 mt-4">
+                            <div style="width: 100% ; margin-left: 5px;">Site Id</div>
+                            <div style="width: 100%;margin-left: 10px;">Site Name</div>
                         </div>
-                        <div style="width: 100%" class="content-list">
-                            {{ item.name }}
+                        <div v-for="item in this.site.slas" :key="item.id">
+                            <div class="d-flex mb-2">
+                                <div style="width: 100%" class="content-list">
+                                    {{ item.name }}
+                                </div>
+                                <div style="width: 100%" class="content-list">
+                                    {{ item.type }}
+                                </div>
+                                <div class="content-list rounded-r-lg hover">
+                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                        <v-icon>mdi-arrow-right</v-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </v-tab-item>
+                    <v-tab-item>
+                        <div class="d-flex mb-2 mt-4 ml-1">
+                            <div style="width: 16%">Building Id</div>
+                            <div style="width: 21%">Building Name</div>
+                            <div style="width: 19%">Type</div>
+                            <div style="width: 42%">adress</div>
+                        </div>
+                        <div v-for="item in this.buildings" :key="item.id">
+
+                            <div class="d-flex mb-2">
+                                <div style="width: 16%" class="content-list rounded-l-lg pl-10">
+                                    {{ item.id }}
+                                </div>
+                                <div style="width: 22%" class="content-list">
+                                    {{ item.name }}
+                                </div>
+                                <div style="width: 20%" class="content-list">
+                                    {{ item.type }}
+                                </div>
+                                <div style="width: 42%" class="content-list">
+                                    {{ item.adress }}
+                                </div>
+                                <div class="content-list rounded-r-lg hover">
+                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                        <v-icon>mdi-arrow-right</v-icon>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="content-list rounded-r-lg hover">
-                            <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
-                                <v-icon>mdi-arrow-right</v-icon>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    </v-tab-item>
+                </Tabs>
             </BackupInformation>
 
             <div v-if="show" class="popup_platform">
@@ -54,24 +88,9 @@
                     <div @click="show = false" class="popup-closebtn">
                         <span>X</span>
                     </div>
-                    <p class="mb-6">EDIT USER</p>
-                    <InputUser title="USER NAME" id="userName" />
-                    <InputUser title="USER EMAIL" id="userName" />
-                    <InputUser title="USER OLD PASSWORD" id="userName" />
-                    <InputUser title="USER NEW PASSWORD" id="userName" />
-                    <InputUser title="USER TYPE" id="userName" />
-
-                    <div
-                        style="background-color: rgb(236, 236, 236); padding-left: 15px; padding-right: 15px; padding-bottom: 20px; margin-top: 10px; border-radius: 8px;">
-                        <div style="display: flex;" v-for="(user, index) in user.platform" :key="index">
-                            <SelectUser :tab="platform" :value="user.name" title="PLATFORM"></SelectUser>
-                            <button @click="deleteOrgan(index)" type="button" class="red-cross">X</button>
-                        </div>
-
-                    </div>
-                    <div class="d-flex justify-end">
-                        <button @click="addOrgan" type="button" class="btn-ajout-platform">+ ADD PLATFORM</button>
-                    </div>
+                    <p class="mb-6">EDIT SITE</p>
+                    <InputUser title="SITE NAME" id="userName" />
+                    <InputUser title="SITE ADDRESS" id="userName" />
                     <!-- <InputUser title="  CUSTOMER SERVICE" id="userName" /> -->
                     <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
@@ -108,37 +127,38 @@ export default {
         SelectUser,
         BlueButton,
         InputPass,
-        InputUser,
+        InputUser
     },
     data() {
         return {
-            user:
+            buildings: [
+                {
+                    "id": "1bc9-11d3-bfd0-18acd067699",
+                    "type": "TypeDuBuilding",
+                    "name": "Building1",
+                    "adress": "2 rue des rues",
+                },
+            ],
+            site:
             {
                 "id": "1bc9-11d3-bfd0-18acd067699",
                 "type": "TypeDuBuilding",
-                "name": "user 1",
+                "name": "SITE 1",
                 "address": "2 rue des rues",
-                "platform": [{
-                    "id": "Id platform",
-                    "name": "nom  platform"
+                "slas": [{
+                    "name": "slas1",
+                    "type": "type slas"
                 },
                 {
-                    "id": "Id platform 2",
-                    "name": "nom  platform 2 "
+                    "name": "slas2",
+                    "type": "type slas"
                 }]
             },
-
-            platform: [
-                {
-                    "id": "Id platform",
-                    "name": "nom  platform"
-                },
-                {
-                    "id": "Id platform 2",
-                    "name": "nom  platform 2 "
-                }],
-
             show: false,
+            items: [
+                'SLAS',
+                'BUILDING'
+            ],
         };
 
     },
@@ -148,14 +168,11 @@ export default {
         displayEditUser() {
             this.show = true;
         },
-
     },
     computed: {
-
     },
 
     created() {
-
     }
 }
 </script>
@@ -282,49 +299,6 @@ export default {
     font: normal normal normal 11px/13px Charlevoix Pro;
     letter-spacing: 1.1px;
 
-}
-
-.btn-ajout-platform {
-    border: 0px;
-    height: 40px;
-    margin-top: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius: 6px;
-    background: #ebf0ea;
-    font-family: Arial, Helvetica, sans-serif;
-    letter-spacing: 1.3px;
-    font-siplatform_copiee: 10px;
-    transition: 0.2s;
-    font-size: 10px;
-}
-
-.btn-ajout-platform:hover {
-    background-color: rgb(189, 189, 189);
-    /* color: white; */
-}
-
-.red-cross {
-    margin-top: 22px;
-    margin-left: 10px;
-    border-radius: 10px;
-    height: 42px;
-    width: 45px;
-    color: orangered;
-    border: 1px solid orangered;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    font-siplatform_copiee: 15px;
-    padding-top: 2px;
-    transition: 0.2s;
-}
-
-.red-cross:hover {
-    background: #EF5F32;
-    color: #ffffff;
-    border: 1px solid #ffffff;
 }
 
 .choix_platform {

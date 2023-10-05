@@ -12,7 +12,7 @@
           justify-center
           rounded-lg
         " elevation="2">
-                <BlueButton @click.native="AddPlatform()" :icon="'mdi-plus'" title="ADD PLATFORM" :val="'blue'" />
+                <BlueButton @click.native="addUser()" :icon="'mdi-plus'" title="ADD USER" :val="'blue'" />
             </v-card>
         </div>
         <BachupInformation title="LISTE DES PLATEFORMES">
@@ -102,12 +102,11 @@ export default {
     }),
 
     methods: {
-        AddPlatform() {
-            console.log('test');
-            this.$router.push({ name: "AddPlatform" });
-        },
         displayDetail(item) {
-            this.$router.push({ name: "DetailPlatform", query: { id: item.id } });
+            this.$router.push({ name: "DetailUser", query: { id: item.id } });
+        },
+        addUser() {
+            this.$router.push({ name: "AddUser" });
         },
     },
     computed: {

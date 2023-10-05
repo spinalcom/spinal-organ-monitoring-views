@@ -52,7 +52,7 @@ export default {
     data() {
         return {
             formUser: {
-                email: "",
+                email: "adminMonitoring@spinalcom.com",
                 password: "",
             },
         };
@@ -116,6 +116,7 @@ export default {
 }
 
 .pops {
+    min-height: 350px;
     min-width: 400px;
     width: 30%;
     left: 50%;

@@ -1,77 +1,55 @@
 <template>
     <v-app>
         <v-main>
-
-            <InformationBar :btn1Title="'ADD PLATFORM'" :btn2Title="'EDIT USER'" :btn3Title="'DELETE USER'"
-                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="USER INFORMATION"
-                :title2="this.user.name" :icon="require('../assets/image/USE_icon.svg')">
+            <InformationBar :btn1Title="'ADD ?'" :btn2Title="'EDIT SERVER'" :btn3Title="'DELETE SERVER'"
+                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="SERVER INFORMATION"
+                :title2="this.server.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">NAME</span>
-                        <span class=" bar-information">{{ this.user.name }}</span>
+                        <span class=" bar-information">{{ this.server.name }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">TYPE</span>
-                        <span class="bar-information">{{ this.user.type }}</span>
+                        <span class="bar-information">{{ this.server.type }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ADRESS</span>
-                        <span class="bar-information">{{ this.user.address }}</span>
+                        <span class="bar-information">{{ this.server.ipAdress }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">ID</span>
-                        <span class="bar-information">{{ this.user.id }}</span>
+                        <span class="bar-sub-title">macAdress</span>
+                        <span class="bar-information">{{ this.server.macAdress }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
+                        <span class="bar-sub-title">last_health_time</span>
+                        <span class="bar-information">{{ this.server.last_health_time }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
+                        <span class="bar-sub-title">sshPassword</span>
+                        <span class="bar-information">{{ this.server.sshPassword }}</span>
                     </div>
                 </div>
             </InformationBar>
-
-
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="PLATFORM">
-                <div class="d-flex mb-2 mt-4 ml-1">
-                    <div style="width: 100%">Building Id</div>
-                    <div style="width: 100%">Building Name</div>
-                </div>
-                <div v-for="item in this.user.platform" :key="item.id">
-                    <div class="d-flex mb-2">
-                        <div style="width: 100%" class="content-list rounded-l-lg pl-10">
-                            {{ item.id }}
-                        </div>
-                        <div style="width: 100%" class="content-list">
-                            {{ item.name }}
-                        </div>
-
-                        <div class="content-list rounded-r-lg hover">
-                            <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
-                                <v-icon>mdi-arrow-right</v-icon>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </BackupInformation>
 
             <div v-if="show" class="popup_platform">
                 <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
                     <div @click="show = false" class="popup-closebtn">
                         <span>X</span>
                     </div>
-                    <p class="mb-6">EDIT USER</p>
-                    <InputUser title="USER NAME" id="userName" />
-                    <InputUser title="USER EMAIL" id="userName" />
-                    <InputUser title="USER OLD PASSWORD" id="userName" />
-                    <InputUser title="USER NEW PASSWORD" id="userName" />
-                    <InputUser title="USER TYPE" id="userName" />
-
-                    <div
-                        style="background-color: rgb(236, 236, 236); padding-left: 15px; padding-right: 15px; padding-bottom: 20px; margin-top: 10px; border-radius: 8px;">
-                        <div style="display: flex;" v-for="(user, index) in user.platform" :key="index">
-                            <SelectUser :tab="platform" :value="user.name" title="PLATFORM"></SelectUser>
-                            <button @click="deleteOrgan(index)" type="button" class="red-cross">X</button>
-                        </div>
-
-                    </div>
-                    <div class="d-flex justify-end">
-                        <button @click="addOrgan" type="button" class="btn-ajout-platform">+ ADD PLATFORM</button>
-                    </div>
+                    <p class="mb-6">EDIT SERVER</p>
+                    <InputUser v-model="formServer.name" title="SERVER NAME" id="userName" />
+                    <span class="errors" v-if="$v.formServer.name.$error"> Server Name is required</span>
+                    <InputUser v-model="formServer.type" title="SERVER TYPE" id="type" />
+                    <span class="errors" v-if="$v.formServer.type.$error"> Server Type is required</span>
+                    <InputUser v-model="formServer.ipAdress" title="SERVER IP ADDRESS" id="userName" />
+                    <span class="errors" v-if="$v.formServer.ipAdress.$error"> Server IP is required</span>
+                    <InputUser v-model="formServer.macAdress" title="SERVER MAC ADRESS" id="userName" />
+                    <span class="errors" v-if="$v.formServer.macAdress.$error"> Server Name is required</span>
+                    <InputUser v-model="formServer.sshLogin" title="SERVER ssh login" id="userName" />
+                    <span class="errors" v-if="$v.formServer.sshLogin.$error"> Server Name is required</span>
+                    <InputUser v-model="formServer.sshPassword" title="SERVER ssh password" id="userName" />
+                    <span class="errors" v-if="$v.formServer.sshPassword.$error"> Server ssh password is required</span>
                     <!-- <InputUser title="  CUSTOMER SERVICE" id="userName" /> -->
                     <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
@@ -108,41 +86,66 @@ export default {
         SelectUser,
         BlueButton,
         InputPass,
-        InputUser,
+        InputUser
     },
     data() {
         return {
-            user:
-            {
-                "id": "1bc9-11d3-bfd0-18acd067699",
-                "type": "TypeDuBuilding",
-                "name": "user 1",
-                "address": "2 rue des rues",
-                "platform": [{
-                    "id": "Id platform",
-                    "name": "nom  platform"
-                },
-                {
-                    "id": "Id platform 2",
-                    "name": "nom  platform 2 "
-                }]
+            formServer:{
+                type : null,
+                name : null,
+                ipAdress : null,
+                macAdress : null,
+                sshLogin : null ,
+                sshPassword : null 
             },
 
-            platform: [
-                {
-                    "id": "Id platform",
-                    "name": "nom  platform"
-                },
-                {
-                    "id": "Id platform 2",
-                    "name": "nom  platform 2 "
-                }],
-
+            server:
+            {
+                "id": "id du server",
+                "type": "type du server",
+                "name": "nom du server",
+                "ipAdress": "ip address",
+                "macAdress": "macAdress",
+                "sshLogin": "ssh log",
+                "sshPassword": "ssh password",
+                "boot_timestamp": "boot timestamp",
+                "last_health_time": "last health time",
+                "serverType": "servertype",
+            },
             show: false,
         };
 
     },
+    validations: {
+        formServer: {
+            name: {
+                required,
+            },
+            type: {
+                required,
+            },
+            ipAdress: {
+                required,
+            },
+            macAdress: {
+                required,
+            },
+            sshLogin: {
+                required,
+            },
+            sshPassword: {
+                required,
+            },
+        },
+
+    },
     methods: {
+        editUserPlatform() {
+            this.$v.$touch();
+            if (!this.$v.$invalid) {
+                console.log('valid form');
+            }
+        },
         deletebtn() {
         },
         displayEditUser() {
@@ -151,7 +154,6 @@ export default {
 
     },
     computed: {
-
     },
 
     created() {
@@ -164,15 +166,17 @@ export default {
 *:focus {
     outline: none;
 }
+
 .errors {
-  margin: 0;
-  /* position: absolute; */
-  transform: translate(0, -10%);
-  font-size: 10px;
-  color: red;
-  padding-left: 2px;
-  letter-spacing: 1.1px;
+    margin: 0;
+    /* position: absolute; */
+    transform: translate(0, -10%);
+    font-size: 10px;
+    color: red;
+    padding-left: 2px;
+    letter-spacing: 1.1px;
 }
+
 .app {
     font: normal normal normal 10px/12px Charlevoix Pro;
     letter-spacing: 1px;
@@ -198,15 +202,12 @@ export default {
 
 .reset_btn {
     width: 100%;
-    /* background-color: red; */
     position: absolute;
     top: -65px;
     display: flex;
     justify-content: end;
     min-width: 980px;
 }
-
-
 
 .v-data-table>>>td {
     background-color: white;
@@ -282,49 +283,6 @@ export default {
     font: normal normal normal 11px/13px Charlevoix Pro;
     letter-spacing: 1.1px;
 
-}
-
-.btn-ajout-platform {
-    border: 0px;
-    height: 40px;
-    margin-top: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius: 6px;
-    background: #ebf0ea;
-    font-family: Arial, Helvetica, sans-serif;
-    letter-spacing: 1.3px;
-    font-siplatform_copiee: 10px;
-    transition: 0.2s;
-    font-size: 10px;
-}
-
-.btn-ajout-platform:hover {
-    background-color: rgb(189, 189, 189);
-    /* color: white; */
-}
-
-.red-cross {
-    margin-top: 22px;
-    margin-left: 10px;
-    border-radius: 10px;
-    height: 42px;
-    width: 45px;
-    color: orangered;
-    border: 1px solid orangered;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    font-siplatform_copiee: 15px;
-    padding-top: 2px;
-    transition: 0.2s;
-}
-
-.red-cross:hover {
-    background: #EF5F32;
-    color: #ffffff;
-    border: 1px solid #ffffff;
 }
 
 .choix_platform {

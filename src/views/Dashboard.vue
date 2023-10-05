@@ -7,50 +7,45 @@
             <v-icon style="color: black" class="input-icon">mdi-magnify</v-icon>
             <input v-model="filtersData.search" class="input-menu" placeholder="rechercher" type="text">
           </div>
-          <!-- <div style="min-width: 500px;">
-            <v-icon style="color: black" class="input-icon">mdi-chevron-down</v-icon>
-            <select class="input-select">
-              <option class="option-Select-Menu" value="">Toutes les catégories</option>
-              <option class="option-Select-Menu" value="">Toutes les catégories</option>
-            </select>
-          </div> -->
         </div>
       </div>
       <div class="mt-5">
-        <span class="admin-title">ADMINISTRATION</span>
+        <span class="admin-title">PORTAIL DE MONITORING</span>
         <div class="menu-card">
           <div class="menu-title">
             <hr class="line-division">
-            CONFIGURATION
+            ADMINISTRATION
           </div>
           <div class="menu-administraton">
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
-              <CardMenu :icon="'mdi-shield-crown'" :verif="filtersData.search" :link="'platforms'" :title="'PLATEFORMES'"
-                :subtitle="'Configuration des Plateformes'">
+              <CardMenu :icon="'mdi-shield-crown'" :verif="filtersData.search" :link="'platforms'"
+                :title="'PLATFORM LIST'" :subtitle="'Liste des Platformes'">
               </CardMenu>
-              <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Logs'" :title="'LOGS'"
-                :subtitle="'Connexions et utilisations du logiciel'"></CardMenu>
-              <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'users'" :title="'UTILISATEURS'"
-                :subtitle="'Gestion des utilisateurs'">
+              <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'UserList'" :title="'USER LIST'"
+                :subtitle="'Liste des utilisateurs'"></CardMenu>
+              <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'Organ'" :title="'ORGAN LIST'"
+                :subtitle="'Organ List'">
               </CardMenu>
-              <CardMenu :icon="'mdi-apps'" :verif="filtersData.search" :link="'Application'" :title="'APPLICATIONS'"
-                :subtitle="'Gestion des applications'"></CardMenu>
+              <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Server'" :title="'SERVER LIST'"
+                :subtitle="'liste des servers'"></CardMenu>
             </div>
           </div>
         </div>
         <div class="menu-card">
           <div class="menu-title">
             <hr class="line-division">
-            CRÉATION
+            ORGANISATION
           </div>
           <div class="menu-administraton">
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
-              <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'AddUser'"
-                :title="'AJOUTER UN UTILISATEUR'" :subtitle="'Créer un utilisateur'"></CardMenu>
-              <CardMenu :icon="'mdi-apps'" :verif="filtersData.search" :link="'AddApp'" :title="'AJOUTER UNE APPLICATION'"
-                :subtitle="'Créer une application'"></CardMenu>
+              <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Customers'" :title="'CUSTOMERS LIST'"
+                :subtitle="'Customers list'"></CardMenu>
+              <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Site'" :title="'SITE LIST'"
+                :subtitle="'SITE LIST'"></CardMenu>
+              <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Buildings'" :title="'BUILDING LIST'"
+                :subtitle="'BUILDING LIST'"></CardMenu>
             </div>
           </div>
         </div>
@@ -73,21 +68,14 @@ export default {
     },
   }),
   computed: {
-    ...mapState({
-      data: state => state.module.data
-    })
+    // ...mapState({
+    //   data: state => state.module.data
+    // })
 
   },
   methods: {
-    ...mapActions({
-      fetchData: 'module/fetchData',
-      getToken: 'login/getToken'
-    }),
 
   },
-  mounted() {
-    this.getToken();
-  }
 }
 </script>
 

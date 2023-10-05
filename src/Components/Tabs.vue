@@ -5,7 +5,7 @@
             {{ item }}
         </v-tab>
        
-        <v-tabs-items style="border: 1px solid black; border-top: none;border-bottom:1px solid black; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;transform: translate(0,-1.3%);" v-model="tab">
+        <v-tabs-items style="margin-bottom: 10px !important;border: 1px solid black; border-top: none;border-bottom:1px solid black; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;transform: translate(0,-3%);" v-model="tab">
             <slot></slot>
         </v-tabs-items>
     </v-tabs>
@@ -38,6 +38,7 @@ export default {
     border: 1px solid #214353;
     border-bottom: 0px solid #214353;
     color: black;
+    
 }
 
 .v-slide-group__prev {
@@ -56,6 +57,13 @@ export default {
     border-right: 1px solid #F9F9F9;
     padding-right: 50px;
     height: 40px;
+    
+}
+/* class="" */
+.v-slide-group {
+    height:  48px;
+    background-color: red !important;
+    transform: translate(0,3%);
 }
 
 .v-window-item {

@@ -1,28 +1,24 @@
 <template>
   <v-app>
     <v-main>
-      <BachupInformation style="max-height: 87vh;" title="ADD USER">
+      <BachupInformation style="max-height: 87vh;" title="ADD SERVER">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
           <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
-          <InputUser title="SITE NAME" id="userName" v-model="formUser.name" />
-          <span class="errors" v-if="$v.formUser.name.$error"> User Name is required</span>
-          <InputUser title="SITE TYPE" id="password" v-model="formUser.email" />
-          <span class="errors" v-if="$v.formUser.email.$error"> User email is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.userType" />
-          <span class="errors" v-if="$v.formUser.userType.$error"> User userType is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.password" />
-          <span class="errors" v-if="$v.formUser.password.$error"> User password is required</span>
-
-          <div style="display: flex;" v-for="(platform, index) in formUser.platform" :key="index">
-            <SelectUser :tab="platforms" :value="platform.name" title="PLATFORM"></SelectUser>
-            <button @click="deletePlatform(index)" type="button" class="red-cross">X</button>
-          </div>
-          <div class="d-flex justify-end">
-            <button @click="addPlatforms" type="button" class="btn-ajout-platform">+ ADD PLATFORM</button>
-          </div>
+          <InputUser title="SERVER NAME" id="userName" v-model="formServer.name" />
+          <span class="errors" v-if="$v.formServer.name.$error"> Server Name is required</span>
+          <InputUser title="SERVER TYPE" id="password" v-model="formServer.type" />
+          <span class="errors" v-if="$v.formServer.type.$error"> Server type is required</span>
+          <InputUser title="SERVER MAC ADDRESS" id="Email" v-model="formServer.macAdress" />
+          <span class="errors" v-if="$v.formServer.macAdress.$error"> Server macAdress is required</span>
+          <InputUser title="server IP ADDRESS" id="Email" v-model="formServer.ipAdress" />
+          <span class="errors" v-if="$v.formServer.ipAdress.$error"> Server ipAdress is required</span>
+          <InputUser title="sshLogin ssh" id="Email" v-model="formServer.sshLogin" />
+          <span class="errors" v-if="$v.formServer.sshLogin.$error"> Server sshLogin is required</span>
+          <InputUser title="password ssh" id="Email" v-model="formServer.sshPassword" />
+          <span class="errors" v-if="$v.formServer.sshPassword.$error"> Server sshPassword is required</span>
           <div class="d-flex justify-end">
             <button class="btn-retour" @click="cancelAdd()">RETOUR</button>
-            <button type="submit" class="btn-creer">CREATE USER</button>
+            <button type="submit" class="btn-creer">CREATE CUSTOMER</button>
           </div>
         </form>
       </BachupInformation>
@@ -49,67 +45,65 @@ export default {
     TextareaUser,
     BachupInformation,
     InputPass,
-    AddPlatform
   },
 
   data() {
     return {
-      formUser: {
-        name: null,
-        email: null,
-        userType: null,
-        password: null,
-        platform: []
+      formServer: {
+       name : null,
+       type : null,
+       macAdress : null,
+       ipAdress : null,
+       sshLogin : null ,
+       sshPassword : null
       },
-      platforms: [{
-        name: "sla1",
-        type: "type 1",
-      },
-      {
-        name: "sla2",
-        type: "type 2",
-      }]
     };
   },
 
   validations: {
-    formUser: {
+    formServer: {
       name: {
         required,
       },
-      email: {
+      type: {
         required,
       },
-      userType: {
+      macAdress: {
         required,
       },
-      password: {
+      ipAdress: {
         required,
       },
+      sshLogin: {
+        required,
+      },
+      sshPassword: {
+        required, 
+      },
+
     },
   },
 
   methods: {
     cancelAdd() {
-      this.$router.push("/UserList");
+      this.$router.push("/Server");
     },
-    addPlatforms() {
-      this.formUser.platform.push({}); // Ajoute un nouvel élément au tableau pour afficher un nouveau composant SelectUser
+    addContact() {
+      this.contacts.push(1); // Ajoute un nouvel élément au tableau pour afficher un nouveau composant SelectUser
     },
-    deletePlatform(index) {
-      this.formUser.platform.splice(index, 1); // Supprime l'élément du tableau à l'index donné
+    deleteContact(index) {
+      this.contacts.splice(index, 1); // Supprime l'élément du tableau à l'index donné
     },
 
     async validateUser() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         console.log('valid form');
-
-      }
+      } 
     },
   },
   computed: {
-
+   
   },
 }
 </script>

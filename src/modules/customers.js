@@ -27,48 +27,27 @@ import router from "../router"
 export default {
     namespaced: true,
     state: {
-        data: []
+        customerList: [],
     },
     getters: {
-        dataList: state => state.data
+        customers: state => state.customers,
+        customerList :  state => state.customerList,
     },
     actions: {
-        logout() {
-            localStorage.removeItem("token");
-            router.push("/Login");
-        },
-        async login(context, formuser) {
-            console.log('test ??',formuser);
-            try {
-                await tokenGen(formuser.email, formuser.password);
-                router.push("/");
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        async getUsers() {
+        async getCustomers({ commit }) {
+            console.log('get');
             const rep = await instanceAxios.instanceAxios.get("/users", {
                 headers: {
                     "Content-Type": "application/json",
                     "x-access-token": localStorage.getItem("token"),
                 }
             });
-            // console.log(rep.data);
+            commit("setcustomers", rep.data);
         },
-        async getToken() {
-            // console.log("la");
-            const rep = await instanceAxios.instanceAxios.get("/tokens/UserToken", {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-access-token": localStorage.getItem("token"),
-                }
-            });
-            // console.log(rep.data);
-        }
     },
     mutations: {
-        setData: (state, data) => (
-            state.data = data
-        )
+        setcustomers: (state, customers) => (
+            state.customerList = customers
+        ),
     }
 }

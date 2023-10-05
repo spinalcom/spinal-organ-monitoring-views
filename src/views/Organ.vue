@@ -12,25 +12,21 @@
           justify-center
           rounded-lg
         " elevation="2">
-                <BlueButton @click.native="AddPlatform()" :icon="'mdi-plus'" title="ADD PLATFORM" :val="'blue'" />
+                <BlueButton @click.native="AddOrgan()" :icon="'mdi-plus'" title="ADD ORGAN" :val="'blue'" />
             </v-card>
         </div>
         <BachupInformation title="LISTE DES PLATEFORMES">
             <div class="d-flex mb-2 mt-4">
-                <div style="width: 20%">Platform Id</div>
-                <div style="width: 20%">Platform Name</div>
-                <div style="width: 20%">Platform Type</div>
-                <div style="width: 20%">url</div>
-                <div style="width: 20%">Organ number</div>
+                <div style="width: 20%">Organ Name</div>
+                <div style="width: 20%">Organ Type</div>
+                <div style="width: 20%">status</div>
+                <div style="width: 20%">last health time</div>
+                <div style="width: 20%">IP adress</div>
                 <div style="width: 22%">status</div>
             </div>
 
-            <div v-for="item in this.platform" :key="item.id">
-
+            <div v-for="item in this.Organ" :key="item.id">
                 <div class="d-flex mb-2">
-                    <div style="width: 20%" class="content-list rounded-l-lg pl-10">
-                        {{ item.id }}
-                    </div>
                     <div style="width: 20%" class="content-list">
                         {{ item.name }}
                     </div>
@@ -38,14 +34,19 @@
                         {{ item.type }}
                     </div>
                     <div style="width: 20%" class="content-list">
-                        {{ item.url }}
+                        <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
+                            v-if="item.status == 'on'">ON</div>
+                        <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
+                            v-else>OFF</div>
                     </div>
-
                     <div style="width: 20%" class="content-list">
-                        {{ item.organList.length }}
+                        {{ item.last_health_time }}
                     </div>
                     <div style="width: 20%" class="content-list">
-                        {{ item.status }}
+                        {{ item.ip_adress }}
+                    </div>
+                    <div style="width: 20%" class="content-list">
+                        {{ item.id }}
                     </div>
                     <div class="content-list rounded-r-lg hover">
                         <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -55,6 +56,7 @@
                 </div>
             </div>
         </BachupInformation>
+
     </v-app>
 </template>
   
@@ -78,36 +80,43 @@ export default {
         InputPassword
     },
     data: () => ({
-        platform: [
+        // token: "",
+        Organ: [
             {
-                "id": "ID",
-                "name": "name 1 ",
-                "type": "le type 1",
-                "platformType": "PLAFTOMESTYPE",
-                "url": 'url.platform',
-                "organList": [
-                    {
-                        "organ 1": "test",
-                    },
-                    {
-                        "organ 2": "test",
-                    },
-                    {
-                        "organ 3": "test",
-                    },
-                ],
-                "status": "?"
+                "name": "OrganTest",
+                "type": "MonitoringServiceOrgan",
+                "status": "on",
+                "ip_adress": "<string>",
+                "id": "22de-f0e9-149e-18adc719527",
+                last_health_time : "test 1"
             },
+            {
+                "name": "OrganTest",
+                "type": "MonitoringServiceOrgan",
+                "status": "off",
+                "ip_adress": "<string>",
+                "id": "22de-f0e9-149e-18adc719527",
+                last_health_time : "test 4"
+            },
+            {
+                "name": "OrganTest",
+                "type": "MonitoringServiceOrgan",
+                "status": "on",
+                "ip_adress": "<string>",
+                "id": "22de-f0e9-149e-18adc719527",
+                last_health_time : "test 2 "
+            },
+
         ],
     }),
 
     methods: {
-        AddPlatform() {
-            console.log('test');
-            this.$router.push({ name: "AddPlatform" });
+        AddOrgan() {
+            this.$router.push({ name: "AddOrgan" });
         },
+
         displayDetail(item) {
-            this.$router.push({ name: "DetailPlatform", query: { id: item.id } });
+            this.$router.push({ name: "DetailOrgan", query: { id: item.id } });
         },
     },
     computed: {

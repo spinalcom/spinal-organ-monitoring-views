@@ -1,213 +1,244 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar :btn="'off'" v-on:btn2="displayEdit()" v-on:btn3="deletePlatformItem()" title="INFORMATION DU BOS"
-                :title2="this.platform.name" :icon="require('../assets/image/BOS_icon.svg')">
+            <InformationBar :btn1Title="'ADD ORGAN'" :btn2Title="'EDIT PLATFORM '" :btn3Title="'DELETE PLATFORM'"
+                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
+                title="PLATFORM INFORMATION" :title2="this.platform.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
+                        <span class="bar-sub-title">ID</span>
+                        <span class=" bar-information">{{ this.platform.id }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
+                        <span class="bar-sub-title">NAME</span>
+                        <span class="bar-information">{{ this.platform.name }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
+                        <span class="bar-sub-title">TYPE</span>
+                        <span class="bar-information">{{ this.platform.type }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
+                        <span class="bar-sub-title">PLATFORM TYPE</span>
+                        <span class="bar-information">{{ this.platform.platformType }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
+                        <span class="bar-sub-title">IP ADDRESS</span>
+                        <span class="bar-information">{{ this.platform.ipAdress }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">URL</span>
-                        <span class=" bar-information">{{ this.platform.url }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">ADRESSE</span>
-                        <span class="bar-information">{{ this.platform.address }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">STATUT</span>
-                        <StatutButton v-if="this.platform.statusPlatform" :val="this.platform.statusPlatform"
-                            title="ONLINE"></StatutButton>
-                    </div>
-                    <div style="max-width: 500px;" class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">TOKEN</span>
-                        <span class="bar-information">{{ this.platform.TokenBosAdmin }}</span>
+                        <span class="bar-information">{{ this.platform.url }}</span>
                     </div>
                 </div>
             </InformationBar>
 
-            <BackupInformation style="max-height: 70%; min-height: 70%;" title="INFORMATION DE LA PLATFORME">
-                <Tabs :items="items">
-                    <v-tab-item v-if="this.platform">
-                        <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()">
-                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
-                                    'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headersorgane" :items="this.platform.organs"
-                                    :search="search">
-                                </v-data-table>
-                            </div>
-                        </v-card>
-                    </v-tab-item>
-                    <!-- *****************************USER PROFILES******************************************** -->
-                    <v-tab-item v-if="this.platform">
-                        <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()">
-                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
-                                    'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers2" :items="this.platform.userProfiles"
-                                    :search="search">
-                                </v-data-table>
-                            </div>
-                        </v-card>
-                    </v-tab-item>
-                    <!-- *****************************APP PROFILES******************************************** -->
-                    <v-tab-item v-if="this.platform">
-                        <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()">
-                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
-                                    'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers2" :items="this.platform.appProfiles"
-                                    :search="search">
-                                </v-data-table>
-                            </div>
-                        </v-card>
-                    </v-tab-item>
-                    <!-- *****************************USERS******************************************** -->
-                    <v-tab-item v-if="userListLinkPlatform">
-                        <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()">
-                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
-                                    'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headersuser" :items="userListLinkPlatform"
-                                    :search="search">
-                                </v-data-table>
-                            </div>
-                        </v-card>
-                    </v-tab-item>
-                    <!-- *****************************APPS******************************************** -->
-                    <v-tab-item v-if="appListLinkPlatform">
-                        <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()">
-                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
-                                    'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headersapp" :items="appListLinkPlatform"
-                                    :search="search">
-                                </v-data-table>
-                            </div>
-                        </v-card>
-                    </v-tab-item>
-                    <!-- *****************************LOGS******************************************** -->
-                    <v-tab-item v-if="logList">
-                        <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()">
-                                <v-card-title>
-                                    <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher"
-                                        single-line hide-details>
-                                    </v-text-field>
-                                </v-card-title>
-                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
-                                    'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers" :items="this.formattedLogList"
-                                    :search="search">
-                                </v-data-table>
-                            </div>
-                        </v-card>
-                    </v-tab-item>
-                </Tabs>
+
+            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="PLATFORM DETAILS">
+                <div class="d-flex mb-2 mt-4">
+                    <div style="width: 100%;margin-left: 10px;">Platform Name</div>
+                    <div style="width: 100%">Type</div>
+                </div>
+                <div v-for="item in this.platform.organList" :key="item.id">
+
+                    <div class="d-flex mb-2">
+                        <div style="width: 100%" class="content-list">
+                            {{ item.name }}
+                        </div>
+                        <div style="width: 100%" class="content-list">
+                            {{ item.type }}
+                        </div>
+                        <div class="content-list rounded-r-lg hover">
+                            <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                <v-icon>mdi-arrow-right</v-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </BackupInformation>
+
+
+
+            <div v-if="show" class="popup_platform">
+                <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                    <div @click="show = false" class="popup-closebtn">
+                        <span>X</span>
+                    </div>
+                    <p class="mb-6">EDIT PLATFORM</p>
+                    <InputUser title="  PLATFORM NAME" id="userName" v-model="formPlatform.name" />
+                    <span class="errors" v-if="$v.formPlatform.name.$error"> Platform Name is required</span>
+                    <InputUser title="  PLATFORM TYPE" id="userName" v-model="formPlatform.type" />
+                    <span class="errors" v-if="$v.formPlatform.type.$error"> Platform Type is required</span>
+                    <InputUser title="  PLATFORM ipAdress" id="userName" v-model="formPlatform.ipAdress" />
+                    <span class="errors" v-if="$v.formPlatform.ipAdress.$error"> Platform IP address is required</span>
+                    <InputUser title="  PLATFORM loginAdmin" id="userName" v-model="formPlatform.loginAdmin" />
+                    <span class="errors" v-if="$v.formPlatform.loginAdmin.$error"> Platform login admin is required</span>
+                    <InputUser title="  PLATFORM passwordAdmin" id="userName" v-model="formPlatform.passwordAdmin" />
+                    <span class="errors" v-if="$v.formPlatform.passwordAdmin.$error"> Platform password admin is required</span>
+                    <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                        <span>EDIT</span>
+                    </div>
+                    <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
+                        <span>CLOSE</span>
+                    </div>
+                </v-card>
+            </div>
         </v-main>
     </v-app>
 </template>
   
 <script>
+import InputUser from "../Components/InputUser";
 import InformationBar from "../Components/InformationBar.vue";
-import StatutButton from "../Components/StatutButton.vue";
-import Tabs from "../Components/Tabs.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
+import BlueButton from "../Components/BlueButton.vue";
+import Tabs from "../Components/Tabs.vue";
 import FiltreBar from "../Components/FiltreBar.vue";
-import { onMounted } from "vue";
+import SelectUser from "../Components/SelectUser.vue";
 import { mapActions, mapGetters } from "vuex";
+import InputPass from "../Components/InputPassword.vue"
+import { validationMixin } from "vuelidate";
+import { required, email, minLength, numeric } from "vuelidate/lib/validators";
 
 export default {
     name: "App",
     components: {
         InformationBar,
         BackupInformation,
-        StatutButton,
         Tabs,
-        FiltreBar
+        FiltreBar,
+        SelectUser,
+        BlueButton,
+        InputPass,
+        InputUser
     },
     data() {
         return {
-            search: '',
-            headers: [{ text: 'Nom', value: 'name' },
-            { text: 'Date', value: 'date' },
-            { text: 'Message', value: 'message' },
-            { text: 'Acteur', value: 'actor.actorName' },
-            { text: 'Id Acteur', value: 'actor.actorId' },],
-            headersuser: [{ text: 'Nom', value: 'name' },
-            { text: 'Info', value: 'info' },
-            { text: 'userType', value: 'userType' },
-            { text: 'type', value: 'type' },
-            { text: 'Id Acteur', value: 'id' },],
-            headersorgane: [{ text: 'Nom', value: 'name' },
-            { text: 'Id', value: 'id' },
-            { text: 'Organ Type', value: 'organType' },
-            { text: 'statusOrgan', value: 'statusOrgan' },
-            { text: 'type', value: 'type' },],
-            headersapp: [{ text: 'Nom', value: 'name' },
-            { text: 'Type d\'applicaton', value: 'appType' },
-            { text: 'Id', value: 'id' },
-            { text: 'Client ID', value: 'clientId' },
-            { text: 'Client Secret', value: 'clientSecret' },
-            ],
-            headers2: [{ text: 'Nom', value: 'name' },
-            { text: 'Id profil', value: 'id' },
-            { text: 'Type', value: 'type' }
-        ],
-            mounted: false,
-            platformId: null,
-            
-            userList: [],
-            itemSelected: null,
-            appList: [],
-            tab: null,
-            items: [
-                'ORGANES', "PROFILS D'UTILISATEURS", "PROFILS D'APPLICATIONS", 'UTILISATEURS', 'APPLICATIONS', 'LOGS',
-            ],
+
+            formPlatform: {
+                name : null,
+                type : null,
+                ipAdress : null,
+                loginAdmin : null,
+                passwordAdmin : null,
+            },
+
+            platform:
+            {
+                "id": '258369 test',
+                "name": 'PlatformName',
+                "type": 'Type',
+                "platformType": 'PlatformType',
+                "TokenBosRegister": "le TOKEN DU BOS",
+                "ipAdress": "ip address",
+                "url": "URL DE PLATFORM",
+                "loginAdmin": "ADMIN LOGIN",
+                "passwordAdmin": "ADMIN PASS",
+                "hubOrgan": "HUBORGAN",
+                "organList": [{
+                    "name": "ORGAN1",
+                    "type": "type de l organ 1"
+                }, {
+                    "name": "ORGAN1",
+                    "type": "type de l organ 1"
+                },],
+            },
+
+            show: false,
         };
+
+    },
+    validations: {
+        formPlatform: {
+            name: {
+                required,
+            },
+            type: {
+                required,
+            },
+            ipAdress: {
+                required,
+            },
+            loginAdmin: {
+                required,
+            },
+            passwordAdmin: {
+                required,
+            },
+        },
+
     },
     methods: {
-        updatePlatform() {
-            
-            this.$store.dispatch('platforms/getPlatform', this.$route.query.id);
-            this.$store.dispatch('platforms/getPlatformLogs', this.$route.query.id);
-            this.$store.dispatch('platforms/getApplications', this.$route.query.id);
-            this.$store.dispatch('platforms/getUsers', this.$route.query.id);
-           
+        editUserPlatform() {
+            this.$v.$touch();
+            if (!this.$v.$invalid) {
+                console.log('valid form');
 
-        },
-        affichage() {
-            var a = document.querySelector("#app > div.v-menu__content.theme--light.menuable__content__active");
-            a.style.position = "fixed";
-        },
-    },
-
-    computed: {
-        ...mapGetters({
-            platform: 'platforms/platform',
-            logList:'platforms/platformlog',
-            appListLinkPlatform:'platforms/appListLinkPlatform',
-            userListLinkPlatform:'platforms/userListLinkPlatform',
-        }),
-        formattedLogList() {
-            return this.logList.map(log => {
-                log.date = new Date(log.date).toLocaleString();
-                return log;
-            });
+            }
         }
         ,
+        deletebtn() {
+        },
 
+        displayEditUser() {
+            this.show = true
+        },
     },
+    computed: {
+    },
+
     created() {
-        this.updatePlatform()
     }
 }
 </script>
   
 <style scoped >
+*:focus {
+    outline: none;
+}
+
+.errors {
+  margin: 0;
+  /* position: absolute; */
+  transform: translate(0, -10%);
+  font-size: 10px;
+  color: red;
+  padding-left: 2px;
+  letter-spacing: 1.1px;
+}
+.app {
+    font: normal normal normal 10px/12px Charlevoix Pro;
+    letter-spacing: 1px;
+    background: #eeeeee00;
+}
+
+.content-list {
+    border: 1px solid rgba(216, 216, 216, 0.623);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    padding-left: 10px;
+    font: normal normal normal 12px/14px Charlevoix Pro;
+    letter-spacing: 1.2px;
+    margin: 1px;
+    flex-wrap: wrap;
+}
+
 .v-application {
     background: #eeeeee00;
 }
+
+.reset_btn {
+    width: 100%;
+    /* background-color: red; */
+    position: absolute;
+    top: -65px;
+    display: flex;
+    justify-content: end;
+    min-width: 980px;
+}
+
+
 
 .v-data-table>>>td {
     background-color: white;
@@ -220,12 +251,10 @@ export default {
 #content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title>div {
     margin-top: 0;
     padding-top: 0;
-
 }
 
 .v-data-table>>>th {
     background: #F7F7F7 !important;
-
 }
 
 #content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title {
@@ -243,16 +272,19 @@ export default {
 
 .bar-sub-title {
     color: #949DA6;
-    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 6px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 11px;
-    margin-bottom: 10px;
+    letter-spacing: 1.1px;
 }
 
 .bar-information {
     margin-bottom: 10px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: 1.3px;
     font-size: 11px;
-    letter-spacing: 1.1px;
-    min-width: 80px;
+    color: #14202C;
+
 }
 
 .information-backup-bar2 {
@@ -267,5 +299,121 @@ export default {
     margin-top: 2px;
     margin-left: 1px;
     padding-left: 8px;
+}
+
+.btn-creer {
+    min-height: 35px;
+    border: 0px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background: #14202C;
+    border-radius: 6px;
+    color: white;
+    /* margin-left: 5px; */
+    margin-top: 20px;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+
+}
+
+.choix_platform {
+    width: 99%;
+    height: 150px;
+    background-color: #EAEEF0;
+    border-radius: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.popup {
+    position: absolute;
+    width: 615px;
+    /* height: 280px; */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.popup-closebtn {
+    top: 7px;
+    right: 7px;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #E9ECEE;
+    opacity: 1;
+    position: absolute;
+    border-radius: 6px !important;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.popup-btn-fermer {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup-btn-ajouter {
+    position: absolute;
+    left: 49%;
+    bottom: 10px;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup-btn-copier {
+    position: absolute;
+    left: 23%;
+    bottom: 10px;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup_platform {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    backdrop-filter: blur(5px);
 }
 </style>

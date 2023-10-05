@@ -1,35 +1,25 @@
 <template>
   <v-app>
     <v-main>
-      <BachupInformation style="max-height: 87vh;" title="ADD USER">
+      <BachupInformation style="max-height: 87vh;" title="ADD BUILDING">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
-          <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
-          <InputUser title="SITE NAME" id="userName" v-model="formUser.name" />
-          <span class="errors" v-if="$v.formUser.name.$error"> User Name is required</span>
-          <InputUser title="SITE TYPE" id="password" v-model="formUser.email" />
-          <span class="errors" v-if="$v.formUser.email.$error"> User email is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.userType" />
-          <span class="errors" v-if="$v.formUser.userType.$error"> User userType is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.password" />
-          <span class="errors" v-if="$v.formUser.password.$error"> User password is required</span>
-
-          <div style="display: flex;" v-for="(platform, index) in formUser.platform" :key="index">
-            <SelectUser :tab="platforms" :value="platform.name" title="PLATFORM"></SelectUser>
-            <button @click="deletePlatform(index)" type="button" class="red-cross">X</button>
-          </div>
-          <div class="d-flex justify-end">
-            <button @click="addPlatforms" type="button" class="btn-ajout-platform">+ ADD PLATFORM</button>
-          </div>
+          <p style="margin: 0;">Enter building information</p>
+          <InputUser title="BUILDING NAME" id="userName" v-model="formBuilding.name" />
+          <span class="errors" v-if="$v.formBuilding.name.$error">Name is required</span>
+          <InputUser title="BUILDING TYPE" id="type" v-model="formBuilding.type" />
+          <span class="errors" v-if="$v.formBuilding.type.$error">Building is required</span>
+          <InputUser title="BUILDING ADDRESS" id="address" v-model="formBuilding.address" />
+          <span class="errors" v-if="$v.formBuilding.address.$error">Address is required</span>
           <div class="d-flex justify-end">
             <button class="btn-retour" @click="cancelAdd()">RETOUR</button>
-            <button type="submit" class="btn-creer">CREATE USER</button>
+            <button type="submit" class="btn-creer">CREATE CUSTOMER</button>
           </div>
         </form>
       </BachupInformation>
     </v-main>
   </v-app>
 </template>
-    
+  
 <script >
 import InputUser from "../Components/InputUser";
 import SelectUser from "../Components/SelectUser.vue";
@@ -39,7 +29,7 @@ import InputPass from "../Components/InputPassword";
 import AddPlatform from "../Components/AddPlatform";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
-import { mapActions, mapGetters } from "vuex";
+// import { mapActions, mapGetters } from "vuex";
 
 export default {
   mixins: [validationMixin],
@@ -54,36 +44,23 @@ export default {
 
   data() {
     return {
-      formUser: {
+      formBuilding: {
         name: null,
-        email: null,
-        userType: null,
-        password: null,
-        platform: []
+        type: null,
+        address: null,
       },
-      platforms: [{
-        name: "sla1",
-        type: "type 1",
-      },
-      {
-        name: "sla2",
-        type: "type 2",
-      }]
     };
   },
 
   validations: {
-    formUser: {
+    formBuilding: {
       name: {
         required,
       },
-      email: {
+      type: {
         required,
       },
-      userType: {
-        required,
-      },
-      password: {
+      address: {
         required,
       },
     },
@@ -91,29 +68,32 @@ export default {
 
   methods: {
     cancelAdd() {
-      this.$router.push("/UserList");
+      this.$router.push("/Buildings");
     },
-    addPlatforms() {
-      this.formUser.platform.push({}); // Ajoute un nouvel élément au tableau pour afficher un nouveau composant SelectUser
+    addContact() {
+      this.contacts.push(1); // Ajoute un nouvel élément au tableau pour afficher un nouveau composant SelectUser
     },
-    deletePlatform(index) {
-      this.formUser.platform.splice(index, 1); // Supprime l'élément du tableau à l'index donné
+    deleteContact(index) {
+      this.contacts.splice(index, 1); // Supprime l'élément du tableau à l'index donné
     },
 
     async validateUser() {
+      // await this.$refs.refplatform.maFonction();
       this.$v.$touch();
+      console.log('Validation Object:', this.$v);
       if (!this.$v.$invalid) {
         console.log('valid form');
 
+      } else {
+        console.log('invalid form');
       }
     },
   },
   computed: {
-
   },
 }
 </script>
-    
+  
 <style scoped>
 .errors {
   margin: 0;

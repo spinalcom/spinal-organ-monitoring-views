@@ -29,6 +29,8 @@ async function getToken(user, pass) {
     email: user,
     password: pass,
   };
+
+  console.log(userparams , 'userparam');
   // console.error(process.env.SPINAL_HOST_API);
   const { data } = await instanceAxios.instanceAxios.post(
     '/users/login',
@@ -49,6 +51,7 @@ async function getToken(user, pass) {
 async function* genToken(user, pass) {
   let token;
   if (user && pass) {
+    console.log('toto');
     token = await getToken(user, pass);
     isLogedin = true;
     yield token;

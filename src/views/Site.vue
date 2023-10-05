@@ -12,20 +12,19 @@
           justify-center
           rounded-lg
         " elevation="2">
-                <BlueButton @click.native="AddPlatform()" :icon="'mdi-plus'" title="ADD PLATFORM" :val="'blue'" />
+                <BlueButton @click.native="addSite()" :icon="'mdi-plus'" title="ADD SITE" :val="'blue'" />
             </v-card>
         </div>
         <BachupInformation title="LISTE DES PLATEFORMES">
             <div class="d-flex mb-2 mt-4">
-                <div style="width: 20%">Platform Id</div>
-                <div style="width: 20%">Platform Name</div>
-                <div style="width: 20%">Platform Type</div>
-                <div style="width: 20%">url</div>
-                <div style="width: 20%">Organ number</div>
-                <div style="width: 22%">status</div>
+                <div style="width: 20%">site Id</div>
+                <div style="width: 20%">site Name</div>
+                <div style="width: 20%">address</div>
+                <div style="width: 20%">site Type</div>
+                <div style="width: 20%">slas number</div>
             </div>
 
-            <div v-for="item in this.platform" :key="item.id">
+            <div v-for="item in this.site" :key="item.id">
 
                 <div class="d-flex mb-2">
                     <div style="width: 20%" class="content-list rounded-l-lg pl-10">
@@ -38,15 +37,13 @@
                         {{ item.type }}
                     </div>
                     <div style="width: 20%" class="content-list">
-                        {{ item.url }}
+                        {{ item.address }}
                     </div>
 
                     <div style="width: 20%" class="content-list">
-                        {{ item.organList.length }}
+                        {{ item.slas.length }}
                     </div>
-                    <div style="width: 20%" class="content-list">
-                        {{ item.status }}
-                    </div>
+
                     <div class="content-list rounded-r-lg hover">
                         <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
                             <v-icon>mdi-arrow-right</v-icon>
@@ -78,41 +75,40 @@ export default {
         InputPassword
     },
     data: () => ({
-        platform: [
+        site: [
             {
                 "id": "ID",
                 "name": "name 1 ",
                 "type": "le type 1",
-                "platformType": "PLAFTOMESTYPE",
-                "url": 'url.platform',
-                "organList": [
+                "address": 'une address',
+                "slas": [
                     {
-                        "organ 1": "test",
+                        "slas 1": "test",
                     },
                     {
-                        "organ 2": "test",
+                        "slas 2": "test",
                     },
                     {
-                        "organ 3": "test",
+                        "slas 3": "test",
                     },
                 ],
-                "status": "?"
             },
+
         ],
     }),
 
     methods: {
-        AddPlatform() {
-            console.log('test');
-            this.$router.push({ name: "AddPlatform" });
+        addSite() {
+            this.$router.push({ name: "AddSite" });
         },
         displayDetail(item) {
-            this.$router.push({ name: "DetailPlatform", query: { id: item.id } });
+            this.$router.push({ name: "DetailSite", query: { id: item.id } });
         },
     },
     computed: {
     },
     created() {
+
     }
 }
 </script>

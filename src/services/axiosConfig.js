@@ -40,7 +40,6 @@ instanceAxios.interceptors.response.use((response) => {
     localStorage.removeItem('token');
     router.push("/Login");
   } if (error.response && error.response.data) {
-
     return Promise.reject(error.response.data);
   }
   return Promise.reject(error.message);

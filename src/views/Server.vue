@@ -12,40 +12,43 @@
           justify-center
           rounded-lg
         " elevation="2">
-                <BlueButton @click.native="AddPlatform()" :icon="'mdi-plus'" title="ADD PLATFORM" :val="'blue'" />
+                <BlueButton @click.native="AddServer()" :icon="'mdi-plus'" title="ADD SERVER" :val="'blue'" />
             </v-card>
         </div>
-        <BachupInformation title="LISTE DES PLATEFORMES">
+        <BachupInformation title="SERVER LIST">
             <div class="d-flex mb-2 mt-4">
-                <div style="width: 20%">Platform Id</div>
-                <div style="width: 20%">Platform Name</div>
-                <div style="width: 20%">Platform Type</div>
-                <div style="width: 20%">url</div>
-                <div style="width: 20%">Organ number</div>
-                <div style="width: 22%">status</div>
+                <div style="width: 20%">Server Id</div>
+                <div style="width: 20%">Server Name</div>
+                <div style="width: 20%">ip Address </div>
+                <div style="width: 20%">mac Address</div>
+                <div style="width: 20%">sshLogin</div>
+                <div style="width: 20%">sshPassword</div>
+                <div style="width: 23%">last_health_time</div>
             </div>
 
-            <div v-for="item in this.platform" :key="item.id">
+            <div v-for="item in this.server" :key="item.id">
 
                 <div class="d-flex mb-2">
-                    <div style="width: 20%" class="content-list rounded-l-lg pl-10">
+                    <div style="width: 20%" class="content-list rounded-l-lg pl-2">
                         {{ item.id }}
                     </div>
                     <div style="width: 20%" class="content-list">
                         {{ item.name }}
                     </div>
                     <div style="width: 20%" class="content-list">
-                        {{ item.type }}
+                        {{ item.ipAdress }}
                     </div>
                     <div style="width: 20%" class="content-list">
-                        {{ item.url }}
-                    </div>
-
-                    <div style="width: 20%" class="content-list">
-                        {{ item.organList.length }}
+                        {{ item.macAdress }}
                     </div>
                     <div style="width: 20%" class="content-list">
-                        {{ item.status }}
+                        {{ item.sshLogin }}
+                    </div>
+                    <div style="width: 20%" class="content-list">
+                        {{ item.sshPassword }}
+                    </div>
+                    <div style="width: 20%" class="content-list">
+                        {{ item.last_health_time }}
                     </div>
                     <div class="content-list rounded-r-lg hover">
                         <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -78,39 +81,31 @@ export default {
         InputPassword
     },
     data: () => ({
-        platform: [
-            {
-                "id": "ID",
-                "name": "name 1 ",
-                "type": "le type 1",
-                "platformType": "PLAFTOMESTYPE",
-                "url": 'url.platform',
-                "organList": [
-                    {
-                        "organ 1": "test",
-                    },
-                    {
-                        "organ 2": "test",
-                    },
-                    {
-                        "organ 3": "test",
-                    },
-                ],
-                "status": "?"
-            },
-        ],
+        server: [{
+            "id": "id du server",
+            "type": "type du server",
+            "name": "le nom du server",
+            "ipAdress": "adresse ip du server",
+            "macAdress": "mac adresse",
+            "sshLogin": "ssh login",
+            "sshPassword": "ssh password",
+            "boot_timestamp": "boot times tamp",
+            "last_health_time": "last health time",
+            "serverType": "servertype",
+        }],
     }),
 
     methods: {
-        AddPlatform() {
-            console.log('test');
-            this.$router.push({ name: "AddPlatform" });
+        AddServer(item) {
+            this.$router.push({ name: "AddServer" });
         },
+        
         displayDetail(item) {
-            this.$router.push({ name: "DetailPlatform", query: { id: item.id } });
+            this.$router.push({ name: "DetailServer", query: { id: item.id } });
         },
     },
     computed: {
+      
     },
     created() {
     }
