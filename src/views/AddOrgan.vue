@@ -4,11 +4,11 @@
       <BachupInformation style="max-height: 87vh;" title="ADD ORGAN">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
           <p style="margin: 0;">Enter Organ information</p>
-          <InputUser title="BUILDING NAME" id="userName" v-model="formOrgan.name" />
+          <InputUser title="ORGAN NAME" id="userName" v-model="formOrgan.name" />
           <span class="errors" v-if="$v.formOrgan.name.$error"> organ Name is required</span>
-          <InputUser title="BUILDING TYPE" id="password" v-model="formOrgan.type" />
+          <InputUser title="ORGAN TYPE" id="password" v-model="formOrgan.type" />
           <span class="errors" v-if="$v.formOrgan.type.$error"> Organ type is required</span>
-          <InputUser title="BUILDING  IPADDRESS" id="Email" v-model="formOrgan.ip_adress" />
+          <InputUser title="ORGAN  IPADDRESS" id="Email" v-model="formOrgan.ip_adress" />
           <span class="errors" v-if="$v.formOrgan.ip_adress.$error"> Organ ip_adress is required</span>
           <div class="d-flex justify-end">
             <button class="btn-retour" @click="cancelAdd()">RETOUR</button>

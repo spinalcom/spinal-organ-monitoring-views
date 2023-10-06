@@ -3,11 +3,11 @@
     <v-main>
       <BachupInformation style="max-height: 87vh;" title="ADD SERVER">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
-          <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
+          <p style="margin: 0;">Enter Server information</p>
           <InputUser title="SERVER NAME" id="userName" v-model="formServer.name" />
           <span class="errors" v-if="$v.formServer.name.$error"> Server Name is required</span>
-          <InputUser title="SERVER TYPE" id="password" v-model="formServer.type" />
-          <span class="errors" v-if="$v.formServer.type.$error"> Server type is required</span>
+          <!-- <InputUser title="SERVER TYPE" id="password" v-model="formServer.type" />
+          <span class="errors" v-if="$v.formServer.type.$error"> Server type is required</span> -->
           <InputUser title="SERVER MAC ADDRESS" id="Email" v-model="formServer.macAdress" />
           <span class="errors" v-if="$v.formServer.macAdress.$error"> Server macAdress is required</span>
           <InputUser title="server IP ADDRESS" id="Email" v-model="formServer.ipAdress" />
@@ -65,9 +65,9 @@ export default {
       name: {
         required,
       },
-      type: {
-        required,
-      },
+      // type: {
+      //   required,
+      // },
       macAdress: {
         required,
       },

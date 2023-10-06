@@ -26,28 +26,7 @@
             </InformationBar>
 
 
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="PLATFORM">
-                <div class="d-flex mb-2 mt-4 ml-1">
-                    <div style="width: 100%">Building Id</div>
-                    <div style="width: 100%">Building Name</div>
-                </div>
-                <div v-for="item in this.user.platform" :key="item.id">
-                    <div class="d-flex mb-2">
-                        <div style="width: 100%" class="content-list rounded-l-lg pl-10">
-                            {{ item.id }}
-                        </div>
-                        <div style="width: 100%" class="content-list">
-                            {{ item.name }}
-                        </div>
-
-                        <div class="content-list rounded-r-lg hover">
-                            <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
-                                <v-icon>mdi-arrow-right</v-icon>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </BackupInformation>
+           
 
             <div v-if="show" class="popup_platform">
                 <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
@@ -67,7 +46,6 @@
                             <SelectUser :tab="platform" :value="user.name" title="PLATFORM"></SelectUser>
                             <button @click="deleteOrgan(index)" type="button" class="red-cross">X</button>
                         </div>
-
                     </div>
                     <div class="d-flex justify-end">
                         <button @click="addOrgan" type="button" class="btn-ajout-platform">+ ADD PLATFORM</button>

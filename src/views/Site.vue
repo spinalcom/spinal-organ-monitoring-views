@@ -15,32 +15,25 @@
                 <BlueButton @click.native="addSite()" :icon="'mdi-plus'" title="ADD SITE" :val="'blue'" />
             </v-card>
         </div>
-        <BachupInformation title="LISTE DES PLATEFORMES">
+        <BachupInformation title="SITE TABLE">
             <div class="d-flex mb-2 mt-4">
-                <div style="width: 20%">site Id</div>
-                <div style="width: 20%">site Name</div>
-                <div style="width: 20%">address</div>
-                <div style="width: 20%">site Type</div>
-                <div style="width: 20%">slas number</div>
+                <div style="width: 33%">site Name</div>
+                <div style="width: 33%">address</div>
+                <div style="width: 33%">slas number</div>
             </div>
 
             <div v-for="item in this.site" :key="item.id">
 
                 <div class="d-flex mb-2">
-                    <div style="width: 20%" class="content-list rounded-l-lg pl-10">
-                        {{ item.id }}
-                    </div>
-                    <div style="width: 20%" class="content-list">
+                    <div style="width: 33%" class="content-list">
                         {{ item.name }}
                     </div>
-                    <div style="width: 20%" class="content-list">
-                        {{ item.type }}
-                    </div>
-                    <div style="width: 20%" class="content-list">
+
+                    <div style="width: 33%" class="content-list">
                         {{ item.address }}
                     </div>
 
-                    <div style="width: 20%" class="content-list">
+                    <div style="width: 33%" class="content-list">
                         {{ item.slas.length }}
                     </div>
 

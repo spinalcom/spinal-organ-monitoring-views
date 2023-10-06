@@ -3,20 +3,19 @@
     <v-main>
       <BachupInformation style="max-height: 87vh;" title="ADD CUSTOMER">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
-          <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
+          <p style="margin: 0;">Enter Customer information </p>
           <InputUser title="CUSTOMER NAME" id="userName" v-model="formCustomer.name" />
           <span class="errors" v-if="$v.formCustomer.name.$error"> Customer Name is required</span>
-          <InputUser title="CUSTOMER TYPE" id="type" v-model="formCustomer.type" />
-          <span class="errors" v-if="$v.formCustomer.type.$error"> Customer type is required</span>
           <InputUser title="CUSTOMER SERVICE" id="Email" v-model="formCustomer.service" />
           <span class="errors" v-if="$v.formCustomer.service.$error"> Customer service is required</span>
-          <div style="display: flex;" v-for="(contacts, index) in formCustomer.contacts" :key="index">
+          
+          <!-- <div style="display: flex;" v-for="(contacts, index) in formCustomer.contacts" :key="index">
             <SelectUser :tab="contact" :value="contacts.name" title="CONTACT"></SelectUser>
             <button @click="deleteContact(index)" type="button" class="red-cross">X</button>
           </div>
           <div class="d-flex justify-end">
             <button @click="addContact" type="button" class="btn-ajout-platform">+ ADD CONTACT</button>
-          </div>
+          </div> -->
           <div class="d-flex justify-end">
             <button class="btn-retour" @click="cancelAdd()">RETOUR</button>
             <button type="submit" class="btn-creer">CREATE CUSTOMER</button>
@@ -53,7 +52,6 @@ export default {
     return {
       formCustomer: {
         name: null,
-        type: null,
         service: null,
         contacts: []
       },
@@ -67,9 +65,6 @@ export default {
   validations: {
     formCustomer: {
       name: {
-        required,
-      },
-      type: {
         required,
       },
       service: {

@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <v-main>
-      <BachupInformation style="max-height: 87vh;" title="ADD SITE">
+      <BachupInformation style="max-height: 87vh;" title="ADD PLATFORM">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
-          <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
+          <p style="margin: 0;">Enter platform information</p>
           <InputUser title="PLATFORM NAME" id="userName" v-model="formPlatform.name" />
           <span class="errors" v-if="$v.formPlatform.name.$error"> Server Name is required</span>
           <InputUser title="PLATFORM TYPE" id="password" v-model="formPlatform.type" />

@@ -10,12 +10,8 @@
                         <span class=" bar-information">{{ this.building.name }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">TYPE</span>
-                        <span class="bar-information">{{ this.building.type }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">SERRVICE</span>
-                        <span class="bar-information">{{ this.building.service }}</span>
+                        <span class="bar-sub-title">ADDRESS</span>
+                        <span class="bar-information">{{ this.building.adress }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ID</span>

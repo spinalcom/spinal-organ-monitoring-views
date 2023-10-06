@@ -3,24 +3,22 @@
     <v-main>
       <BachupInformation style="max-height: 87vh;" title="ADD SITE">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
-          <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
+          <p style="margin: 0;">Enter SIte information</p>
           <InputUser title="SITE NAME" id="userName" v-model="formSite.name" />
-          <span class="errors" v-if="$v.formSite.name.$error"> Server Name is required</span>
-          <InputUser title="SITE TYPE" id="password" v-model="formSite.type" />
-          <span class="errors" v-if="$v.formSite.type.$error"> Server Name is required</span>
+          <span class="errors" v-if="$v.formSite.name.$error"> Site Name is required</span>
           <InputUser title="SITE ADDRESS" id="Email" v-model="formSite.address" />
-          <span class="errors" v-if="$v.formSite.address.$error"> Server Name is required</span>
+          <span class="errors" v-if="$v.formSite.address.$error"> Site address is required</span>
           
-          <div style="display: flex;" v-for="(slas, index) in formSite.slas" :key="index">
+          <!-- <div style="display: flex;" v-for="(slas, index) in formSite.slas" :key="index">
             <SelectUser :tab="el_slas" :value="slas.name" title="SLAS"></SelectUser>
             <button @click="deleteslas(index)" type="button" class="red-cross">X</button>
           </div>
           <div class="d-flex justify-end">
             <button @click="addslas" type="button" class="btn-ajout-platform">+ ADD SLAS</button>
-          </div>
+          </div> -->
           <div class="d-flex justify-end">
             <button class="btn-retour" @click="cancelAdd()">RETOUR</button>
-            <button type="submit" class="btn-creer">CREATE CUSTOMER</button>
+            <button type="submit" class="btn-creer">CREATE SITE</button>
           </div>
         </form>
       </BachupInformation>
@@ -54,7 +52,6 @@ export default {
     return {
       formSite: {
         name: null,
-        type: null,
         address: null,
         slas : []
       },
@@ -72,9 +69,6 @@ export default {
   validations: {
     formSite: {
       name: {
-        required,
-      },
-      type: {
         required,
       },
       address: {

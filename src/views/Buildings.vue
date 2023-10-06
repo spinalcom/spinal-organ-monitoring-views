@@ -41,24 +41,16 @@ with this file. If not, see
     </div>
     <BackupInformation @click.native="showapplist()" title="BUILDING TABLE">
       <div class="d-flex mb-2 mt-4">
-        <div style="width: 16%">Building Id</div>
-        <div style="width: 22%">Building Name</div>
-        <div style="width: 20%">Type</div>
-        <div style="width: 42%">adress</div>
+        <div style="width: 49%">Building Name</div>
+        <div style="width: 50%">adress</div>
       </div>
       <div v-for="item in this.buildings" :key="item.id">
 
         <div class="d-flex mb-2">
-          <div style="width: 16%" class="content-list rounded-l-lg pl-10">
-            {{ item.id }}
-          </div>
-          <div style="width: 22%" class="content-list">
+          <div style="width: 50%" class="content-list">
             {{ item.name }}
           </div>
-          <div style="width: 20%" class="content-list">
-            {{ item.type }}
-          </div>
-          <div style="width: 42%" class="content-list">
+          <div style="width: 50%" class="content-list">
             {{ item.adress }}
           </div>
           <div class="content-list rounded-r-lg hover">

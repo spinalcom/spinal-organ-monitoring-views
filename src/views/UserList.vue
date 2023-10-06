@@ -15,36 +15,36 @@
                 <BlueButton @click.native="addUser()" :icon="'mdi-plus'" title="ADD USER" :val="'blue'" />
             </v-card>
         </div>
-        <BachupInformation title="LISTE DES PLATEFORMES">
+        <BachupInformation title="USERS TABLE">
             <div class="d-flex mb-2 mt-4">
-                <div style="width: 20%">Platform Id</div>
-                <div style="width: 20%">Platform Name</div>
-                <div style="width: 20%">Platform Type</div>
-                <div style="width: 20%">url</div>
-                <div style="width: 20%">Organ number</div>
-                <div style="width: 22%">status</div>
+                <!-- <div style="width: 20%">user Id</div> -->
+                <div style="width: 24%">user Name</div>
+                <!-- <div style="width: 20%">user Type</div> -->
+                <div style="width: 25%">url</div>
+                <div style="width: 24%">platform number</div>
+                <div style="width: 25%">status</div>
             </div>
 
-            <div v-for="item in this.platform" :key="item.id">
+            <div v-for="item in this.user" :key="item.id">
 
                 <div class="d-flex mb-2">
-                    <div style="width: 20%" class="content-list rounded-l-lg pl-10">
+                    <!-- <div style="width: 20%" class="content-list rounded-l-lg pl-10">
                         {{ item.id }}
-                    </div>
-                    <div style="width: 20%" class="content-list">
+                    </div> -->
+                    <div style="width: 25%" class="content-list">
                         {{ item.name }}
                     </div>
-                    <div style="width: 20%" class="content-list">
+                    <!-- <div style="width: 20%" class="content-list">
                         {{ item.type }}
-                    </div>
-                    <div style="width: 20%" class="content-list">
+                    </div> -->
+                    <div style="width: 25%" class="content-list">
                         {{ item.url }}
                     </div>
 
-                    <div style="width: 20%" class="content-list">
-                        {{ item.organList.length }}
+                    <div style="width: 25%" class="content-list">
+                        {{ item.platformList.length }}
                     </div>
-                    <div style="width: 20%" class="content-list">
+                    <div style="width: 25%" class="content-list">
                         {{ item.status }}
                     </div>
                     <div class="content-list rounded-r-lg hover">
@@ -78,22 +78,22 @@ export default {
         InputPassword
     },
     data: () => ({
-        platform: [
+        user: [
             {
                 "id": "ID",
                 "name": "name 1 ",
                 "type": "le type 1",
-                "platformType": "PLAFTOMESTYPE",
-                "url": 'url.platform',
-                "organList": [
+                "userType": "PLAFTOMESTYPE",
+                "url": 'url.user',
+                "platformList": [
                     {
-                        "organ 1": "test",
+                        "platform 1": "test",
                     },
                     {
-                        "organ 2": "test",
+                        "platform 2": "test",
                     },
                     {
-                        "organ 3": "test",
+                        "platform 3": "test",
                     },
                 ],
                 "status": "?"

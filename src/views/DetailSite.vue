@@ -11,22 +11,14 @@
                         <span class=" bar-information">{{ this.site.name }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">TYPE</span>
-                        <span class="bar-information">{{ this.site.type }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ADRESS</span>
                         <span class="bar-information">{{ this.site.address }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">ID</span>
-                        <span class="bar-information">{{ this.site.id }}</span>
                     </div>
                 </div>
             </InformationBar>
 
 
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="SLAS">
+            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="SITE DETAILS">
                 <Tabs :items="items">
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4">
@@ -34,7 +26,7 @@
                             <div style="width: 100%;margin-left: 10px;">Site Name</div>
                         </div>
                         <div v-for="item in this.site.slas" :key="item.id">
-                            <div class="d-flex mb-2">
+                            <div class="d-flex mb-2 pl-1 pr-1">
                                 <div style="width: 100%" class="content-list">
                                     {{ item.name }}
                                 </div>
@@ -51,24 +43,24 @@
                     </v-tab-item>
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-1">
-                            <div style="width: 16%">Building Id</div>
-                            <div style="width: 21%">Building Name</div>
-                            <div style="width: 19%">Type</div>
-                            <div style="width: 42%">adress</div>
+                            <div style="width: 25%">Building Id</div>
+                            <div style="width: 24%">Building Name</div>
+                            <div style="width: 25%">Type</div>
+                            <div style="width: 25%">adress</div>
                         </div>
                         <div v-for="item in this.buildings" :key="item.id">
 
-                            <div class="d-flex mb-2">
-                                <div style="width: 16%" class="content-list rounded-l-lg pl-10">
+                            <div class="d-flex mb-2 pl-1 pr-1">
+                                <div style="width: 25%" class="content-list rounded-l-lg pl-10">
                                     {{ item.id }}
                                 </div>
-                                <div style="width: 22%" class="content-list">
+                                <div style="width: 25%" class="content-list">
                                     {{ item.name }}
                                 </div>
-                                <div style="width: 20%" class="content-list">
+                                <div style="width: 25%" class="content-list">
                                     {{ item.type }}
                                 </div>
-                                <div style="width: 42%" class="content-list">
+                                <div style="width: 25%" class="content-list">
                                     {{ item.adress }}
                                 </div>
                                 <div class="content-list rounded-r-lg hover">
@@ -80,6 +72,30 @@
                         </div>
 
                     </v-tab-item>
+
+                    <v-tab-item>
+                        <div class="d-flex mb-2 mt-4 ml-1">
+                            <div style="width: 49%">Platform Name</div>
+                            <div style="width: 50%">Type</div>
+                            <!-- <div style="width: 22%">status</div> -->
+                        </div>
+
+                        <div v-for="item in this.platform" :key="item.id">
+                            <div class="d-flex mb-2 pl-1 pr-1">
+                                <div style="width: 100%" class="content-list rounded-l-lg pl-10">
+                                    {{ item.name }}
+                                </div>
+                                <div style="width: 100%" class="content-list">
+                                    {{ item.type }}
+                                </div>
+                                <div class="content-list rounded-r-lg hover">
+                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                        <v-icon>mdi-arrow-right</v-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </v-tab-item>
                 </Tabs>
             </BackupInformation>
 
@@ -90,6 +106,7 @@
                     </div>
                     <p class="mb-6">EDIT SITE</p>
                     <InputUser title="SITE NAME" id="userName" />
+                    
                     <InputUser title="SITE ADDRESS" id="userName" />
                     <!-- <InputUser title="  CUSTOMER SERVICE" id="userName" /> -->
                     <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
@@ -154,10 +171,17 @@ export default {
                     "type": "type slas"
                 }]
             },
+            platform: [
+                {
+                    name: "platform name 1",
+                    type: "type platform name 1",
+                }
+            ],
             show: false,
             items: [
                 'SLAS',
-                'BUILDING'
+                'BUILDING',
+                'PLATFORM'
             ],
         };
 

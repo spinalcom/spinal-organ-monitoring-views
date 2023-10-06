@@ -40,26 +40,26 @@ with this file. If not, see
         <BlueButton @click.native="addCustomer()" :icon="'mdi-plus'" title="ADD CUSTOMER" :val="'blue'" />
       </v-card>
     </div>
-    <BackupInformation  @click.native="showapplist()" title="CUSTOMERS TABLE">
+    <BackupInformation @click.native="showapplist()" title="CUSTOMERS TABLE">
       <div class="d-flex mb-2 mt-4">
-        <div style="width: 16%">Customer Name</div>
-        <div style="width: 22%">Type</div>
-        <div style="width: 20%">Service</div>
-        <div style="width: 42%">id</div>
+        <div style="width: 25%">Customer Name</div>
+        <div style="width: 24%">Service</div>
+        <div style="width: 24.5%">Platform Number</div>
+        <div style="width: 25%">Contact Number</div>
       </div>
       <div v-for="item in this.customers" :key="item.id">
         <div class="d-flex mb-2">
-          <div style="width: 16%" class="content-list rounded-l-lg pl-10">
+          <div style="width: 50%" class="content-list rounded-l-lg pl-10">
             {{ item.name }}
           </div>
-          <div style="width: 22%" class="content-list">
-            {{ item.type }}
-          </div>
-          <div style="width: 20%" class="content-list">
+          <div style="width: 50%" class="content-list">
             {{ item.service }}
           </div>
-          <div style="width: 42%" class="content-list">
-            {{ item.id }}
+          <div style="width: 50%" class="content-list">
+            {{ item.platform.length }}
+          </div>
+          <div style="width: 50%" class="content-list">
+            {{ item.contacts.length }}
           </div>
           <div class="content-list rounded-r-lg hover">
             <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -102,57 +102,20 @@ export default {
             "telephone": 88887878787,
             "category": "service finance"
           }
-        ]
-      },
-      {
-        "type": "MonitoringServiceCustomer2",
-        "name": "test2",
-        "service": "dsi2",
-        "id": "1bc9-11d3-bfd0-18acd067699",
-        "contacts": [
+        ],
+        "platform": [
           {
-            "id": "fe50-a24f-d6cf-18acd06769a",
-            "name": "Gabriel",
-            "type": "MonitoringServiceContact",
-            "email": "Gabriel@email.com",
-            "telephone": 88887878787,
-            "category": "service finance"
-          }
-        ]
-      },
-      {
-        "type": "MonitoringServiceCustomer2",
-        "name": "test2",
-        "service": "dsi3",
-        "id": "1bc9-11d3-bfd0-18acd067696",
-        "contacts": [
+            name: "platform1",
+            type: "le type de platform"
+          },
           {
-            "id": "fe50-a24f-d6cf-18acd06769a",
-            "name": "Gabriel",
-            "type": "MonitoringServiceContact",
-            "email": "Gabriel@email.com",
-            "telephone": 88887878787,
-            "category": "service finance"
-          }
+            name: "platform1",
+            type: "le type de platform"
+          },
         ]
       },
-      {
-        "type": "MonitoringServiceCustomer2",
-        "name": "test2",
-        "service": "dsi4",
-        "id": "1bc9-11d3-bfd0-18acd067690",
-        "contacts": [
-          {
-            "id": "fe50-a24f-d6cf-18acd06769a",
-            "name": "Gabriel",
-            "type": "MonitoringServiceContact",
-            "email": "Gabriel@email.com",
-            "telephone": 88887878787,
-            "category": "service finance"
-          }
-        ]
-      },
-    ]
+    ],
+
   }),
   methods: {
     displayDetail(item) {

@@ -3,14 +3,14 @@
     <v-main>
       <BachupInformation style="max-height: 87vh;" title="ADD USER">
         <form class="formulaire" novalidate @submit.prevent="validateUser">
-          <p style="margin: 0;">Rentrez les informations de l’utilisateur. </p>
-          <InputUser title="SITE NAME" id="userName" v-model="formUser.name" />
+          <p style="margin: 0;">Enter User information </p>
+          <InputUser title="USER NAME" id="userName" v-model="formUser.name" />
           <span class="errors" v-if="$v.formUser.name.$error"> User Name is required</span>
-          <InputUser title="SITE TYPE" id="password" v-model="formUser.email" />
+          <InputUser title="USER TYPE" id="password" v-model="formUser.email" />
           <span class="errors" v-if="$v.formUser.email.$error"> User email is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.userType" />
-          <span class="errors" v-if="$v.formUser.userType.$error"> User userType is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formUser.password" />
+          <!-- <InputUser title="USER ADDRESS" id="Email" v-model="formUser.userType" />
+          <span class="errors" v-if="$v.formUser.userType.$error"> User userType is required</span> -->
+          <InputUser title="USER ADDRESS" id="Email" v-model="formUser.password" />
           <span class="errors" v-if="$v.formUser.password.$error"> User password is required</span>
 
           <div style="display: flex;" v-for="(platform, index) in formUser.platform" :key="index">
@@ -80,9 +80,9 @@ export default {
       email: {
         required,
       },
-      userType: {
-        required,
-      },
+      // userType: {
+      //   required,
+      // },
       password: {
         required,
       },

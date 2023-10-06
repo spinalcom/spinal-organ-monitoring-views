@@ -31,6 +31,56 @@
                     </div>
                 </div>
             </InformationBar>
+            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="SERVER DETAILS">
+                <Tabs :items="items">
+                    <v-tab-item>
+                        <div class="d-flex mb-2 mt-4 ml-1">
+                            <div style="width: 49%">Platform Name</div>
+                            <div style="width: 50%">Type</div>
+                            <!-- <div style="width: 22%">status</div> -->
+                        </div>
+
+                        <div v-for="item in this.platform" :key="item.id">
+                            <div class="d-flex mb-2 pl-1 pr-1">
+                                <div style="width: 100%" class="content-list rounded-l-lg pl-10">
+                                    {{ item.name }}
+                                </div>
+                                <div style="width: 100%" class="content-list">
+                                    {{ item.type }}
+                                </div>
+                                <div class="content-list rounded-r-lg hover">
+                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                        <v-icon>mdi-arrow-right</v-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </v-tab-item>
+                    <v-tab-item>
+                        <div class="d-flex mb-2 mt-4 ml-1">
+                            <div style="width: 49%">Organ Name</div>
+                            <div style="width: 50%">Type</div>
+                            <!-- <div style="width: 22%">status</div> -->
+                        </div>
+
+                        <div v-for="item in this.organ" :key="item.id">
+                            <div class="d-flex mb-2 pl-1 pr-1">
+                                <div style="width: 100%" class="content-list rounded-l-lg pl-10">
+                                    {{ item.name }}
+                                </div>
+                                <div style="width: 100%" class="content-list">
+                                    {{ item.type }}
+                                </div>
+                                <div class="content-list rounded-r-lg hover">
+                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                        <v-icon>mdi-arrow-right</v-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </v-tab-item>
+                </Tabs>
+            </BackupInformation>
 
             <div v-if="show" class="popup_platform">
                 <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
@@ -98,7 +148,18 @@ export default {
                 sshLogin : null ,
                 sshPassword : null 
             },
-
+            platform: [
+                {
+                    name: "platform name 1",
+                    type: "type platform name 1",
+                }
+            ],
+            organ: [
+                {
+                    name: "organ name 1",
+                    type: "type organ name 1",
+                }
+            ],
             server:
             {
                 "id": "id du server",
@@ -113,6 +174,10 @@ export default {
                 "serverType": "servertype",
             },
             show: false,
+            items: [
+                'PLATFORM',
+                'ORGAN'
+            ],
         };
 
     },

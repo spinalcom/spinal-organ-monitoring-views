@@ -17,7 +17,7 @@
         </div>
         <BachupInformation title="LISTE DES PLATEFORMES">
             <div class="d-flex mb-2 mt-4">
-                <div style="width: 20%">Platform Id</div>
+                <!-- <div style="width: 20%">Platform Id</div> -->
                 <div style="width: 20%">Platform Name</div>
                 <div style="width: 20%">Platform Type</div>
                 <div style="width: 20%">url</div>
@@ -28,9 +28,9 @@
             <div v-for="item in this.platform" :key="item.id">
 
                 <div class="d-flex mb-2">
-                    <div style="width: 20%" class="content-list rounded-l-lg pl-10">
+                    <!-- <div style="width: 20%" class="content-list rounded-l-lg pl-10">
                         {{ item.id }}
-                    </div>
+                    </div> -->
                     <div style="width: 20%" class="content-list">
                         {{ item.name }}
                     </div>

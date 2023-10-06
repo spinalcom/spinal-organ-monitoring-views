@@ -11,43 +11,28 @@
                         <span class=" bar-information">{{ this.customers.name }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">TYPE</span>
-                        <span class="bar-information">{{ this.customers.type }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">SERVICE</span>
                         <span class="bar-information">{{ this.customers.service }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">ID</span>
-                        <span class="bar-information">{{ this.customers.id }}</span>
                     </div>
                 </div>
             </InformationBar>
 
 
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="CONTACT DETAILS">
+            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="CUSTOMER DETAILS">
                 <Tabs :items="items">
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-2">
-                            <div style="width: 100% ; margin-left: 5px;">contact Id</div>
-                            <div style="width: 100%;margin-left: 10px;">contact Name</div>
-                            <div style="width: 100%">Type</div>
-                            <div style="width: 100%">Email</div>
-                            <div style="width: 100%">Téléphone</div>
-                            <div style="width: 100%">Category</div>
+                            <div style="width: 23%;margin-left: 5px;">contact Name</div>
+                            <div style="width: 24%">Email</div>
+                            <div style="width: 24%">Téléphone</div>
+                            <div style="width: 24%">Category</div>
+                            <!-- <div style="width: 100%">ADD/DELETE</div> -->
                         </div>
 
                         <div v-for="item in this.customers.contacts" :key="item.id">
                             <div class="d-flex mb-2">
-                                <div style="width: 100%" class="content-list rounded-l-lg pl-10">
-                                    {{ item.id }}
-                                </div>
                                 <div style="width: 100%" class="content-list">
                                     {{ item.name }}
-                                </div>
-                                <div style="width: 100%" class="content-list">
-                                    {{ item.type }}
                                 </div>
                                 <div style="width: 100%" class="content-list">
                                     {{ item.email }}
@@ -58,36 +43,34 @@
                                 <div style="width: 100%" class="content-list">
                                     {{ item.category }}
                                 </div>
+                                <div @click="deleteContact(item.id)" style="width: 8% ;cursor: pointer;"
+                                    class="content-list">
+                                    <v-icon class="mx-1 mr-2" color="red darken-2" dark>mdi-delete</v-icon>
+                                </div>
+                                <div @click="editContact(item.id)" style="width: 8%;cursor: pointer;"
+                                    class="content-list mr-2">
+                                    <v-icon class="mx-1 mr-2" color="green darken-2" dark>mdi-file-edit</v-icon>
+                                </div>
                             </div>
                         </div>
                     </v-tab-item>
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-1">
-                            <div style="width: 20%">Site Id</div>
-                            <div style="width: 19%">Site Name</div>
-                            <!-- <div style="width: 20%">Type</div> -->
-                            <div style="width: 20%">Site Type</div>
-                            <div style="width: 19%">Address</div>
-                            <div style="width: 20%">Slas number</div>
-                            <!-- <div style="width: 22%">status</div> -->
+                            <div style="width: 32.5%">Site Name</div>
+                            <div style="width: 32.5%">Address</div>
+                            <div style="width: 33%">Slas number</div>
                         </div>
 
                         <div v-for="item in this.site" :key="item.id">
                             <div class="d-flex mb-2">
-                                <div style="width: 20%" class="content-list rounded-l-lg pl-10">
-                                    {{ item.id }}
-                                </div>
-                                <div style="width: 20%" class="content-list">
+                                <div style="width: 100%" class="content-list">
                                     {{ item.name }}
                                 </div>
-                                <div style="width: 20%" class="content-list">
-                                    {{ item.type }}
-                                </div>
-                                <div style="width: 20%" class="content-list">
+                                <div style="width: 100%" class="content-list">
                                     {{ item.address }}
                                 </div>
 
-                                <div style="width: 20%" class="content-list">
+                                <div style="width: 100%" class="content-list">
                                     {{ item.slas.length }}
                                 </div>
                                 <div class="content-list rounded-r-lg hover">
@@ -100,10 +83,8 @@
                     </v-tab-item>
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-1">
-                            <div style="width: 100%">Site Id</div>
-                            <div style="width: 100%">Site Name</div>
-                            <!-- <div style="width: 20%">Type</div> -->
-
+                            <div style="width: 49%">Platform Name</div>
+                            <div style="width: 50%">Type</div>
                             <!-- <div style="width: 22%">status</div> -->
                         </div>
 
@@ -134,7 +115,7 @@
                     <p class="mb-6">EDIT CUSTOMER</p>
                     <InputUser v-model="formCustomer.name" title="CUSTOMER NAME" id="userName" />
                     <span class="errors" v-if="$v.formCustomer.name.$error"> Customer Name is required</span>
-                    <InputUser  v-model="formCustomer.service" title="CUSTOMER SERVICE" id="service" />
+                    <InputUser v-model="formCustomer.service" title="CUSTOMER SERVICE" id="service" />
                     <span class="errors" v-if="$v.formCustomer.service.$error"> Customer Server is required</span>
                     <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
@@ -259,8 +240,13 @@ export default {
         },
     },
     methods: {
-
-        editUserPlatform(){
+        deleteContact(id) {
+            console.log('delete le contact ', id);
+        },
+        editContact(id) {
+            console.log('edit le', id);
+        },
+        editUserPlatform() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
                 console.log('valid form');
