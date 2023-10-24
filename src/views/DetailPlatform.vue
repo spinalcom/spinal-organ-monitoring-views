@@ -2,8 +2,8 @@
     <v-app>
         <v-main>
             <InformationBar :btn1Title="'ADD ORGAN'" :btn2Title="'EDIT PLATFORM '" :btn3Title="'DELETE PLATFORM'"
-                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
-                title="PLATFORM INFORMATION" :title2="this.platform.name" :icon="require('../assets/image/USE_icon.svg')">
+                v-on:btn1="showOrgan = true" v-on:btn2="show = true" v-on:btn3="deletebtn()" title="PLATFORM INFORMATION"
+                :title2="this.platform.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ID</span>
@@ -33,13 +33,12 @@
             </InformationBar>
 
 
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="PLATFORM DETAILS">
+            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="ORGAN LIST">
                 <div class="d-flex mb-2 mt-4">
-                    <div style="width: 100%;margin-left: 10px;">Platform Name</div>
-                    <div style="width: 100%">Type</div>
+                    <div style="width: 48%;margin-left: 10px;">Organs Name</div>
+                    <div style="width: 50%">Type</div>
                 </div>
                 <div v-for="item in this.platform.organList" :key="item.id">
-
                     <div class="d-flex mb-2">
                         <div style="width: 100%" class="content-list">
                             {{ item.name }}
@@ -48,7 +47,7 @@
                             {{ item.type }}
                         </div>
                         <div class="content-list rounded-r-lg hover">
-                            <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                            <button class="pr-2" style="height: 100%" @click="displayDetail(item.id)">
                                 <v-icon>mdi-arrow-right</v-icon>
                             </button>
                         </div>
@@ -73,7 +72,8 @@
                     <InputUser title="  PLATFORM loginAdmin" id="userName" v-model="formPlatform.loginAdmin" />
                     <span class="errors" v-if="$v.formPlatform.loginAdmin.$error"> Platform login admin is required</span>
                     <InputUser title="  PLATFORM passwordAdmin" id="userName" v-model="formPlatform.passwordAdmin" />
-                    <span class="errors" v-if="$v.formPlatform.passwordAdmin.$error"> Platform password admin is required</span>
+                    <span class="errors" v-if="$v.formPlatform.passwordAdmin.$error"> Platform password admin is
+                        required</span>
                     <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
                     </div>
@@ -83,6 +83,24 @@
                 </v-card>
             </div>
         </v-main>
+
+        <!-- MODALE ADD Organ -->
+        <div v-if="showOrgan" class="popup_platform">
+            <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                <div @click="showOrgan = false" class="popup-closebtn">
+                    <span>X</span>
+                </div>
+                <p class="mb-6">ADD ORGAN</p>
+                <InputUser v-model="formOrgan.name" title="PLATFORM NAME" id="userName" />
+                <span class="errors" v-if="$v.formOrgan.name.$error"> Organ Name is required</span>
+                <div @click="addOrgan()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <span>ADD</span>
+                </div>
+                <div @click="showOrgan = false" class="mt-4 ml-1 popup-btn-fermer">
+                    <span>CLOSE</span>
+                </div>
+            </v-card>
+        </div>
     </v-app>
 </template>
   
@@ -115,11 +133,15 @@ export default {
         return {
 
             formPlatform: {
-                name : null,
-                type : null,
-                ipAdress : null,
-                loginAdmin : null,
-                passwordAdmin : null,
+                name: null,
+                type: null,
+                ipAdress: null,
+                loginAdmin: null,
+                passwordAdmin: null,
+            },
+
+            formOrgan: {
+                name: null,
             },
 
             platform:
@@ -144,6 +166,7 @@ export default {
             },
 
             show: false,
+            showOrgan: false,
         };
 
     },
@@ -165,22 +188,37 @@ export default {
                 required,
             },
         },
+        formOrgan: {
+            name: {
+                required
+            }
+        },
 
     },
     methods: {
+        //CHANGE ROUTE
+        displayDetail(id) {
+            this.$router.push({ name: "DetailOrgan", query: { id: id } });
+        },
+
+        // VALIDE ELEMENT
         editUserPlatform() {
-            this.$v.$touch();
-            if (!this.$v.$invalid) {
+            this.$v.formPlatform.$touch();
+            if (!this.$v.formPlatform.$invalid) {
                 console.log('valid form');
 
             }
-        }
-        ,
-        deletebtn() {
+        },
+        addOrgan() {
+            this.$v.formOrgan.$touch();
+            if (!this.$v.formOrgan.$invalid) {
+                console.log('valid form');
+
+            }
         },
 
-        displayEditUser() {
-            this.show = true
+        //DELETE ELEMENT
+        deletebtn() {
         },
     },
     computed: {
@@ -197,14 +235,15 @@ export default {
 }
 
 .errors {
-  margin: 0;
-  /* position: absolute; */
-  transform: translate(0, -10%);
-  font-size: 10px;
-  color: red;
-  padding-left: 2px;
-  letter-spacing: 1.1px;
+    margin: 0;
+    /* position: absolute; */
+    transform: translate(0, -10%);
+    font-size: 10px;
+    color: red;
+    padding-left: 2px;
+    letter-spacing: 1.1px;
 }
+
 .app {
     font: normal normal normal 10px/12px Charlevoix Pro;
     letter-spacing: 1px;

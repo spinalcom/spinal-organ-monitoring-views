@@ -28,20 +28,17 @@
                     <div style="width: 33%" class="content-list">
                         {{ item.name }}
                     </div>
-
                     <div style="width: 33%" class="content-list">
                         {{ item.address }}
                     </div>
-
                     <div style="width: 33%" class="content-list">
                         {{ item.slas.length }}
                     </div>
-
                     <div class="content-list rounded-r-lg hover">
                         <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
                             <v-icon>mdi-arrow-right</v-icon>
                         </button>
-                    </div>
+                    </div>  
                 </div>
             </div>
         </BachupInformation>

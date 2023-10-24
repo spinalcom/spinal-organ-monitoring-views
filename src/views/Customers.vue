@@ -24,7 +24,6 @@ with this file. If not, see
 
 <template>
   <v-app class="app">
-
     <div class="d-flex justify-end" style="width: 100%; min-width: 980px">
       <v-card class="
           d-flex
@@ -84,7 +83,7 @@ export default {
   components: {
     BlueButton,
     BackupInformation,
-    StateButton
+    StateButton,
   },
   data: () => ({
     customers: [

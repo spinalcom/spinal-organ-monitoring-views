@@ -2,7 +2,7 @@
     <v-app>
         <v-main>
 
-            <InformationBar :btn1Title="'ADD PLATFORM'" :btn2Title="'EDIT USER'" :btn3Title="'DELETE USER'"
+            <InformationBar :btn1Title="''" :btn2Title="''" :btn3Title="'DELETE USER'"
                 v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="USER INFORMATION"
                 :title2="this.user.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
@@ -26,39 +26,9 @@
             </InformationBar>
 
 
-           
 
-            <div v-if="show" class="popup_platform">
-                <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
-                    <div @click="show = false" class="popup-closebtn">
-                        <span>X</span>
-                    </div>
-                    <p class="mb-6">EDIT USER</p>
-                    <InputUser title="USER NAME" id="userName" />
-                    <InputUser title="USER EMAIL" id="userName" />
-                    <InputUser title="USER OLD PASSWORD" id="userName" />
-                    <InputUser title="USER NEW PASSWORD" id="userName" />
-                    <InputUser title="USER TYPE" id="userName" />
 
-                    <div
-                        style="background-color: rgb(236, 236, 236); padding-left: 15px; padding-right: 15px; padding-bottom: 20px; margin-top: 10px; border-radius: 8px;">
-                        <div style="display: flex;" v-for="(user, index) in user.platform" :key="index">
-                            <SelectUser :tab="platform" :value="user.name" title="PLATFORM"></SelectUser>
-                            <button @click="deleteOrgan(index)" type="button" class="red-cross">X</button>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-end">
-                        <button @click="addOrgan" type="button" class="btn-ajout-platform">+ ADD PLATFORM</button>
-                    </div>
-                    <!-- <InputUser title="  CUSTOMER SERVICE" id="userName" /> -->
-                    <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
-                        <span>EDIT</span>
-                    </div>
-                    <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
-                        <span>CLOSE</span>
-                    </div>
-                </v-card>
-            </div>
+            
         </v-main>
     </v-app>
 </template>
@@ -123,13 +93,8 @@ export default {
     methods: {
         deletebtn() {
         },
-        displayEditUser() {
-            this.show = true;
-        },
-
     },
     computed: {
-
     },
 
     created() {
@@ -142,15 +107,17 @@ export default {
 *:focus {
     outline: none;
 }
+
 .errors {
-  margin: 0;
-  /* position: absolute; */
-  transform: translate(0, -10%);
-  font-size: 10px;
-  color: red;
-  padding-left: 2px;
-  letter-spacing: 1.1px;
+    margin: 0;
+    /* position: absolute; */
+    transform: translate(0, -10%);
+    font-size: 10px;
+    color: red;
+    padding-left: 2px;
+    letter-spacing: 1.1px;
 }
+
 .app {
     font: normal normal normal 10px/12px Charlevoix Pro;
     letter-spacing: 1px;

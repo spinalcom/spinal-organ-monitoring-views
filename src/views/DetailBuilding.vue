@@ -2,7 +2,7 @@
     <v-app>
         <v-main>
             <InformationBar :btn1Title="'ADD PLATFORM'" :btn2Title="'EDIT BUILDING'" :btn3Title="'DELETE BUILDING'"
-                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
+                v-on:btn1="showplatformModale()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
                 title="BUILDING INFORMATION" :title2="this.building.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
@@ -30,7 +30,6 @@
                     <div style="width: 100%">Category</div>
                 </div>
                 <div v-for="item in this.platform" :key="item.id">
-
                     <div class="d-flex mb-2">
                         <div style="width: 100%" class="content-list rounded-l-lg pl-10">
                             {{ item.id }}
@@ -59,7 +58,7 @@
                 </div>
             </BackupInformation>
 
-
+            <!-- EDIT BUILDING -->
             <div v-if="show" class="popup_platform">
                 <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
                     <div @click="show = false" class="popup-closebtn">
@@ -70,7 +69,7 @@
                     <span class="errors" v-if="$v.formbuilding.name.$error"> building Name is required</span>
                     <InputUser v-model="formbuilding.address" title="BUILDING ADDRESS" id="address" />
                     <span class="errors" v-if="$v.formbuilding.address.$error"> building Address is required</span>
-                    <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <div @click="editUserBuilding()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
                     </div>
                     <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
@@ -78,6 +77,26 @@
                     </div>
                 </v-card>
             </div>
+
+
+            <!-- MODALE ADD PLATFORM -->
+            <div v-if="showplatform" class="popup_platform">
+                <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                    <div @click="showplatform = false" class="popup-closebtn">
+                        <span>X</span>
+                    </div>
+                    <p class="mb-6">ADD PLATFORM</p>
+                    <InputUser v-model="formPlatform.name" title="PLATFORM NAME" id="userName" />
+                    <span class="errors" v-if="$v.formPlatform.name.$error"> Platform Name is required</span>
+                    <div @click="addPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                        <span>ADD</span>
+                    </div>
+                    <div @click="showplatform = false" class="mt-4 ml-1 popup-btn-fermer">
+                        <span>CLOSE</span>
+                    </div>
+                </v-card>
+            </div>
+
         </v-main>
     </v-app>
 </template>
@@ -109,7 +128,9 @@ export default {
     },
     data() {
         return {
-
+            formPlatform: {
+                name: null,
+            },
             formbuilding: {
                 name: null,
                 address: null
@@ -133,6 +154,7 @@ export default {
                 },
             ],
             show: false,
+            showplatform: false
         };
 
     },
@@ -145,23 +167,45 @@ export default {
                 required,
             },
         },
+        formPlatform: {
+            name: {
+                required
+            },
+        },
     },
     methods: {
-        editUserPlatform() {
-            this.$v.$touch();
-            if (!this.$v.$invalid) {
+        //change route
+        displayDetail(id) {
+            this.$router.push({ name: "DetailPlatform", query: { id: id } });
+        },
+
+        //showmodal
+        showplatformModale() {
+            this.showplatform = true;
+        },
+
+        displayEditUser() {
+            this.show = true;
+        },
+
+        //valideForm
+        editUserBuilding() {
+            this.$v.formbuilding.$touch();
+            if (!this.$v.formbuilding.$invalid) {
                 console.log('valid form');
 
             }
         },
-        showplatform() {
-            this.show = true;
+        addPlatform() {
+            this.$v.formPlatform.$touch();
+            if (!this.$v.formPlatform.$invalid) {
+                console.log('valid form');
+
+            }
         },
 
+        //delete element
         deletebtn() {
-        },
-        displayEditUser() {
-            this.show = true;
         },
     },
     computed: {
@@ -210,13 +254,13 @@ export default {
 }
 
 .errors {
-  margin: 0;
-  /* position: absolute; */
-  transform: translate(0, -10%);
-  font-size: 10px;
-  color: red;
-  padding-left: 2px;
-  letter-spacing: 1.1px;
+    margin: 0;
+    /* position: absolute; */
+    transform: translate(0, -10%);
+    font-size: 10px;
+    color: red;
+    padding-left: 2px;
+    letter-spacing: 1.1px;
 }
 
 .v-data-table>>>td {

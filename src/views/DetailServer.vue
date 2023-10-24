@@ -1,8 +1,8 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar :btn1Title="'ADD ?'" :btn2Title="'EDIT SERVER'" :btn3Title="'DELETE SERVER'"
-                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="SERVER INFORMATION"
+            <InformationBar :btn1Title="'ADD'" :btn2Title="'EDIT SERVER'" :btn3Title="'DELETE SERVER'"
+                v-on:btn1="showAdd = !showAdd" v-on:btn2="show = true;" v-on:btn3="deletebtn()" title="SERVER INFORMATION"
                 :title2="this.server.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
@@ -30,14 +30,20 @@
                         <span class="bar-information">{{ this.server.sshPassword }}</span>
                     </div>
                 </div>
+                <div v-if="showAdd" class="swing-in-right-fwd"
+                    style="padding: 5px;position: absolute;right: 0;width: 180px;background-color: rgb(245, 245, 245);height: 100%;padding-bottom: 50px;top: 0;border-radius: 5px ;box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
+                    <div @click="showOrgan = true" class="addbtn">ADD ORGAN</div>
+                    <div @click="showplatform = true" class="addbtn">ADD PLATFORM</div>
+                </div>
             </InformationBar>
             <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="SERVER DETAILS">
                 <Tabs :items="items">
+
+                    <!-- TAB PLATFORM -->
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-1">
                             <div style="width: 49%">Platform Name</div>
                             <div style="width: 50%">Type</div>
-                            <!-- <div style="width: 22%">status</div> -->
                         </div>
 
                         <div v-for="item in this.platform" :key="item.id">
@@ -56,11 +62,12 @@
                             </div>
                         </div>
                     </v-tab-item>
+
+                    <!-- TAB ORGANS -->
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-1">
                             <div style="width: 49%">Organ Name</div>
                             <div style="width: 50%">Type</div>
-                            <!-- <div style="width: 22%">status</div> -->
                         </div>
 
                         <div v-for="item in this.organ" :key="item.id">
@@ -72,7 +79,7 @@
                                     {{ item.type }}
                                 </div>
                                 <div class="content-list rounded-r-lg hover">
-                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                    <button class="pr-2" style="height: 100%" @click="displayOrgan(item)">
                                         <v-icon>mdi-arrow-right</v-icon>
                                     </button>
                                 </div>
@@ -110,6 +117,44 @@
                 </v-card>
             </div>
         </v-main>
+
+        <!-- MODALE ADD Organ -->
+        <div v-if="showOrgan" class="popup_platform">
+            <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                <div @click="showOrgan = false" class="popup-closebtn">
+                    <span>X</span>
+                </div>
+                <p class="mb-6">ADD ORGAN</p>
+                <InputUser v-model="formOrgan.name" title="PLATFORM NAME" id="userName" />
+                <span class="errors" v-if="$v.formOrgan.name.$error"> Organ Name is required</span>
+                <div @click="addOrgan()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <span>ADD</span>
+                </div>
+                <div @click="showOrgan = false" class="mt-4 ml-1 popup-btn-fermer">
+                    <span>CLOSE</span>
+                </div>
+            </v-card>
+        </div>
+
+        <!-- MODALE ADD PLATFORM -->
+        <div v-if="showplatform" class="popup_platform">
+            <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                <div @click="showplatform = false" class="popup-closebtn">
+                    <span>X</span>
+                </div>
+                <p class="mb-6">ADD PLATFORM</p>
+                <InputUser v-model="formPlatform.name" title="PLATFORM NAME" id="userName" />
+                <span class="errors" v-if="$v.formPlatform.name.$error"> Customer Name is required</span>
+                <div @click="addPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <span>ADD</span>
+                </div>
+                <div @click="showplatform = false" class="mt-4 ml-1 popup-btn-fermer">
+                    <span>CLOSE</span>
+                </div>
+            </v-card>
+        </div>
+
+
     </v-app>
 </template>
   
@@ -140,13 +185,19 @@ export default {
     },
     data() {
         return {
-            formServer:{
-                type : null,
-                name : null,
-                ipAdress : null,
-                macAdress : null,
-                sshLogin : null ,
-                sshPassword : null 
+            formOrgan: {
+                name: null,
+            },
+            formPlatform: {
+                name: null,
+            },
+            formServer: {
+                type: null,
+                name: null,
+                ipAdress: null,
+                macAdress: null,
+                sshLogin: null,
+                sshPassword: null
             },
             platform: [
                 {
@@ -175,9 +226,12 @@ export default {
             },
             show: false,
             items: [
-                'PLATFORM',
-                'ORGAN'
+                'PLATFORMS',
+                'ORGANS'
             ],
+            showAdd: false,
+            showOrgan: false,
+            showplatform: false
         };
 
     },
@@ -202,22 +256,57 @@ export default {
                 required,
             },
         },
+        formOrgan: {
+            name: {
+                required,
+            },
+        },
+        formPlatform: {
+            name: {
+                required,
+            },
+        },
 
     },
     methods: {
+
+        //CHANGE ROUTE
+        displayDetail(id) {
+            this.$router.push({ name: "DetailPlatform", query: { id: id } });
+        },
+        displayOrgan(id) {
+            this.$router.push({ name: "DetailOrgan", query: { id: id } });
+        },
+
+
+        // VALIDE ELEMENT
         editUserPlatform() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
                 console.log('valid form');
             }
         },
-        deletebtn() {
+        addOrgan() {
+            this.$v.formOrgan.$touch();
+            if (!this.$v.formOrgan.$invalid) {
+                console.log('valid form');
+
+            }
         },
-        displayEditUser() {
-            this.show = true;
+        addPlatform() {
+            this.$v.formPlatform.$touch();
+            if (!this.$v.formPlatform.$invalid) {
+                console.log('valid form');
+            }
+        },
+
+
+        //DELETE ELEMENT
+        deletebtn() {
         },
 
     },
+
     computed: {
     },
 
@@ -449,5 +538,61 @@ export default {
     height: 100vh;
     z-index: 99;
     backdrop-filter: blur(5px);
+}
+
+.swing-in-right-fwd {
+    -webkit-animation: swing-in-right-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+    animation: swing-in-right-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+}
+
+@-webkit-keyframes swing-in-right-fwd {
+    0% {
+        -webkit-transform: rotateY(-100deg);
+        transform: rotateY(-100deg);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: rotateY(0);
+        transform: rotateY(0);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 1;
+    }
+}
+
+@keyframes swing-in-right-fwd {
+    0% {
+        -webkit-transform: rotateY(-100deg);
+        transform: rotateY(-100deg);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: rotateY(0);
+        transform: rotateY(0);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 1;
+    }
+}
+
+.addbtn {
+    width: 100;
+    padding: 5px;
+    margin: 9px;
+    background-color: #14202C;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 11px;
+    height: 40px;
 }
 </style>

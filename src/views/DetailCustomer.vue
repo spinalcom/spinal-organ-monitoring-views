@@ -2,8 +2,8 @@
     <v-app>
         <v-main>
 
-            <InformationBar :btn1Title="'ADD CONTACT'" :btn2Title="'EDIT CUSTOMER'" :btn3Title="'DELETE CUSTOMER'"
-                v-on:btn1="showplatform()" v-on:btn2="displayEditCustomer()" v-on:btn3="deletebtn()"
+            <InformationBar :btn1Title="'ADD'" :btn2Title="'EDIT CUSTOMER'" :btn3Title="'DELETE CUSTOMER'"
+                v-on:btn1="showAdd = !showAdd" v-on:btn2="displayEditCustomer()" v-on:btn3="deleteCustomer()"
                 title="CUSTOMER INFORMATION" :title2="this.customers.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
@@ -15,11 +15,19 @@
                         <span class="bar-information">{{ this.customers.service }}</span>
                     </div>
                 </div>
+                <div v-if="showAdd" class="swing-in-right-fwd"
+                    style="padding: 5px;position: absolute;right: 0;width: 180px;background-color: rgb(245, 245, 245);height: 100%;padding-bottom: 50px;top: 0;border-radius: 5px ;box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
+                    <div @click="showcontact = true" class="addbtn">ADD CONTACT</div>
+                    <div @click="showsite = true" class="addbtn">ADD SITE</div>
+                    <div @click="showplatform = true" class="addbtn">ADD PLATFORM</div>
+                    <!-- <div class="addbtn">ADD CONTACT</div> -->
+                </div>
             </InformationBar>
 
 
             <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="CUSTOMER DETAILS">
                 <Tabs :items="items">
+                    <!-- TAB contact -->
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-2">
                             <div style="width: 23%;margin-left: 5px;">contact Name</div>
@@ -47,13 +55,15 @@
                                     class="content-list">
                                     <v-icon class="mx-1 mr-2" color="red darken-2" dark>mdi-delete</v-icon>
                                 </div>
-                                <div @click="editContact(item.id)" style="width: 8%;cursor: pointer;"
+                                <div @click="editContact(item)" style="width: 8%;cursor: pointer;"
                                     class="content-list mr-2">
                                     <v-icon class="mx-1 mr-2" color="green darken-2" dark>mdi-file-edit</v-icon>
                                 </div>
                             </div>
                         </div>
                     </v-tab-item>
+
+                    <!-- TAB SITE -->
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-1">
                             <div style="width: 32.5%">Site Name</div>
@@ -81,6 +91,8 @@
                             </div>
                         </div>
                     </v-tab-item>
+
+                    <!-- TAB PLATFORM -->
                     <v-tab-item>
                         <div class="d-flex mb-2 mt-4 ml-1">
                             <div style="width: 49%">Platform Name</div>
@@ -97,7 +109,7 @@
                                     {{ item.type }}
                                 </div>
                                 <div class="content-list rounded-r-lg hover">
-                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
+                                    <button class="pr-2" style="height: 100%" @click="displayDetailPlatform(item)">
                                         <v-icon>mdi-arrow-right</v-icon>
                                     </button>
                                 </div>
@@ -107,6 +119,8 @@
                 </Tabs>
             </BackupInformation>
 
+
+            <!-- MODALE EDIT CUSTOMER-->
             <div v-if="show" class="popup_platform">
                 <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
                     <div @click="show = false" class="popup-closebtn">
@@ -117,10 +131,99 @@
                     <span class="errors" v-if="$v.formCustomer.name.$error"> Customer Name is required</span>
                     <InputUser v-model="formCustomer.service" title="CUSTOMER SERVICE" id="service" />
                     <span class="errors" v-if="$v.formCustomer.service.$error"> Customer Server is required</span>
-                    <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <div @click="editCustomer()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
                     </div>
                     <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
+                        <span>CLOSE</span>
+                    </div>
+                </v-card>
+            </div>
+
+
+
+
+            <!-- MODALE ADD CONTACT -->
+            <div v-if="showcontact" class="popup_platform">
+                <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                    <div @click="showcontact = false" class="popup-closebtn">
+                        <span>X</span>
+                    </div>
+                    <p class="mb-6">ADD CONTACT</p>
+                    <InputUser v-model="formContact.name" title="CONTACT NAME" id="userName" />
+                    <span class="errors" v-if="$v.formContact.name.$error"> Contact Name is required</span>
+                    <InputUser v-model="formContact.email" title="CONTACT MAIL" id="userName" />
+                    <span class="errors" v-if="$v.formContact.email.$error"> Contact Email is required</span>
+                    <InputUser v-model="formContact.telephone" title="CONTACT PHONE NUMBER" id="service" />
+                    <span class="errors" v-if="$v.formContact.telephone.$error"> Contact phone number is required</span>
+                    <InputUser v-model="formContact.category" title="CONTACT CATEGORY" id="service" />
+                    <span class="errors" v-if="$v.formContact.category.$error"> Contact Category is required</span>
+                    <div @click="addContact()" class="mt-4 ml-1 popup-btn-ajouter">
+                        <span>ADD</span>
+                    </div>
+                    <div @click="showcontact = false" class="mt-4 ml-1 popup-btn-fermer">
+                        <span>CLOSE</span>
+                    </div>
+                </v-card>
+            </div>
+
+
+            <!-- MODALE EDIT CONTACT -->
+            <div v-if="showEditContact" class="popup_platform">
+                <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                    <div @click="showEditContact = false" class="popup-closebtn">
+                        <span>X</span>
+                    </div>
+                    <p class="mb-6">EDIT CONTACT</p>
+                    <InputUser v-model="formEditContact.name" title="CONTACT NAME" id="userName" />
+                    <span class="errors" v-if="$v.formEditContact.name.$error"> Contact Name is required</span>
+                    <InputUser v-model="formEditContact.email" title="CONTACT MAIL" id="userName" />
+                    <span class="errors" v-if="$v.formEditContact.email.$error"> Contact Email is required</span>
+                    <InputUser v-model="formEditContact.telephone" title="CONTACT PHONE NUMBER" id="service" />
+                    <span class="errors" v-if="$v.formEditContact.telephone.$error"> Contact phone number is required</span>
+                    <InputUser v-model="formEditContact.category" title="CONTACT CATEGORY" id="service" />
+                    <span class="errors" v-if="$v.formEditContact.category.$error"> Contact Category is required</span>
+                    <div @click="editContactvalide()" class="mt-4 ml-1 popup-btn-ajouter">
+                        <span>EDIT</span>
+                    </div>
+                    <div @click="showEditContact = false" class="mt-4 ml-1 popup-btn-fermer">
+                        <span>CLOSE</span>
+                    </div>
+                </v-card>
+            </div>
+
+
+            <!-- MODALE ADD SITE -->
+            <div v-if="showsite" class="popup_platform">
+                <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                    <div @click="showsite = false" class="popup-closebtn">
+                        <span>X</span>
+                    </div>
+                    <p class="mb-6">ADD SITE</p>
+                    <InputUser v-model="formSite.name" title="SITE NAME" id="userName" />
+                    <span class="errors" v-if="$v.formSite.name.$error"> Customer Name is required</span>
+                    <div @click="addSite()" class="mt-4 ml-1 popup-btn-ajouter">
+                        <span>ADD</span>
+                    </div>
+                    <div @click="showsite = false" class="mt-4 ml-1 popup-btn-fermer">
+                        <span>CLOSE</span>
+                    </div>
+                </v-card>
+            </div>
+
+            <!-- MODALE ADD PLATFORM -->
+            <div v-if="showplatform" class="popup_platform">
+                <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                    <div @click="showplatform = false" class="popup-closebtn">
+                        <span>X</span>
+                    </div>
+                    <p class="mb-6">ADD PLATFORM</p>
+                    <InputUser v-model="formPlatform.name" title="PLATFORM NAME" id="userName" />
+                    <span class="errors" v-if="$v.formPlatform.name.$error"> Customer Name is required</span>
+                    <div @click="addPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                        <span>ADD</span>
+                    </div>
+                    <div @click="showplatform = false" class="mt-4 ml-1 popup-btn-fermer">
                         <span>CLOSE</span>
                     </div>
                 </v-card>
@@ -216,17 +319,39 @@ export default {
                     }
                 ],
             },
+            formPlatform: {
+                name: null,
+            },
+            formSite: {
+                name: null,
+            },
             formCustomer: {
                 name: null,
                 service: null,
             },
-
+            formContact: {
+                name: null,
+                email: null,
+                telephone: null,
+                category: null,
+            },
+            formEditContact: {
+                name: null,
+                email: null,
+                telephone: null,
+                category: null,
+            },
+            showcontact: false,
             show: false,
             items: [
                 'CONTACT',
                 'SITE',
                 'PLATFORM',
             ],
+            showAdd: false,
+            showsite: false,
+            showplatform: false,
+            showEditContact: false
         };
     },
     validations: {
@@ -238,34 +363,108 @@ export default {
                 required,
             },
         },
+        formContact: {
+            name: {
+                required,
+            },
+            email: {
+                required,
+            },
+            telephone: {
+                required,
+            },
+            category: {
+                required,
+            },
+        },
+        formEditContact: {
+            name: {
+                required,
+            },
+            email: {
+                required,
+            },
+            telephone: {
+                required,
+            },
+            category: {
+                required,
+            },
+        },
+        formSite: {
+            name: {
+                required,
+            },
+        },
+        formPlatform: {
+            name: {
+                required,
+            },
+        }
     },
     methods: {
-        deleteContact(id) {
-            console.log('delete le contact ', id);
-        },
-        editContact(id) {
-            console.log('edit le', id);
-        },
-        editUserPlatform() {
-            this.$v.$touch();
-            if (!this.$v.$invalid) {
-                console.log('valid form');
 
+        //CHANGE PAGE
+        displayDetail(id) {
+            this.$router.push({ name: "DetailSite", query: { id: id } });
+        },
+        displayDetailPlatform(id) {
+            this.$router.push({ name: "DetailPlatform", query: { id: id } });
+        },
+
+        //SHOW MODALE
+        editContact(item) {
+            this.showEditContact = true;
+            this.formEditContact = item
+        },
+        displayEditCustomer() {
+            this.show = true;
+            this.formCustomer.name = this.customers.name
+            this.formCustomer.service = this.customers.service
+        },
+
+        //EDIT ELEMENT
+        editContactvalide() {
+            this.$v.formEditContact.$touch();
+            if (!this.$v.formEditContact.$invalid) {
+                console.log('valid form');
+            }
+        },
+        editCustomer() {
+            this.$v.formCustomer.$touch();
+            if (!this.$v.formCustomer.$invalid) {
+                console.log('valid form');
             }
         },
 
-        showplatform() {
-            this.show = true;
+        // ADD ELEMENT 
+        addContact() {
+            console.log('add le contact');
+            this.$v.formContact.$touch();
+            if (!this.$v.formContact.$invalid) {
+                console.log('valid form');
+            }
+        },
+        addSite() {
+            console.log('add le site');
+            this.$v.formSite.$touch();
+            if (!this.$v.formSite.$invalid) {
+                console.log('valid form');
+            }
+        },
+        addPlatform() {
+            this.$v.formPlatform.$touch();
+            if (!this.$v.formPlatform.$invalid) {
+                console.log('valid form');
+            }
         },
 
-
-        deletebtn() {
-
+        //DELETE ELEMENT 
+        deleteCustomer() {
+            console.log('delete le customer ', id);
         },
-
-        displayEditCustomer() {
-
-            this.show = true;
+        deleteContact(id) {
+            console.log('delete le contact ', id);
         },
 
     },
@@ -446,6 +645,21 @@ export default {
     cursor: pointer;
 }
 
+.addbtn {
+    width: 100;
+    padding: 5px;
+    margin: 9px;
+    background-color: #14202C;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 11px;
+    height: 40px;
+}
+
 .popup-btn-fermer {
     position: absolute;
     bottom: 10px;
@@ -505,5 +719,47 @@ export default {
     height: 100vh;
     z-index: 99;
     backdrop-filter: blur(5px);
+}
+
+
+.swing-in-right-fwd {
+    -webkit-animation: swing-in-right-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+    animation: swing-in-right-fwd 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+}
+
+@-webkit-keyframes swing-in-right-fwd {
+    0% {
+        -webkit-transform: rotateY(-100deg);
+        transform: rotateY(-100deg);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: rotateY(0);
+        transform: rotateY(0);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 1;
+    }
+}
+
+@keyframes swing-in-right-fwd {
+    0% {
+        -webkit-transform: rotateY(-100deg);
+        transform: rotateY(-100deg);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: rotateY(0);
+        transform: rotateY(0);
+        -webkit-transform-origin: right;
+        transform-origin: right;
+        opacity: 1;
+    }
 }
 </style>

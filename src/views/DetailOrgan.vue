@@ -2,7 +2,7 @@
     <v-app>
         <v-main>
             <InformationBar :btn1Title="'ADD ?'" :btn2Title="'EDIT ORGAN'" :btn3Title="'DELETE ORGAN'"
-                v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="ORGAN INFORMATION"
+                v-on:btn1="show = true" v-on:btn2="show = true" v-on:btn3="deletebtn()" title="ORGAN INFORMATION"
                 :title2="this.organ.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
@@ -125,25 +125,16 @@ export default {
     },
     methods: {
 
+        //VALIDE ELEMENT
         editUserPlatform() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
                 console.log('valid form');
-
             }
-        }
-        ,
-        showplatform() {
-            this.show = true;
         },
 
+        //DELETE ELEMENT
         deletebtn() {
-
-        },
-
-
-        displayEditUser() {
-            this.show = true;
         },
 
     },

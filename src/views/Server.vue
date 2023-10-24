@@ -99,13 +99,13 @@ export default {
         AddServer(item) {
             this.$router.push({ name: "AddServer" });
         },
-        
+
         displayDetail(item) {
             this.$router.push({ name: "DetailServer", query: { id: item.id } });
         },
     },
     computed: {
-      
+
     },
     created() {
     }
