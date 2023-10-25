@@ -117,6 +117,7 @@ export default {
 
   }),
   methods: {
+    // CHANGE ROUTE 
     displayDetail(item) {
       this.$router.push({ name: "DetailCustomer", query: { id: item.id } });
     },

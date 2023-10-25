@@ -183,7 +183,7 @@
                     <span class="errors" v-if="$v.formEditContact.telephone.$error"> Contact phone number is required</span>
                     <InputUser v-model="formEditContact.category" title="CONTACT CATEGORY" id="service" />
                     <span class="errors" v-if="$v.formEditContact.category.$error"> Contact Category is required</span>
-                    <div @click="editContactvalide()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <div @click="editContactvalide(formEditContact.id)" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
                     </div>
                     <div @click="showEditContact = false" class="mt-4 ml-1 popup-btn-fermer">
@@ -277,7 +277,6 @@ export default {
                         },
                     ],
                 },
-
             ],
 
             platform: [
@@ -424,10 +423,10 @@ export default {
         },
 
         //EDIT ELEMENT
-        editContactvalide() {
+        editContactvalide(id) {
             this.$v.formEditContact.$touch();
             if (!this.$v.formEditContact.$invalid) {
-                console.log('valid form');
+                console.log('valid form', id);
             }
         },
         editCustomer() {

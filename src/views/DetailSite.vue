@@ -1,9 +1,9 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar :btn1Title="'ADD'" :btn2Title="'EDIT SITE'" :btn3Title="'DELETE SITE'" v-on:btn1="showAddbtn()"
-                v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()" title="SITE INFORMATION" :title2="this.site.name"
-                :icon="require('../assets/image/USE_icon.svg')">
+            <InformationBar :btn1Title="'ADD'" :btn2Title="'EDIT SITE'" :btn3Title="'DELETE SITE'"
+                v-on:btn1="showAdd = !showAdd" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
+                title="SITE INFORMATION" :title2="this.site.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">NAME</span>
@@ -119,7 +119,6 @@
                     <span class="errors" v-if="$v.formSite.name.$error"> Site Name is required</span>
                     <InputUser v-model="formSite.address" title="SITE ADDRESS" id="userName" />
                     <span class="errors" v-if="$v.formSite.address.$error"> Site Address is required</span>
-                    <!-- <InputUser title="  CUSTOMER SERVICE" id="userName" /> -->
                     <div @click="editSite()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
                     </div>
@@ -206,7 +205,6 @@
                     </div>
                 </v-card>
             </div>
-
         </v-main>
     </v-app>
 </template>
@@ -329,13 +327,7 @@ export default {
     },
     methods: {
 
-        editSite() {
-            this.$v.formSite.$touch();
-            if (!this.$v.formSite.$invalid) {
-                console.log('valid form');
-            }
-        },
-
+        // CHANGE ROUTE 
         displayDetail(id) {
             this.$router.push({ name: "DetailPlatform", query: { id: id } });
         },
@@ -343,16 +335,13 @@ export default {
         displayDetailBuilding(id) {
             this.$router.push({ name: "DetailBuilding", query: { id: id } });
         },
-        deletebtn() {
-        },
-        
-        displayEditUser() {
-            this.formSite.name = this.site.name
-            this.formSite.address = this.site.address
-            this.show = true;
-        },
-        showAddbtn() {
-            this.showAdd = !this.showAdd
+
+        // VALIDE ELEMENT 
+        editSite() {
+            this.$v.formSite.$touch();
+            if (!this.$v.formSite.$invalid) {
+                console.log('valid form');
+            }
         },
         addPlatform() {
             this.$v.formPlatform.$touch();
@@ -378,14 +367,27 @@ export default {
                 console.log('valid form');
             }
         },
+
+        // SHOW MODALE
+        displayEditUser() {
+            this.formSite.name = this.site.name
+            this.formSite.address = this.site.address
+            this.show = true;
+        },
         showeditSla(item) {
             this.formEditSLA = item
             this.showslaedit = true;
         },
+
+        //SELECT FILE
         handleFileUpload(event) {
             const selectedFile = event.target.files[0];
             console.log("Fichier sélectionné :", selectedFile);
-        }
+        },
+
+        // DELETE ELEMENT 
+        deletebtn() {
+        },
 
     },
     computed: {
