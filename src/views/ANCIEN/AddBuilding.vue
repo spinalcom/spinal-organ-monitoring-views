@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <BachupInformation style="max-height: 87vh;" title="ADD BUILDING">
-        <form class="formulaire" novalidate @submit.prevent="validateUser">
+        <form class="formulaire" novalidate @submit.prevent="validateBuilding">
           <p style="margin: 0;">Enter building information</p>
           <InputUser title="BUILDING NAME" id="userName" v-model="formBuilding.name" />
           <span class="errors" v-if="$v.formBuilding.name.$error">Name is required</span>
@@ -12,7 +12,7 @@
           <span class="errors" v-if="$v.formBuilding.address.$error">Address is required</span>
           <div class="d-flex justify-end">
             <button class="btn-retour" @click="cancelAdd()">RETOUR</button>
-            <button type="submit" class="btn-creer">CREATE CUSTOMER</button>
+            <button type="submit" class="btn-creer">CREATE BUILDING</button>
           </div>
         </form>
       </BachupInformation>
@@ -77,15 +77,14 @@ export default {
       this.contacts.splice(index, 1); // Supprime l'élément du tableau à l'index donné
     },
 
-    async validateUser() {
-      // await this.$refs.refplatform.maFonction();
+    async validateBuilding() {
       this.$v.$touch();
-      console.log('Validation Object:', this.$v);
       if (!this.$v.$invalid) {
         console.log('valid form');
-
-      } else {
-        console.log('invalid form');
+        this.$store.dispatch('addBuilding', {
+          BuildingData: this.formBuilding
+        });
+        this.$router.push("/Buildings");
       }
     },
   },

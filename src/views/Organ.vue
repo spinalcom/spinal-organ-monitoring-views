@@ -12,7 +12,7 @@
           justify-center
           rounded-lg
         " elevation="2">
-                <BlueButton @click.native="AddOrgan()" :icon="'mdi-plus'" title="ADD ORGAN" :val="'blue'" />
+                <BlueButton @click.native="show = true" :icon="'mdi-plus'" title="ADD ORGAN" :val="'blue'" />
             </v-card>
         </div>
 
@@ -135,6 +135,32 @@
             </Tabs>
         </BachupInformation>
 
+        <div v-if="show" class="popup_platform">
+            <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                <div @click="show = false" class="popup-closebtn">
+                    <span>X</span>
+                </div>
+                <p class="mb-6">ADD ORGAN</p>
+                <InputUser v-model="formOrgan.name" title="  ORGAN NAME" id="name" />
+                <span class="errors" v-if="$v.formOrgan.name.$error"> Organ Name is required</span>
+                <InputUser v-model="formOrgan.mac_adress" title="MAC ADDRESS" id="mac_address" />
+                <span class="errors" v-if="$v.formOrgan.mac_adress.$error"> Organ mac_address is required</span>
+                <InputUser v-model="formOrgan.ip_adress" title="  IP ADDRESS" id="ip_address" />
+                <span class="errors" v-if="$v.formOrgan.ip_adress.$error"> Organ ip is required</span>
+                <InputUser v-model="formOrgan.type" title=" ORGAN TYPE" id="type" />
+                <span class="errors" v-if="$v.formOrgan.type.$error"> Organ type is required</span>
+                <InputUser v-model="formOrgan.bosId" title=" ORGAN BOS ID" id="type" />
+                <span class="errors" v-if="$v.formOrgan.bosId.$error"> Organ BOS Id is required</span>
+                <InputUser v-model="formOrgan.PlatformId" title=" ORGAN BOS ID" id="type" />
+                <span class="errors" v-if="$v.formOrgan.PlatformId.$error"> Organ Platform Id is required</span>
+                <div @click="addOrgan()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <span>ADD</span>
+                </div>
+                <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
+                    <span>CLOSE</span>
+                </div>
+            </v-card>
+        </div>
 
     </v-app>
 </template>
@@ -148,6 +174,9 @@ import StateButton from "../Components/StateButton.vue"
 import InputPassword from "../Components/InputPassword.vue"
 import Tabs from "../Components/Tabs.vue";
 import { mapActions, mapGetters } from "vuex";
+import { validationMixin } from "vuelidate";
+import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+
 
 export default {
     name: "App",
@@ -162,6 +191,15 @@ export default {
     },
     data: () => ({
         // token: "",
+        formOrgan: {
+            name: null,
+            mac_adress: null,
+            ip_adress: null,
+            type: null,
+            bosId: null,
+            PlatformId: null,
+        },
+        show: false,
         items: [
             'ORGANS API SERVER',
             'ORGANS HUB',
@@ -267,10 +305,36 @@ export default {
 
         ],
     }),
+    validations: {
+        formOrgan: {
+            name: {
+                required,
+            },
+            mac_adress: {
+                required,
+            },
+            ip_adress: {
+                required,
+            },
+            type: {
+                required,
+            },
+            bosId: {
+                required,
+            },
+            PlatformId: {
+                required,
+            }
+        },
+    },
 
     methods: {
         AddOrgan() {
-            this.$router.push({ name: "AddOrgan" });
+            this.$v.$touch();
+            if (!this.$v.$invalid) {
+                //ici ajout organ !
+                location.reload();
+            }
         },
 
         displayDetail(item) {
@@ -301,20 +365,6 @@ export default {
     backdrop-filter: blur(5px);
 }
 
-.popup {
-    position: relative;
-    width: 415px;
-    height: 269px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    transform: translate(-50%, -100%);
-    left: 50%;
-    top: 50%;
-    border-radius: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
 .btn-valider-user {
     background-color: #ffffff;
     height: 100%;
@@ -331,6 +381,91 @@ export default {
     display: flex;
     flex-direction: column;
     width: 15%;
+}
+
+.content-list {
+    border: 1px solid rgba(216, 216, 216, 0.623);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    padding-left: 10px;
+    font: normal normal normal 12px/14px Charlevoix Pro;
+    letter-spacing: 1.2px;
+    margin: 1px;
+    flex-wrap: wrap;
+}
+
+.hover:hover {
+    background: rgb(228, 228, 228);
+    transition: 0.3s;
+}
+
+.popup-btn-ajouter {
+    position: absolute;
+    left: 49%;
+    bottom: 10px;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup_platform {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    backdrop-filter: blur(5px);
+}
+
+.popup-closebtn {
+    top: 7px;
+    right: 7px;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #E9ECEE;
+    opacity: 1;
+    position: absolute;
+    border-radius: 6px !important;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.popup {
+    position: absolute;
+    width: 615px;
+    /* height: 280px; */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.errors {
+    margin: 0;
+    transform: translate(0, -10%);
+    font-size: 10px;
+    color: red;
+    padding-left: 2px;
+    letter-spacing: 1.1px;
 }
 
 .popup-closebtn {
@@ -352,8 +487,8 @@ export default {
 
 .popup-btn-fermer {
     position: absolute;
-    left: 60%;
-    top: 75%;
+    bottom: 10px;
+    right: 10px;
     width: 145px;
     height: 40px;
     background-color: #14202C;
@@ -363,23 +498,7 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-}
-
-.content-list {
-    border: 1px solid rgba(216, 216, 216, 0.623);
-    background-color: #ffffff;
-    display: flex;
-    align-items: center;
-    min-height: 50px;
-    padding-left: 10px;
-    font: normal normal normal 12px/14px Charlevoix Pro;
-    letter-spacing: 1.2px;
-    margin: 1px;
-    flex-wrap: wrap;
-}
-
-.hover:hover {
-    background: rgb(228, 228, 228);
-    transition: 0.3s;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
 }
 </style>

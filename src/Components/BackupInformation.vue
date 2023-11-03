@@ -1,7 +1,7 @@
 <template>
-    <v-card class="d-flex flex-column rounded-lg backup-bar" color="#F7F7F7" elevation="2">
+    <v-card class="d-flex flex-column rounded-lg backup-bar" color="#F7F7F7"  elevation="2">
         <span class="title-backupbar">{{   title   }}</span>
-        <div class="d-flex mb-3">
+        <div class="d-flex mb-3" >
             <span style="width:25%;">{{   subtitle1   }}</span>
             <span>{{   subtitle2   }}</span>
         </div>

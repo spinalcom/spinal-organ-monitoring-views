@@ -30,7 +30,7 @@ import DetailPlatform from '@/views/DetailPlatform';
 // import Application from '@/views/Application';
 // import DetailApp from '@/views/DetailApp';
 // import AddApp from '@/views/AddApp';
-import AddUser from '@/views/AddUser';
+// import AddUser from '@/views/AddUser';
 // import EditApp from '@/views/EditApp';
 // import EditUser from '@/views/EditUser';
 // import Logs from '@/views/Logs';
@@ -49,12 +49,12 @@ import DetailCustomer from '@/views/DetailCustomer';
 import DetailBuilding from '@/views/DetailBuilding';
 import DetailOrgan from '@/views/DetailOrgan';
 import DetailServer from '@/views/DetailServer';
-import AddCustomer from '@/views/AddCustomer';
-import AddOrgan from '@/views/AddOrgan';
-import AddBuilding from '@/views/AddBuilding';
-import AddPlatform from '@/views/AddPlatform';
-import AddSite from '@/views/AddSite';
-import AddServer from '@/views/AddServer';
+// import AddCustomer from '@/views/AddCustomer';
+// import AddOrgan from '@/views/AddOrgan';
+// import AddBuilding from '@/views/AddBuilding';
+// import AddPlatform from '@/views/AddPlatform';
+// import AddSite from '@/views/AddSite';
+// import AddServer from '@/views/AddServer';
 import UserList from '@/views/UserList';
 // import EditOrgan from '@/views/EditOrgan';
 // import EditServer from '@/views/EditServer';
@@ -155,31 +155,31 @@ export default new Router({
       name: 'DetailCustomer',
       component: DetailCustomer
     },
-    {
-      path: '/AddCustomer',
-      name: 'AddCustomer',
-      component: AddCustomer
-    },
-    {
-      path: '/AddPlatform',
-      name: 'AddPlatform',
-      component: AddPlatform
-    },
-    {
-      path: '/AddSite',
-      name: 'AddSite',
-      component: AddSite
-    },
-    {
-      path: '/AddOrgan',
-      name: 'AddOrgan',
-      component: AddOrgan
-    },
-    {
-      path: '/AddServer',
-      name: 'AddServer',
-      component: AddServer
-    },
+    // {
+    //   path: '/AddCustomer',
+    //   name: 'AddCustomer',
+    //   component: AddCustomer
+    // },
+    // {
+    //   path: '/AddPlatform',
+    //   name: 'AddPlatform',
+    //   component: AddPlatform
+    // },
+    // {
+    //   path: '/AddSite',
+    //   name: 'AddSite',
+    //   component: AddSite
+    // },
+    // {
+    //   path: '/AddOrgan',
+    //   name: 'AddOrgan',
+    //   component: AddOrgan
+    // },
+    // {
+    //   path: '/AddServer',
+    //   name: 'AddServer',
+    //   component: AddServer
+    // },
     {
       path: '/DetailBuilding',
       name: 'DetailBuilding',
@@ -205,16 +205,16 @@ export default new Router({
     //   name: 'DetailApp',
     //   component: DetailApp
     // }, 
-    {
-      path: '/AddUser',
-      name: 'AddUser',
-      component: AddUser
-    },
-    , {
-      path: '/AddBuilding',
-      name: 'AddBuilding',
-      component: AddBuilding
-    },
+    // {
+    //   path: '/AddUser',
+    //   name: 'AddUser',
+    //   component: AddUser
+    // },
+    // , {
+    //   path: '/AddBuilding',
+    //   name: 'AddBuilding',
+    //   component: AddBuilding
+    // },
     // {
     //   path: '/AddApp',
     //   name: 'AddApp',

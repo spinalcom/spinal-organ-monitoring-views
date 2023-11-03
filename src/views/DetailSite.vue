@@ -17,7 +17,7 @@
                 <div v-if="showAdd" class="swing-in-right-fwd"
                     style="padding: 5px;position: absolute;right: 0;width: 180px;background-color: rgb(245, 245, 245);height: 100%;padding-bottom: 50px;top: 0;border-radius: 5px ;box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
                     <div @click="showsla = true" class="addbtn">ADD SLA</div>
-                    <div @click="showbuilding = true" class="addbtn">ADD BUILDING</div>
+                    <div @click="showbuilding = true,formBuilding.id = null" class="addbtn">ADD BUILDING</div>
                     <div @click="showplatform = true" class="addbtn">ADD PLATFORM</div>
                     <!-- <div class="addbtn">ADD CONTACT</div> -->
                 </div>
@@ -195,8 +195,8 @@
                         <span>X</span>
                     </div>
                     <p class="mb-6">ADD BUILDING</p>
-                    <InputUser v-model="formBuilding.name" title="BUILDING NAME" id="userName" />
-                    <span class="errors" v-if="$v.formBuilding.name.$error"> Building Name is required</span>
+                    <SelectUser title="BUILDING NAME" id="userType" :tab="buildingsList" v-model="formBuilding.id" />
+                    <span class="errors" v-if="$v.formBuilding.id.$error"> Building Name is required</span>
                     <div @click="addBuilding()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>ADD</span>
                     </div>
@@ -221,7 +221,7 @@ import { mapActions, mapGetters } from "vuex";
 import InputPass from "../Components/InputPassword.vue"
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
-
+import { mapState } from 'vuex';
 export default {
     name: "App",
     components: {
@@ -236,6 +236,7 @@ export default {
     },
     data() {
         return {
+            buildingsList : [],
             formSite: {
                 name: null,
                 address: null
@@ -250,7 +251,7 @@ export default {
                 name: null
             },
             formBuilding: {
-                name: null,
+                id: null,
             },
             buildings: [
                 {
@@ -307,7 +308,7 @@ export default {
             },
         },
         formBuilding: {
-            name: {
+            id: {
                 required,
             },
         },
@@ -340,9 +341,14 @@ export default {
         editSite() {
             this.$v.formSite.$touch();
             if (!this.$v.formSite.$invalid) {
-                console.log('valid form');
+                this.$store.dispatch('updateSite', {
+                    siteId: this.$route.query.id,
+                    siteData: this.formSite
+                });
+                location.reload();
             }
         },
+
         addPlatform() {
             this.$v.formPlatform.$touch();
             if (!this.$v.formPlatform.$invalid) {
@@ -352,7 +358,11 @@ export default {
         addBuilding() {
             this.$v.formBuilding.$touch();
             if (!this.$v.formBuilding.$invalid) {
-                console.log('valid form');
+                console.log('add');
+                this.$store.dispatch('linkSiteToBuilding', {
+                    siteId: this.$route.query.id,
+                    buildingId: this.formBuilding.id,
+                });
             }
         },
         addsla() {
@@ -387,12 +397,35 @@ export default {
 
         // DELETE ELEMENT 
         deletebtn() {
+            this.$store.dispatch('deleteSite', {
+                siteId: this.$route.query.id,
+            });
+            this.$router.push({ name: "Site" });
         },
 
     },
     computed: {
+        ...mapState(['CurrentSite']),
+        ...mapState(['BuildingList'])
     },
+    mounted() {
+        this.$store.dispatch('getSite', {
+            siteId: this.$route.query.id,
+        });
 
+        //get la list des sites pour add site
+        this.$store.dispatch('getBuildingList');
+    },
+    watch: {
+        CurrentSite(newSite) {
+            this.site = newSite
+        },
+        BuildingList(newList) {
+            console.log('log');
+            this.buildingsList = newList;
+            console.log(this.buildingsList);
+        }
+    },
     created() {
     }
 }

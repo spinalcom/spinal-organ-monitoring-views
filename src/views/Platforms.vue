@@ -12,7 +12,7 @@
           justify-center
           rounded-lg
         " elevation="2">
-                <BlueButton @click.native="AddPlatform()" :icon="'mdi-plus'" title="ADD PLATFORM" :val="'blue'" />
+                <BlueButton @click.native="show = true" :icon="'mdi-plus'" title="ADD PLATFORM" :val="'blue'" />
             </v-card>
         </div>
         <BachupInformation title="LISTE DES PLATEFORMES">
@@ -55,6 +55,33 @@
                 </div>
             </div>
         </BachupInformation>
+
+        <div v-if="show" class="popup_platform">
+            <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+                <div @click="show = false" class="popup-closebtn">
+                    <span>X</span>
+                </div>
+                <p class="mb-6">ADD PLATFORM</p>
+                <InputUser title="  PLATFORM NAME" id="userName" v-model="formPlatform.name" />
+                <span class="errors" v-if="$v.formPlatform.name.$error"> Platform Name is required</span>
+                <InputUser title="  PLATFORM TYPE" id="userName" v-model="formPlatform.type" />
+                <span class="errors" v-if="$v.formPlatform.type.$error"> Platform Type is required</span>
+                <InputUser title="  PLATFORM ipAdress" id="userName" v-model="formPlatform.ipAdress" />
+                <span class="errors" v-if="$v.formPlatform.ipAdress.$error"> Platform IP address is required</span>
+                <InputUser title="  PLATFORM loginAdmin" id="userName" v-model="formPlatform.loginAdmin" />
+                <span class="errors" v-if="$v.formPlatform.loginAdmin.$error"> Platform login admin is required</span>
+                <InputUser title="  PLATFORM passwordAdmin" id="userName" v-model="formPlatform.passwordAdmin" />
+                <span class="errors" v-if="$v.formPlatform.passwordAdmin.$error"> Platform password admin is
+                    required</span>
+                <div @click="AddPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <span>ADD</span>
+                </div>
+                <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
+                    <span>CLOSE</span>
+                </div>
+            </v-card>
+        </div>
+
     </v-app>
 </template>
   
@@ -66,6 +93,9 @@ import BachupInformation from "../Components/BackupInformation.vue"
 import StateButton from "../Components/StateButton.vue"
 import InputPassword from "../Components/InputPassword.vue"
 import { mapActions, mapGetters } from "vuex";
+import { validationMixin } from "vuelidate";
+import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+
 
 export default {
     name: "App",
@@ -78,6 +108,14 @@ export default {
         InputPassword
     },
     data: () => ({
+        show: false,
+        formPlatform: {
+            name: null,
+            type: null,
+            ipAdress: null,
+            loginAdmin: null,
+            passwordAdmin: null,
+        },
         platform: [
             {
                 "id": "ID",
@@ -100,11 +138,34 @@ export default {
             },
         ],
     }),
+    validations: {
+        formPlatform: {
+            name: {
+                required,
+            },
+            type: {
+                required,
+            },
+            ipAdress: {
+                required,
+            },
+            loginAdmin: {
+                required,
+            },
+            passwordAdmin: {
+                required,
+            },
+        },
+    },
 
     methods: {
         AddPlatform() {
-            console.log('test');
-            this.$router.push({ name: "AddPlatform" });
+            this.$v.$touch();
+            if (!this.$v.$invalid) {
+                //AJOUTER LA PLATFORM STORE
+                location.reload();
+            }
+
         },
         displayDetail(item) {
             this.$router.push({ name: "DetailPlatform", query: { id: item.id } });
@@ -124,6 +185,16 @@ export default {
     background: #ffffff00;
 }
 
+.errors {
+    margin: 0;
+    /* position: absolute; */
+    transform: translate(0, -10%);
+    font-size: 10px;
+    color: red;
+    padding-left: 2px;
+    letter-spacing: 1.1px;
+}
+
 .popup-back {
     position: fixed;
     left: 0px;
@@ -135,13 +206,13 @@ export default {
 }
 
 .popup {
-    position: relative;
-    width: 415px;
-    height: 269px;
+    position: absolute;
+    width: 615px;
+    /* height: 280px; */
     padding: 10px;
     display: flex;
     flex-direction: column;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -50%);
     left: 50%;
     top: 50%;
     border-radius: 10px;
@@ -185,8 +256,8 @@ export default {
 
 .popup-btn-fermer {
     position: absolute;
-    left: 60%;
-    top: 75%;
+    bottom: 10px;
+    right: 10px;
     width: 145px;
     height: 40px;
     background-color: #14202C;
@@ -196,6 +267,8 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
 }
 
 .content-list {
@@ -209,6 +282,50 @@ export default {
     letter-spacing: 1.2px;
     margin: 1px;
     flex-wrap: wrap;
+}
+
+.popup-btn-ajouter {
+    position: absolute;
+    left: 49%;
+    bottom: 10px;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup-btn-copier {
+    position: absolute;
+    left: 23%;
+    bottom: 10px;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup_platform {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    backdrop-filter: blur(5px);
 }
 
 .hover:hover {

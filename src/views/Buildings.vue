@@ -36,7 +36,7 @@ with this file. If not, see
           justify-center
           rounded-lg
         " elevation="2">
-        <BlueButton @click.native="AddBuilding()" :icon="'mdi-plus'" title="ADD BUILDING" :val="'blue'" />
+        <BlueButton @click.native="show = true" :icon="'mdi-plus'" title="ADD BUILDING" :val="'blue'" />
       </v-card>
     </div>
     <BackupInformation @click.native="showapplist()" title="BUILDING TABLE">
@@ -51,7 +51,7 @@ with this file. If not, see
             {{ item.name }}
           </div>
           <div style="width: 50%" class="content-list">
-            {{ item.adress }}
+            {{ item.address }}
           </div>
           <div class="content-list rounded-r-lg hover">
             <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -61,6 +61,25 @@ with this file. If not, see
         </div>
       </div>
     </BackupInformation>
+
+    <div v-if="show" class="popup_platform">
+      <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
+        <div @click="show = false" class="popup-closebtn">
+          <span>X</span>
+        </div>
+        <p class="mb-6">ADD BUILDING</p>
+        <InputUser v-model="formBuilding.name" title="BUILDING NAME" id="userName" />
+        <span class="errors" v-if="$v.formBuilding.name.$error"> building Name is required</span>
+        <InputUser v-model="formBuilding.address" title="BUILDING ADDRESS" id="address" />
+        <span class="errors" v-if="$v.formBuilding.address.$error"> building Address is required</span>
+        <div @click="AddBuilding()" class="mt-4 ml-1 popup-btn-ajouter">
+          <span>ADD</span>
+        </div>
+        <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
+          <span>CLOSE</span>
+        </div>
+      </v-card>
+    </div>
   </v-app>
 </template>
 
@@ -69,16 +88,25 @@ import BlueButton from "../Components/BlueButton.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
 import StateButton from "../Components/StateButton.vue";
 import { mapActions, mapGetters } from "vuex";
-
+import { mapState } from 'vuex';
+import InputUser from "../Components/InputUser";
+import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+import { validationMixin } from "vuelidate";
 
 export default {
   name: "App",
   components: {
     BlueButton,
     BackupInformation,
-    StateButton
+    StateButton,
+    InputUser,
   },
   data: () => ({
+    formBuilding: {
+      name: null,
+      address: null,
+    },
+    show: false,
     buildings: [
       {
         "id": "1bc9-11d3-bfd0-18acd067699",
@@ -88,22 +116,46 @@ export default {
       },
     ]
   }),
+  validations: {
+    formBuilding: {
+      name: {
+        required,
+      },
+      address: {
+        required,
+      },
+    },
+  },
   methods: {
     displayDetail(item) {
       this.$router.push({ name: "DetailBuilding", query: { id: item.id } });
     },
 
     AddBuilding() {
-      this.$router.push("/AddBuilding");
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        console.log('valid form');
+        this.$store.dispatch('addBuilding', {
+          BuildingData: this.formBuilding
+        });
+        location.reload();
+      }
     },
 
   },
   computed: {
-    ...mapGetters({ userList: 'users/userList' }),
+    ...mapState(['BuildingList'])
   },
-
   created() {
-  }
+  },
+  mounted() {
+    this.$store.dispatch('getBuildingList');
+  },
+  watch: {
+    BuildingList(newBuilding) {
+      this.buildings = newBuilding;
+    }
+  },
 };
 </script>
 
@@ -135,5 +187,106 @@ export default {
 .stateButton-container {
   width: 100%;
   display: flex;
+}
+
+.popup-btn-ajouter {
+  position: absolute;
+  left: 49%;
+  bottom: 10px;
+  width: 145px;
+  height: 40px;
+  background-color: #14202C;
+  border-radius: 6px !important;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font: normal normal normal 11px/13px Charlevoix Pro;
+  letter-spacing: 1.1px;
+}
+
+.popup_platform {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99;
+  backdrop-filter: blur(5px);
+}
+
+.popup-closebtn {
+  top: 7px;
+  right: 7px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #E9ECEE;
+  opacity: 1;
+  position: absolute;
+  border-radius: 6px !important;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.popup {
+  position: absolute;
+  width: 615px;
+  /* height: 280px; */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+  border-radius: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.errors {
+  margin: 0;
+  transform: translate(0, -10%);
+  font-size: 10px;
+  color: red;
+  padding-left: 2px;
+  letter-spacing: 1.1px;
+}
+
+.popup-closebtn {
+  top: 7px;
+  right: 7px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #E9ECEE;
+  opacity: 1;
+  position: absolute;
+  border-radius: 6px !important;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.popup-btn-fermer {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 145px;
+  height: 40px;
+  background-color: #14202C;
+  border-radius: 6px !important;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font: normal normal normal 11px/13px Charlevoix Pro;
+  letter-spacing: 1.1px;
 }
 </style>

@@ -2,13 +2,12 @@
   <v-app>
     <v-main>
       <BachupInformation style="max-height: 87vh;" title="ADD SITE">
-        <form class="formulaire" novalidate @submit.prevent="validateUser">
+        <form class="formulaire" novalidate @submit.prevent="validateSite">
           <p style="margin: 0;">Enter SIte information</p>
           <InputUser title="SITE NAME" id="userName" v-model="formSite.name" />
           <span class="errors" v-if="$v.formSite.name.$error"> Site Name is required</span>
-          <InputUser title="SITE ADDRESS" id="Email" v-model="formSite.address" />
+          <InputUser title="SITE ADDRESS" id="address" v-model="formSite.address" />
           <span class="errors" v-if="$v.formSite.address.$error"> Site address is required</span>
-          
           <!-- <div style="display: flex;" v-for="(slas, index) in formSite.slas" :key="index">
             <SelectUser :tab="el_slas" :value="slas.name" title="SLAS"></SelectUser>
             <button @click="deleteslas(index)" type="button" class="red-cross">X</button>
@@ -53,15 +52,14 @@ export default {
       formSite: {
         name: null,
         address: null,
-        slas : []
       },
-      el_slas :[{
+      el_slas: [{
         name: "sla1",
-        type : "type 1",
+        type: "type 1",
       },
       {
         name: "sla2",
-        type : "type 2",
+        type: "type 2",
       }]
     };
   },
@@ -88,11 +86,14 @@ export default {
       this.formSite.slas.splice(index, 1); // Supprime l'élément du tableau à l'index donné
     },
 
-    async validateUser() {
+    async validateSite() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         console.log('valid form');
-
+        this.$store.dispatch('addSite', {
+          siteData: this.formSite
+        });
+        this.$router.push("/Site");
       }
     },
   },

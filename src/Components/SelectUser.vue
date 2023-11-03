@@ -35,7 +35,7 @@ export default {
   methods: {
     selectItem(item) {
       this.selectedValue = item
-      this.$emit("input", item)
+      this.$emit("input", item.id)
       this.$emit("select", item) // émettre l'événement 'select'
       this.showOptions = false
     },

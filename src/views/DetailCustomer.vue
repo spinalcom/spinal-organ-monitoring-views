@@ -1,7 +1,6 @@
 <template>
     <v-app>
         <v-main>
-
             <InformationBar :btn1Title="'ADD'" :btn2Title="'EDIT CUSTOMER'" :btn3Title="'DELETE CUSTOMER'"
                 v-on:btn1="showAdd = !showAdd" v-on:btn2="displayEditCustomer()" v-on:btn3="deleteCustomer()"
                 title="CUSTOMER INFORMATION" :title2="this.customers.name" :icon="require('../assets/image/USE_icon.svg')">
@@ -18,12 +17,11 @@
                 <div v-if="showAdd" class="swing-in-right-fwd"
                     style="padding: 5px;position: absolute;right: 0;width: 180px;background-color: rgb(245, 245, 245);height: 100%;padding-bottom: 50px;top: 0;border-radius: 5px ;box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
                     <div @click="showcontact = true" class="addbtn">ADD CONTACT</div>
-                    <div @click="showsite = true" class="addbtn">ADD SITE</div>
+                    <div @click="showsite = true, formSite.id = null" class="addbtn">ADD SITE</div>
                     <div @click="showplatform = true" class="addbtn">ADD PLATFORM</div>
                     <!-- <div class="addbtn">ADD CONTACT</div> -->
                 </div>
             </InformationBar>
-
 
             <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="CUSTOMER DETAILS">
                 <Tabs :items="items">
@@ -130,7 +128,7 @@
                     <InputUser v-model="formCustomer.name" title="CUSTOMER NAME" id="userName" />
                     <span class="errors" v-if="$v.formCustomer.name.$error"> Customer Name is required</span>
                     <InputUser v-model="formCustomer.service" title="CUSTOMER SERVICE" id="service" />
-                    <span class="errors" v-if="$v.formCustomer.service.$error"> Customer Server is required</span>
+                    <span class="errors" v-if="$v.formCustomer.service.$error"> Customer Service is required</span>
                     <div @click="editCustomer()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
                     </div>
@@ -200,8 +198,9 @@
                         <span>X</span>
                     </div>
                     <p class="mb-6">ADD SITE</p>
-                    <InputUser v-model="formSite.name" title="SITE NAME" id="userName" />
-                    <span class="errors" v-if="$v.formSite.name.$error"> Customer Name is required</span>
+                    <!-- <InputUser v-model="formSite.name" title="SITE NAME" id="userName" /> -->
+                    <SelectUser title="SITE NAME" id="userType" :tab="siteList" v-model="formSite.id" />
+                    <span class="errors" v-if="$v.formSite.id.$error"> Site Name is required</span>
                     <div @click="addSite()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>ADD</span>
                     </div>
@@ -244,6 +243,7 @@ import { mapActions, mapGetters } from "vuex";
 import InputPass from "../Components/InputPassword.vue"
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+import { mapState } from 'vuex';
 
 export default {
     name: "App",
@@ -278,6 +278,8 @@ export default {
                     ],
                 },
             ],
+
+            siteList: [],
 
             platform: [
                 {
@@ -322,7 +324,7 @@ export default {
                 name: null,
             },
             formSite: {
-                name: null,
+                id: null,
             },
             formCustomer: {
                 name: null,
@@ -391,7 +393,7 @@ export default {
             },
         },
         formSite: {
-            name: {
+            id: {
                 required,
             },
         },
@@ -420,6 +422,7 @@ export default {
             this.show = true;
             this.formCustomer.name = this.customers.name
             this.formCustomer.service = this.customers.service
+
         },
 
         //EDIT ELEMENT
@@ -433,22 +436,32 @@ export default {
             this.$v.formCustomer.$touch();
             if (!this.$v.formCustomer.$invalid) {
                 console.log('valid form');
+                this.$store.dispatch('updateCustomer', {
+                    CustomerId: this.$route.query.id,
+                    CustomerData: this.formCustomer
+                });
+                location.reload();
             }
         },
 
         // ADD ELEMENT 
         addContact() {
-            console.log('add le contact');
             this.$v.formContact.$touch();
             if (!this.$v.formContact.$invalid) {
-                console.log('valid form');
+                this.$store.dispatch('addContactToCustomer', {
+                    customerId: this.$route.query.id,
+                    contactData: this.formContact
+                });
+                location.reload();
             }
         },
         addSite() {
-            console.log('add le site');
             this.$v.formSite.$touch();
             if (!this.$v.formSite.$invalid) {
-                console.log('valid form');
+                this.$store.dispatch('linkCustomerToSite', {
+                    customerId: this.$route.query.id,
+                    siteId: this.formSite.id,
+                });
             }
         },
         addPlatform() {
@@ -465,10 +478,30 @@ export default {
         deleteContact(id) {
             console.log('delete le contact ', id);
         },
+    },
+
+    computed: {
+        ...mapState(['CurrentCustomer']),
+        ...mapState(['SiteList'])
+    },
+    mounted() {
+
+        //get le customer du site
+        this.$store.dispatch('getCustomer', {
+            customerId: this.$route.query.id,
+        });
+
+        //get la list des sites pour add site
+        this.$store.dispatch('getSiteList');
 
     },
-    computed: {
-
+    watch: {
+        CurrentCustomer(newCustomer) {
+            this.customers = newCustomer
+        },
+        SiteList(newList) {
+            this.siteList = newList;
+        }
 
     },
 

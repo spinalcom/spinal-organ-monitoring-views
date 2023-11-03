@@ -18,7 +18,6 @@
             <SelectUser title="SLAS"></SelectUser>
             <button @click="deleteContact(index)" type="button" class="red-cross">X</button>
           </div>
-
           <div class="d-flex justify-end">
             <button @click="addContact" type="button" class="btn-ajout-platform">+ ADD CONTACT</button>
           </div>

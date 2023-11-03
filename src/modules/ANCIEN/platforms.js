@@ -24,7 +24,7 @@
 
 import axios from 'axios';
 import { platform } from 'os';
-const instanceAxios = require("../services/axiosConfig");
+const instanceAxios = require("../../services/axiosConfig");
 export default {
     namespaced: true,
     state: {

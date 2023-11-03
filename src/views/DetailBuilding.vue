@@ -65,11 +65,11 @@
                         <span>X</span>
                     </div>
                     <p class="mb-6">EDIT BUILDING</p>
-                    <InputUser v-model="formbuilding.name" title="BUILDING NAME" id="userName" />
-                    <span class="errors" v-if="$v.formbuilding.name.$error"> building Name is required</span>
-                    <InputUser v-model="formbuilding.address" title="BUILDING ADDRESS" id="address" />
-                    <span class="errors" v-if="$v.formbuilding.address.$error"> building Address is required</span>
-                    <div @click="editUserBuilding()" class="mt-4 ml-1 popup-btn-ajouter">
+                    <InputUser v-model="formBuilding.name" title="BUILDING NAME" id="userName" />
+                    <span class="errors" v-if="$v.formBuilding.name.$error"> building Name is required</span>
+                    <InputUser v-model="formBuilding.address" title="BUILDING ADDRESS" id="address" />
+                    <span class="errors" v-if="$v.formBuilding.address.$error"> building Address is required</span>
+                    <div @click="editBuilding()" class="mt-4 ml-1 popup-btn-ajouter">
                         <span>EDIT</span>
                     </div>
                     <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
@@ -113,7 +113,7 @@ import { mapActions, mapGetters } from "vuex";
 import InputPass from "../Components/InputPassword.vue"
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
-
+import { mapState } from 'vuex';
 export default {
     name: "App",
     components: {
@@ -131,7 +131,7 @@ export default {
             formPlatform: {
                 name: null,
             },
-            formbuilding: {
+            formBuilding: {
                 name: null,
                 address: null
             },
@@ -159,7 +159,7 @@ export default {
 
     },
     validations: {
-        formbuilding: {
+        formBuilding: {
             name: {
                 required,
             },
@@ -189,11 +189,14 @@ export default {
         },
 
         //valideForm
-        editUserBuilding() {
-            this.$v.formbuilding.$touch();
-            if (!this.$v.formbuilding.$invalid) {
-                console.log('valid form');
-
+        editBuilding() {
+            this.$v.formBuilding.$touch();
+            if (!this.$v.formBuilding.$invalid) {
+                this.$store.dispatch('updateBuilding', {
+                    BuildingId: this.$route.query.id,
+                    BuildingData: this.formBuilding
+                });
+                location.reload();
             }
         },
         addPlatform() {
@@ -206,9 +209,24 @@ export default {
 
         //delete element
         deletebtn() {
+            this.$store.dispatch('deleteBuilding', {
+                BuildingId: this.$route.query.id,
+            });
+            this.$router.push({ name: "Buildings" });
         },
     },
     computed: {
+        ...mapState(['CurrentBuilding'])
+    },
+    mounted() {
+        this.$store.dispatch('getBuilding', {
+            buildingId: this.$route.query.id,
+        });
+    },
+    watch: {
+        CurrentBuilding(newBuilding) {
+            this.building = newBuilding
+        }
     },
     created() {
     }
