@@ -117,7 +117,6 @@
                 </Tabs>
             </BackupInformation>
 
-
             <!-- MODALE EDIT CUSTOMER-->
             <div v-if="show" class="popup_platform">
                 <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
@@ -164,7 +163,6 @@
                     </div>
                 </v-card>
             </div>
-
 
             <!-- MODALE EDIT CONTACT -->
             <div v-if="showEditContact" class="popup_platform">
@@ -422,7 +420,6 @@ export default {
             this.show = true;
             this.formCustomer.name = this.customers.name
             this.formCustomer.service = this.customers.service
-
         },
 
         //EDIT ELEMENT
@@ -455,6 +452,17 @@ export default {
                 location.reload();
             }
         },
+        editeContact() {
+            this.$v.formEditContact.$touch();
+            if (!this.$v.formEditContact.$invalid) {
+                this.$store.dispatch('updateContact', {
+                    ContactId: this.$route.query.id,
+                    ContactData: this.formEditContact
+                });
+                location.reload();
+            }
+        },
+
         addSite() {
             this.$v.formSite.$touch();
             if (!this.$v.formSite.$invalid) {
@@ -477,6 +485,10 @@ export default {
         },
         deleteContact(id) {
             console.log('delete le contact ', id);
+            this.$store.dispatch('deleteContact', {
+                contactId: id,
+            });
+            location.reload();
         },
     },
 

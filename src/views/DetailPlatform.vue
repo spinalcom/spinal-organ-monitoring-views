@@ -2,8 +2,8 @@
     <v-app>
         <v-main>
             <InformationBar :btn1Title="'ADD ORGAN'" :btn2Title="'EDIT PLATFORM '" :btn3Title="'DELETE PLATFORM'"
-                v-on:btn1="showOrgan = true" v-on:btn2="show = true" v-on:btn3="deletebtn()" title="PLATFORM INFORMATION"
-                :title2="this.platform.name" :icon="require('../assets/image/USE_icon.svg')">
+                v-on:btn1="showOrgan = true" v-on:btn2="displayEditPlatform" v-on:btn3="deletebtn()"
+                title="PLATFORM INFORMATION" :title2="this.platform.name" :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ID</span>
@@ -35,8 +35,8 @@
 
             <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="ORGAN LIST">
                 <div class="d-flex mb-2 mt-4">
-                    <div style="width: 48%;margin-left: 10px;">Organs Name</div>
-                    <div style="width: 50%">Type</div>
+                    <div style="width: 48.5%;margin-left: 10px;">Organs Name</div>
+                    <div style="width: 50%">Id</div>
                 </div>
                 <div v-for="item in this.platform.organList" :key="item.id">
                     <div class="d-flex mb-2">
@@ -44,7 +44,7 @@
                             {{ item.name }}
                         </div>
                         <div style="width: 100%" class="content-list">
-                            {{ item.type }}
+                            {{ item.id }}
                         </div>
                         <div class="content-list rounded-r-lg hover">
                             <button class="pr-2" style="height: 100%" @click="displayDetail(item.id)">
@@ -65,8 +65,8 @@
                     <p class="mb-6">EDIT PLATFORM</p>
                     <InputUser title="  PLATFORM NAME" id="userName" v-model="formPlatform.name" />
                     <span class="errors" v-if="$v.formPlatform.name.$error"> Platform Name is required</span>
-                    <InputUser title="  PLATFORM TYPE" id="userName" v-model="formPlatform.type" />
-                    <span class="errors" v-if="$v.formPlatform.type.$error"> Platform Type is required</span>
+                    <InputUser title="  PLATFORM TYPE" id="userName" v-model="formPlatform.platformType" />
+                    <span class="errors" v-if="$v.formPlatform.platformType.$error"> Platform Type is required</span>
                     <InputUser title="  PLATFORM ipAdress" id="userName" v-model="formPlatform.ipAdress" />
                     <span class="errors" v-if="$v.formPlatform.ipAdress.$error"> Platform IP address is required</span>
                     <InputUser title="  PLATFORM loginAdmin" id="userName" v-model="formPlatform.loginAdmin" />
@@ -116,6 +116,7 @@ import { mapActions, mapGetters } from "vuex";
 import InputPass from "../Components/InputPassword.vue"
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+import { mapState } from 'vuex';
 
 export default {
     name: "App",
@@ -134,37 +135,16 @@ export default {
 
             formPlatform: {
                 name: null,
-                type: null,
+                platformType: null,
                 ipAdress: null,
                 loginAdmin: null,
                 passwordAdmin: null,
             },
-
             formOrgan: {
                 name: null,
             },
-
-            platform:
-            {
-                "id": '258369 test',
-                "name": 'PlatformName',
-                "type": 'Type',
-                "platformType": 'PlatformType',
-                "TokenBosRegister": "le TOKEN DU BOS",
-                "ipAdress": "ip address",
-                "url": "URL DE PLATFORM",
-                "loginAdmin": "ADMIN LOGIN",
-                "passwordAdmin": "ADMIN PASS",
-                "hubOrgan": "HUBORGAN",
-                "organList": [{
-                    "name": "ORGAN1",
-                    "type": "type de l organ 1"
-                }, {
-                    "name": "ORGAN1",
-                    "type": "type de l organ 1"
-                },],
-            },
-
+            platformList: [],
+            platform: {},
             show: false,
             showOrgan: false,
         };
@@ -175,7 +155,7 @@ export default {
             name: {
                 required,
             },
-            type: {
+            platformType: {
                 required,
             },
             ipAdress: {
@@ -196,6 +176,15 @@ export default {
 
     },
     methods: {
+        displayEditPlatform() {
+            this.show = true;
+            this.formPlatform.name = this.platform.name
+            this.formPlatform.platformType = this.platform.platformType
+            this.formPlatform.ipAdress = this.platform.ipAdress
+            this.formPlatform.loginAdmin = this.platform.loginAdmin
+            this.formPlatform.passwordAdmin = this.platform.passwordAdmin
+        },
+
         //CHANGE ROUTE
         displayDetail(id) {
             this.$router.push({ name: "DetailOrgan", query: { id: id } });
@@ -206,7 +195,10 @@ export default {
             this.$v.formPlatform.$touch();
             if (!this.$v.formPlatform.$invalid) {
                 console.log('valid form');
-
+                this.$store.dispatch('updatePlatform', {
+                    PlatformId: this.$route.query.id,
+                    PlatformData: this.formPlatform
+                });
             }
         },
         addOrgan() {
@@ -219,11 +211,29 @@ export default {
 
         //DELETE ELEMENT
         deletebtn() {
+            this.$store.dispatch('deletePlatform', {
+                platformId: this.$route.query.id,
+            });
+            this.$router.push("platforms");
         },
     },
-    computed: {
+    mounted() {
+        this.$store.dispatch('getPlatformList');
     },
-
+    computed: {
+        ...mapState(['CurrentPlatform']),
+        ...mapState(['PlatformList'])
+    },
+    watch: {
+        PlatformList(newList) {
+            this.platformList = newList;
+            this.platformList.forEach(platform => {
+                if (platform.id === this.$route.query.id) {
+                    this.platform = platform;
+                }
+            });
+        }
+    },
     created() {
     }
 }

@@ -17,7 +17,7 @@
                 <div v-if="showAdd" class="swing-in-right-fwd"
                     style="padding: 5px;position: absolute;right: 0;width: 180px;background-color: rgb(245, 245, 245);height: 100%;padding-bottom: 50px;top: 0;border-radius: 5px ;box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
                     <div @click="showsla = true" class="addbtn">ADD SLA</div>
-                    <div @click="showbuilding = true,formBuilding.id = null" class="addbtn">ADD BUILDING</div>
+                    <div @click="showbuilding = true, formBuilding.id = null" class="addbtn">ADD BUILDING</div>
                     <div @click="showplatform = true" class="addbtn">ADD PLATFORM</div>
                     <!-- <div class="addbtn">ADD CONTACT</div> -->
                 </div>
@@ -236,7 +236,7 @@ export default {
     },
     data() {
         return {
-            buildingsList : [],
+            buildingsList: [],
             formSite: {
                 name: null,
                 address: null
@@ -397,10 +397,13 @@ export default {
 
         // DELETE ELEMENT 
         deletebtn() {
-            this.$store.dispatch('deleteSite', {
-                siteId: this.$route.query.id,
-            });
-            this.$router.push({ name: "Site" });
+            const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer le site ?");
+            if (confirmed) {
+                this.$store.dispatch('deleteSite', {
+                    siteId: this.$route.query.id,
+                });
+                this.$router.push({ name: "Site" });
+            }
         },
 
     },

@@ -35,7 +35,7 @@
                         {{ item.name }}
                     </div>
                     <div style="width: 20%" class="content-list">
-                        {{ item.type }}
+                        {{ item.platformType }}
                     </div>
                     <div style="width: 20%" class="content-list">
                         {{ item.url }}
@@ -64,10 +64,15 @@
                 <p class="mb-6">ADD PLATFORM</p>
                 <InputUser title="  PLATFORM NAME" id="userName" v-model="formPlatform.name" />
                 <span class="errors" v-if="$v.formPlatform.name.$error"> Platform Name is required</span>
-                <InputUser title="  PLATFORM TYPE" id="userName" v-model="formPlatform.type" />
-                <span class="errors" v-if="$v.formPlatform.type.$error"> Platform Type is required</span>
-                <InputUser title="  PLATFORM ipAdress" id="userName" v-model="formPlatform.ipAdress" />
+                <InputUser title="  PLATFORM TYPE" id="userName" v-model="formPlatform.platformType" />
+                <span class="errors" v-if="$v.formPlatform.platformType.$error"> Platform Type is required</span>
+                <InputUser title="  PLATFORM IP_ADRESS" id="userName" v-model="formPlatform.ipAdress" />
                 <span class="errors" v-if="$v.formPlatform.ipAdress.$error"> Platform IP address is required</span>
+                <InputUser title="  PLATFORM URL" id="userName" v-model="formPlatform.url" />
+                <span class="errors" v-if="$v.formPlatform.url.$error"> Platform IP address is required</span>
+                <InputUser title="  PLATFORM TokenBosRegister" id="userName" v-model="formPlatform.TokenBosRegister" />
+                <span class="errors" v-if="$v.formPlatform.TokenBosRegister.$error"> Platform TokenBosRegister is
+                    required</span>
                 <InputUser title="  PLATFORM loginAdmin" id="userName" v-model="formPlatform.loginAdmin" />
                 <span class="errors" v-if="$v.formPlatform.loginAdmin.$error"> Platform login admin is required</span>
                 <InputUser title="  PLATFORM passwordAdmin" id="userName" v-model="formPlatform.passwordAdmin" />
@@ -94,6 +99,7 @@ import StateButton from "../Components/StateButton.vue"
 import InputPassword from "../Components/InputPassword.vue"
 import { mapActions, mapGetters } from "vuex";
 import { validationMixin } from "vuelidate";
+import { mapState } from 'vuex';
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
 
 
@@ -111,10 +117,15 @@ export default {
         show: false,
         formPlatform: {
             name: null,
-            type: null,
+            platformType: null,
             ipAdress: null,
+            url: null,
             loginAdmin: null,
             passwordAdmin: null,
+            TokenBosRegister: null,
+            hubOrgan: {},
+            organList: [
+            ]
         },
         platform: [
             {
@@ -123,6 +134,7 @@ export default {
                 "type": "le type 1",
                 "platformType": "PLAFTOMESTYPE",
                 "url": 'url.platform',
+                "TokenBosRegister": "",
                 "organList": [
                     {
                         "organ 1": "test",
@@ -143,11 +155,14 @@ export default {
             name: {
                 required,
             },
-            type: {
+            platformType: {
                 required,
             },
             ipAdress: {
                 required,
+            },
+            url: {
+                required
             },
             loginAdmin: {
                 required,
@@ -155,6 +170,9 @@ export default {
             passwordAdmin: {
                 required,
             },
+            TokenBosRegister: {
+                required,
+            }
         },
     },
 
@@ -163,7 +181,11 @@ export default {
             this.$v.$touch();
             if (!this.$v.$invalid) {
                 //AJOUTER LA PLATFORM STORE
-                location.reload();
+                this.$store.dispatch('addPlatform', {
+                    platformData: this.formPlatform
+                });
+                this.show = false;
+                this.$store.dispatch('getPlatformList');
             }
 
         },
@@ -172,7 +194,16 @@ export default {
         },
     },
     computed: {
+        ...mapState(['PlatformList'])
     },
+    mounted() {
+        this.$store.dispatch('getPlatformList');
+    },
+    watch: {
+    PlatformList(newList) {
+      this.platform = newList;
+    }
+  },
     created() {
     }
 }

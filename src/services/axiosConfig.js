@@ -24,8 +24,8 @@
 // const axios = require('axios');
 import axios from "axios";
 export const instanceAxios = axios.create({
-  baseURL: 'http://localhost:5050/',
-  // baseURL: '/',
+  // baseURL: 'http://localhost:5050/',
+  baseURL: 'https://api-bos-monitoring.spinalcom.com/',
   timeout: 1000,
   headers: { 'X-Custom-Header': 'foobar' },
 });

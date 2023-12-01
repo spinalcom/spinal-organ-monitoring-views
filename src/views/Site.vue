@@ -31,7 +31,7 @@
                         {{ item.address }}
                     </div>
                     <div style="width: 33%" class="content-list">
-                        <!-- {{ item.slas.length }} -->
+                        {{ item.Slas.length }}
                     </div>
                     <div class="content-list rounded-r-lg hover">
                         <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -42,7 +42,7 @@
             </div>
         </BachupInformation>
 
-        <!-- MODALE EDIT SITE -->
+        <!-- MODALE ADD SITE -->
         <div v-if="show" class="popup_platform">
             <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
                 <div @click="show = false" class="popup-closebtn">
@@ -124,9 +124,8 @@ export default {
             },
         },
     },
-
-
     methods: {
+
         addSite() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
@@ -134,7 +133,8 @@ export default {
                 this.$store.dispatch('addSite', {
                     siteData: this.formSite
                 });
-                location.reload();
+                this.show = false;
+                this.$store.dispatch('getSiteList');
             }
         },
         displayDetail(item) {

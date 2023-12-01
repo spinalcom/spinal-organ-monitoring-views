@@ -209,10 +209,14 @@ export default {
 
         //delete element
         deletebtn() {
-            this.$store.dispatch('deleteBuilding', {
-                BuildingId: this.$route.query.id,
-            });
-            this.$router.push({ name: "Buildings" });
+
+            const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer le building ?");
+            if (confirmed) {
+                this.$store.dispatch('deleteBuilding', {
+                    BuildingId: this.$route.query.id,
+                });
+                this.$router.push({ name: "Buildings" });
+            }
         },
     },
     computed: {

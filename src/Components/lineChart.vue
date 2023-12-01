@@ -1,13 +1,18 @@
 <template>
     <v-app>
         <v-main>
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="ORGAN DETAILS">
+            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;"
+                :title="'ORGAN DETAILS ' + timePeriod.toUpperCase()">
                 <div class="chart-container">
                     <div @click="handleloading()"
                         style="z-index: 99;cursor: pointer;position: absolute; right: 0px; border: 1px solid gray;padding: 10px;top: -25px;color: white;background-color: #14202C;border-radius: 5px;font-size: 15px;min-width: 180px;display: flex;justify-content: center;height: 36px;align-items: center;">
                         <v-progress-circular v-if="loading" :size="15" color="red" :width="3"
                             indeterminate></v-progress-circular>
                         <span v-if="!loading">Changer la temporalité</span>
+                    </div>
+                    <div @click="createChart();"
+                        style="z-index: 99;cursor: pointer;position: absolute; right: 190px; border: 1px solid gray;padding: 10px;top: -25px;color: white;background-color: #14202C;border-radius: 5px;font-size: 15px;min-width: 40px;display: flex;justify-content: center;height: 36px;align-items: center;">
+                        <v-icon class="mx-1" color="white darken-2" dark>{{ reload }}</v-icon>
                     </div>
                     <canvas ref="myChart"></canvas>
                 </div>
@@ -30,10 +35,14 @@ export default {
         return {
             myChart: null,
             loading: false,
+            timePeriod: 'day',
+            reload: 'mdi-reload',
+
         }
     },
 
     methods: {
+
         handleloading() {
             this.loading = true
             setTimeout(() => {
@@ -43,24 +52,22 @@ export default {
         },
 
         updateChart() {
-
             if (this.myChart) {
                 this.myChart.destroy();  // Détruit l'ancien graphique
             }
             this.createChart();  // Crée un nouveau graphique
-
         },
 
         toggleTimePeriod() {
             this.timePeriod == 'day' ? this.timePeriod = 'week' : this.timePeriod = 'day';
-            this.updateChart();  // Met à jour le graphique lorsque la période de temps change
+            this.updateChart();
+            this.$emit('valueEmitted', this.timePeriod);
         },
         completeTimeSeries() {
             const now = Date.now();
             const oneWeekAgo = now - (7 * 24 * 60 * 60 * 1000);
             const startDate = oneWeekAgo;
             const endDate = Date.now();
-
 
             const completeData = [];
 
@@ -87,12 +94,9 @@ export default {
                     }
                 }
             }
-
-            console.log('les point fini :', edgePoints);
+            console.log(data);
             return edgePoints;
         },
-
-
 
         roundToMinute(date) {
             return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
@@ -109,15 +113,12 @@ export default {
             if (temporalite == 'day') {
                 const now = new Date();
                 const startTime = new Date(temporalite === 'day' ? now.getTime() - 24 * 60 * 60 * 1000 : now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
                 filteredDataForPeriod = filteredData.filter(item => new Date(item.date) >= startTime);
                 dataRestartOrganForPeriod = this.dataRestartOrgan.filter(item => new Date(item.date) >= startTime);
-
             } else {
                 filteredDataForPeriod = filteredData;
                 dataRestartOrganForPeriod = this.dataRestartOrgan
             }
-
 
             const data = filteredDataForPeriod.map(item => ({
                 x: new Date(item.date),
@@ -128,8 +129,6 @@ export default {
                 x: new Date(item.date),
                 y: item.value ? 2 : 0
             }));
-
-
 
             this.myChart = new Chart(ctx, {
                 type: 'line',
@@ -152,7 +151,7 @@ export default {
                         borderColor: "rgba(255, 99, 132, 1)",
                         borderWidth: 1,
                         categoryPercentage: 1,
-                        barThickness: 2,  // Spécifie l'épaisseur des barres en pixels
+                        barThickness: 2,
                         categoryPercentage: 0.1
                     }
                     ]
@@ -163,31 +162,49 @@ export default {
                         intersect: true
                     },
                     tooltips: {
-                        mode: 'point',
-                        intersect: false,
+                        // mode: 'point',
+                        // intersect: false,
 
-                        callbacks: {
-                            title: function (tooltipItems, data) {
-                                const date = data.datasets[tooltipItems[0].datasetIndex].data[tooltipItems[0].index].x;
-                                return date ? date.toLocaleString() : '';
-                            },
-                            label: function (tooltipItem, data) {
-                                return data.datasets[tooltipItem.datasetIndex].label + ": " + tooltipItem.yLabel;
-                            }
-                        }
+                        // callbacks: {
+
+                        //     title: function (tooltipItems, data) {
+                        //         const date = data.datasets[tooltipItems[0].datasetIndex].data[tooltipItems[0].index].x;
+                        //         return date ? date.toLocaleString() : '';
+                        //     },
+                        //     label: function (tooltipItem, data) {
+                        //         console.log('toto');
+                        //         return data.datasets[tooltipItem.datasetIndex].label + ": " + tooltipItem.yLabel;
+                        //     }
+                        // }
                     },
+                    // plugins: {
+                    //     zoom: {
+                    //         // Activation du zoom
+                    //         zoom: {
+                    //             enabled: true,  // Active le zoom
+                    //             mode: 'x',  // Zoom seulement sur l'axe X
+                    //             drag: true,  // Active le zoom par glissement de la souris
+                    //         },
+                    //         pan: {
+                    //             enabled: false,  // Active le défilement
+                    //             mode: 'x',  // Défilement seulement sur l'axe X
+                    //         }
+                    //     }
+                    // },
                     scales: {
                         xAxes: [{
                             type: 'time',
                             time: {
-                                unit: temporalite === 'day' ? 'hour' : 'day',  // Définir l'unité en fonction de la temporalité
+                                unit: temporalite === 'day' ? 'hour' : 'day',
                                 displayFormats: {
-                                    hour: 'HH:mm',
-                                    day: 'MMM D'
+                                    hour: 'HH:mm', // Format de l'heure
+                                    day: 'MMM D'   // Format du jour
                                 },
                             },
                             ticks: {
-                                maxTicksLimit: temporalite === 'day' ? 24 : 7  // Définir la limite de ticks en fonction de la temporalité
+                                maxTicksLimit: temporalite === 'day' ? 24 : 7,
+                                min: temporalite === 'day' ? new Date(new Date().setHours(new Date().getHours() - 24)) : null, // Heure actuelle - 24 heures
+                                max: temporalite === 'day' ? new Date() : null,
                             },
                             gridLines: {
                                 display: false
@@ -201,7 +218,7 @@ export default {
                                 max: 2,
                                 min: 0,
                                 stepSize: 1,
-                                callback: function (value, index, values) {
+                                callback: function (value) {
                                     switch (value) {
                                         case 1: return 'Alive';
                                         case 2: return 'Restart';
@@ -229,25 +246,27 @@ export default {
                     },
                 }
             });
-
         },
     },
 
     mounted() {
         this.createChart();
+
     },
     watch: {
         dataOrganAlive(newData) {
-            this.myChart.data.datasets[0].data = newData;
-            this.myChart.update();
+            this.createChart();
         },
-        etiquettes(newLabels) {
-            this.myChart.data.labels = newLabels;
-            this.myChart.update();
+        dataRestartOrgan(newData) {
+            this.createChart();
         },
+        // etiquettes(newLabels) {
+        //     this.myChart.data.labels = newLabels;
+        //     this.myChart.update();
+        // },
+
 
     },
-
 }
 </script>
 

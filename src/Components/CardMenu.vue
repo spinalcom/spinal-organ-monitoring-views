@@ -3,7 +3,7 @@
         <div v-if="title.toLowerCase().includes(verif.toLowerCase())" class="cardmenu">
             <div @click="nextpage(link)" class="cardMenu-leftside">
                 <div class="cardMenu-carre">
-                    <v-icon class="mr-2" color="black">{{icon}}</v-icon>
+                    <v-icon class="mr-2" color="black">{{ icon }}</v-icon>
                 </div>
             </div>
             <div @click="nextpage(link)" class="cardMenu-rightside">
@@ -18,14 +18,17 @@
 <script>
 export default {
     name: "card-menu",
-    props: ['title', 'subtitle', 'link', 'verif','icon'],
+    props: ['title', 'subtitle', 'link', 'verif', 'icon', 'newlink'],
     data() {
-        return {    
+        return {
         }
     },
     methods: {
         nextpage(lien) {
-            this.$router.push(lien);
+            if (this.newlink == true) {
+                window.open(lien, '_blank');
+            } else
+                this.$router.push(lien);
         }
     }
 };
@@ -36,7 +39,7 @@ export default {
     max-width: 410px;
     min-width: 250px;
     width: 22vw;
-    height:115px;
+    height: 130px;
     background: white;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 10px #2E3F4A29;
@@ -57,7 +60,7 @@ export default {
     padding: 6px;
     transition: 0.2s;
     border-top-left-radius: 6px;
-    border-bottom-left-radius : 6px;
+    border-bottom-left-radius: 6px;
     left: -1px;
     height: 102%;
     top: -1%;
@@ -119,7 +122,7 @@ export default {
     position: absolute;
     bottom: 0px;
     right: 0px;
-    
+
 }
 
 .addFavoritesMenu:hover {

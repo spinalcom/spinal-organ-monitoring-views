@@ -34,9 +34,18 @@ export default new Vuex.Store({
     CustomerList: null,
     SiteList: null,
     BuildingList: null,
+    PlatformList: null,
     CurrentCustomer: null,
     CurrentSite: null,
-    CurrentBuilding: null
+    CurrentBuilding: null,
+    CurrentPlatform: null,
+    OrganList: null,
+    CurrentOrgan: null,
+    OrganHealth: null,
+    OrganReboot: null,
+    InformationText: "default",
+    modal: false,
+    color: 'green'
   },
 
   mutations: {
@@ -49,6 +58,12 @@ export default new Vuex.Store({
     setCustomerList: (state, CustomerList) => (
       state.CustomerList = CustomerList
     ),
+    setPlatformList: (state, PlatformList) => (
+      state.PlatformList = PlatformList
+    ),
+    setCurrentPlatform: (state, platform) => (
+      state.CurrentPlatform = platform
+    ),
     setBuildingList: (state, BuildingList) => (
       state.BuildingList = BuildingList
     ),
@@ -58,6 +73,29 @@ export default new Vuex.Store({
     setCurrentSite: (state, Site) => (
       state.CurrentSite = Site
     ),
+    setCurrentOrgan: (state, Organ) => (
+      state.CurrentOrgan = Organ
+    ),
+    setOrganList: (state, Organ) => (
+      state.OrganList = Organ
+    ),
+    setOrganHealth: (state, Organ) => (
+      state.OrganHealth = Organ
+    ),
+    setOrganReboot: (state, Organ) => (
+      state.OrganReboot = Organ
+    ),
+    setInformationText: (state, Text) => (
+      state.InformationText = Text,
+      state.modal = true
+    ),
+    setInformationTextFalse(state) {
+      state.InformationText = null;
+      state.modal = false;
+    },
+    setColor(state, color) {
+      state.color = color;
+    },
   },
 
   getters: {
@@ -65,25 +103,32 @@ export default new Vuex.Store({
     CustomerList: state => state.CustomerList,
     SiteList: state => state.SiteList,
     BuildingList: state => state.BuildingList,
+    PlatformList: state => state.PlatformList,
     CurrentCustomer: state => state.CurrentCustomer,
     CurrentSite: state => state.CurrentSite,
+    CurrentOrgan: state => state.CurrentOrgan,
+    OrganList: state => state.OrganList,
+    InformationText: state => state.InformationText,
+    Color: state => state.Color
   },
 
   actions: {
 
     //-------------------------------- CUSTOMERS PAGES -------------------------:
-    async addCustomer(_, { customerData }) {
+    async addCustomer({ commit }, { customerData }) {
       try {
-        console.log('envoi');
         const response = await instanceAxios.instanceAxios.post(`/customers/`, customerData, {
           headers: {
             "Content-Type": "application/json",
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        // La ligne commit a été supprimée
+        commit("setInformationText", "Customer ajouté ! ");
+        commit("setColor", "green");
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de l'ajout du client:", error);
+        commit("setInformationText", "erreur lors de l'ajout du customer");
+        commit("setColor", "red");
       }
     },
 
@@ -96,8 +141,12 @@ export default new Vuex.Store({
           }
         });
         commit("addContactToCustomer", { customerId, newContact: response.data });
+        commit("setInformationText", "Contact ajouté ! ");
+        commit("setColor", "green");
       } catch (error) {
         console.error("Erreur lors de l'ajout du contact:", error);
+        commit("setInformationText", "Echec de l'ajout du contact  ! ");
+        commit("setColor", "red");
       }
     },
 
@@ -111,11 +160,11 @@ export default new Vuex.Store({
         });
         commit("setCustomerList", rep.data);
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de la récupération de la liste du client", error);
       }
     },
 
-    async updateCustomer(_, { CustomerId, CustomerData }) {
+    async updateCustomer({ commit }, { CustomerId, CustomerData }) {
       try {
         await instanceAxios.instanceAxios.put(`/customers/${CustomerId}`, CustomerData, {
           headers: {
@@ -123,8 +172,46 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        commit("setInformationText", "Client mis à jour! ");
+        commit("setColor", "green");
       } catch (error) {
-        console.error("Erreur lors de la mise à jour du site:", error);
+        console.error("Erreur lors de la mise à jour du client:", error);
+        commit("setInformationText", "Echec de la mise a jour du client  !");
+        commit("setColor", "red");
+      }
+    },
+
+    async updateContact({ commit }, { ContactId, ContactData }) {
+      try {
+        await instanceAxios.instanceAxios.put(`/customers/${ContactId}/updateContact`, ContactData, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Contact mis à jour! ");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du contact:", error);
+        commit("setInformationText", "Echec de la mise a jour du contact  ! ");
+        commit("setColor", "red");
+      }
+    },
+
+    async deleteContact({ commit }, { contactId }) {
+      try {
+        await instanceAxios.instanceAxios.delete(`/customers/${contactId}/deleteContact`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Contact supprimé ");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de la suppression du contact", error);
+        commit("setInformationText", "Echec de la suppression du contact  ! ");
+        commit("setColor", "red");
       }
     },
 
@@ -138,12 +225,12 @@ export default new Vuex.Store({
         });
         commit("setCurrentCustomer", rep.data);
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de la récupération du contact:", error);
       }
     },
 
 
-    async linkCustomerToSite(_, { customerId, siteId }) {
+    async linkCustomerToSite({ commit }, { customerId, siteId }) {
       try {
         const response = await instanceAxios.instanceAxios.post('/customers/linkCustomerToSite', {
           customerId: customerId,
@@ -154,9 +241,13 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        commit("setInformationText", "Echec de la liaison ! ");
+        commit("setColor", "green");
         return response.data;
       } catch (error) {
         console.error("Erreur lors de l'ajout du site:", error);
+        commit("setInformationText", "Liaisn effectué ! ");
+        commit("setColor", "red");
       }
     },
 
@@ -170,14 +261,17 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        commit("addContactToCustomer", { siteData: response.data });
+        commit("setInformationText", "Site ajouté !");
+        commit("setColor", "green");
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de l'ajout du site:", error);
+        commit("setInformationText", "Echec de l'ajout du Site! ");
+        commit("setColor", "red");
       }
     },
 
 
-    async updateSite(_, { siteId, siteData }) {
+    async updateSite({ commit }, { siteId, siteData }) {
       try {
         await instanceAxios.instanceAxios.put(`/sites/${siteId}`, siteData, {
           headers: {
@@ -185,12 +279,16 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        commit("setInformationText", "Site mis à jour ! ");
+        commit("setColor", "green");
       } catch (error) {
         console.error("Erreur lors de la mise à jour du site:", error);
+        commit("setInformationText", "Echec de la mise à jour du Site! ");
+        commit("setColor", "red");
       }
     },
 
-    async deleteSite(_, { siteId }) {
+    async deleteSite({ commit }, { siteId }) {
       try {
         await instanceAxios.instanceAxios.delete(`/sites/${siteId}`, {
           headers: {
@@ -198,8 +296,12 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        commit("setInformationText", "Site supprimé! ");
+        commit("setColor", "green");
       } catch (error) {
-        console.error("Erreur lors de la mise à jour du site:", error);
+        console.error("Erreur lors de la suppression de site", error);
+        commit("setInformationText", "Echec de la suppression du Site! ");
+        commit("setColor", "red");
       }
     },
 
@@ -213,7 +315,7 @@ export default new Vuex.Store({
         });
         commit("setSiteList", rep.data);
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de la récupération de la liste des sites", error);
       }
     },
 
@@ -231,7 +333,7 @@ export default new Vuex.Store({
       }
     },
 
-    async linkSiteToBuilding(_, { siteId, buildingId }) {
+    async linkSiteToBuilding({ commit }, { siteId, buildingId }) {
       try {
         const response = await instanceAxios.instanceAxios.post('/sites/linkSiteToBuilding', {
           siteId: siteId,
@@ -242,9 +344,13 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        commit("setInformationText", "Liaison efféctué");
+        commit("setColor", "green");
         return response.data;
       } catch (error) {
-        console.error("Erreur lors de l'ajout du site:", error);
+        console.error("Erreur lors de l'ajout du site", error);
+        commit("setInformationText", "Echec de la liaison ");
+        commit("setColor", "red");
       }
     },
 
@@ -260,11 +366,11 @@ export default new Vuex.Store({
         });
         commit("setBuildingList", rep.data);
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de la récupération de la liste des buildings:", error);
       }
     },
 
-    async deleteBuilding(_, { BuildingId }) {
+    async deleteBuilding({ commit }, { BuildingId }) {
       try {
         await instanceAxios.instanceAxios.delete(`/buildings/${BuildingId}`, {
           headers: {
@@ -272,26 +378,33 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        commit("setInformationText", "Building supprimé");
+        commit("setColor", "green");
       } catch (error) {
-        console.error("Erreur lors de la mise à jour du site:", error);
+        console.error("Erreur lors de la suppression du building:", error);
+        commit("setInformationText", "Echec de la suppression");
+        commit("setColor", "red");
       }
     },
 
     async addBuilding({ commit }, { BuildingData }) {
       try {
-        const response = await instanceAxios.instanceAxios.post(`/buildings/`, BuildingData, {
+        await instanceAxios.instanceAxios.post(`/buildings/`, BuildingData, {
           headers: {
             "Content-Type": "application/json",
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        commit("addContactToCustomer", { BuildingData: response.data });
+        commit("setInformationText", "Building ajouté");
+        commit("setColor", "green");
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de l'ajout du building:", error);
+        commit("setInformationText", "Echec de l'ajout");
+        commit("setColor", "red");
       }
     },
 
-    async updateBuilding(_, { BuildingId, BuildingData }) {
+    async updateBuilding({ commit }, { BuildingId, BuildingData }) {
       try {
         await instanceAxios.instanceAxios.put(`/buildings/${BuildingId}`, BuildingData, {
           headers: {
@@ -299,12 +412,16 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        commit("setInformationText", "Building mis à jour");
+        commit("setColor", "green");
       } catch (error) {
-        console.error("Erreur lors de la mise à jour du site:", error);
+        console.error("Erreur lors de la mise à jour du building:", error);
+        commit("setInformationText", "Echec de la mise à jour du building");
+        commit("setColor", "red");
       }
     },
 
-    
+
     async getBuilding({ commit }, { buildingId }) {
       try {
         const rep = await instanceAxios.instanceAxios.get(`/buildings/${buildingId}`, {
@@ -315,9 +432,170 @@ export default new Vuex.Store({
         });
         commit("setCurrentBuilding", rep.data);
       } catch (error) {
-        console.error("Erreur lors de l'ajout du contact:", error);
+        console.error("Erreur lors de la récupération du building:", error);
       }
     },
+
+
+    //-------------------------------- PLATFORMS PAGES -------------------------:
+    async addPlatform({ commit }, { platformData }) {
+      try {
+        const response = await instanceAxios.instanceAxios.post(`/platforms/`, platformData, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Plateforme ajouté");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de la plateforme:", error);
+        commit("setInformationText", "Echec de l'ajout de Plateforme");
+        commit("setColor", "red");
+      }
+    },
+
+    async getPlatformList({ commit }) {
+      try {
+        const rep = await instanceAxios.instanceAxios.get(`/platforms`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setPlatformList", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la liste des plateformes", error);
+      }
+    },
+    async getPlatform({ commit }, { platformId }) {
+      try {
+        const rep = await instanceAxios.instanceAxios.get(`/platforms/${platformId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setCurrentPlatform", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la plateforme", error);
+      }
+    },
+    async deletePlatform({ commit }, { platformId }) {
+      try {
+        await instanceAxios.instanceAxios.delete(`/platforms/${platformId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Suppresion de la plateforme effectué");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de la suppression:", error);
+        commit("setInformationText", "Echec de lasuppression de la plateforme");
+        commit("setColor", "red");
+      }
+    },
+    async updatePlatform({ commit }, { PlatformId, PlatformData }) {
+      try {
+        await instanceAxios.instanceAxios.put(`/platforms/${PlatformId}`, PlatformData, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "mise à jour du plateforme effectué");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour de la plateforme:", error);
+        commit("setInformationText", "Echec de la mise à jour de la plateforme");
+        commit("setColor", "red");
+      }
+    },
+
+    //-------------------------------- ORGANS PAGES -------------------------:
+
+    async getOrganList({ commit }) {
+      try {
+        const rep = await instanceAxios.instanceAxios.get(`/organs`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setOrganList", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des organes:", error);
+      }
+    },
+
+    async deleteOrgan({ commit }, { organId }) {
+      try {
+        await instanceAxios.instanceAxios.delete(`/organs/${organId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Suppression de l'organe effectué");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de la suppression de l'organe:", error);
+        commit("setInformationText", "Echec de la suppression de l'organe");
+        commit("setColor", "red");
+      }
+    },
+    async getOrgan({ commit }, { organId }) {
+      try {
+        const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setCurrentOrgan", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'organe:", error);
+      }
+    },
+
+
+    async gettoto({ commit }, { organId, begin, end }) {
+      // console.log('test22', organId, begin, end);
+      try {
+        console.log('lalalalaalallala', organId, begin, end);
+        const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/health/${begin}/${end}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        console.log(rep);
+        commit("setOrganHealth", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'organe:", error);
+      }
+    },
+
+    async getOrganReboot({ commit }, { organId, begin, end }) {
+      console.log('test22------------------------------', organId, begin, end);
+      try {
+        console.log('lalalalaalallala', organId, begin, end);
+        const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/reboot/${begin}/${end}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        console.log(rep);
+        commit("setOrganReboot", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'organe:", error);
+      }
+    }
+
+
 
   },
 

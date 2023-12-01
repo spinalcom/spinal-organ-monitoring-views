@@ -1,16 +1,20 @@
 <template>
   <div id="app">
+    
     <Navbar v-if="!isLoginRoute"></Navbar>
+    <Validation></Validation>
     <router-view id="content" />
   </div>
 </template>
 
 <script>
 import Navbar from "./views/SideBar.vue";
+import Validation from "./Components/ValidationBar.vue"
 export default {
   name: 'App',
   components: {
-    Navbar
+    Navbar,
+    Validation
   },
   methods: {
     

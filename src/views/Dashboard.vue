@@ -2,11 +2,12 @@
   <v-app>
     <v-main class="ml-12">
       <div>
-        <div class="d-flex">
-          <div style="min-width: 325px;">
+        <div style="font-weight: bold; color: #9BBCC4;font-size: 25px;margin-bottom: 50px;" class="d-flex mt-4 b">
+          <!-- <div style="min-width: 325px;">
             <v-icon style="color: black" class="input-icon">mdi-magnify</v-icon>
             <input v-model="filtersData.search" class="input-menu" placeholder="rechercher" type="text">
-          </div>
+          </div> -->
+          Liste des applications du portail de monitoring
         </div>
       </div>
       <div class="mt-5">
@@ -14,38 +15,40 @@
         <div class="menu-card">
           <div class="menu-title">
             <hr class="line-division">
-            ADMINISTRATION
+            APP
           </div>
           <div class="menu-administraton">
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
               <CardMenu :icon="'mdi-shield-crown'" :verif="filtersData.search" :link="'platforms'"
-                :title="'PLATFORM LIST'" :subtitle="'Liste des Platformes'">
+                :title="'PLATFORMS LIST'" :subtitle="'Platforms list'">
               </CardMenu>
               <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'UserList'" :title="'USER LIST'"
-                :subtitle="'Liste des utilisateurs'"></CardMenu>
+                :subtitle="'Users List'"></CardMenu>
               <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'Organ'" :title="'ORGAN LIST'"
-                :subtitle="'Organ List'">
+                :subtitle="'Organs List'">
               </CardMenu>
               <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Server'" :title="'SERVER LIST'"
-                :subtitle="'liste des servers'"></CardMenu>
+                :subtitle="'Servers List'"></CardMenu>
             </div>
           </div>
         </div>
         <div class="menu-card">
           <div class="menu-title">
             <hr class="line-division">
-            ORGANISATION
+            APP
           </div>
           <div class="menu-administraton">
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
               <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Customers'" :title="'CUSTOMERS LIST'"
-                :subtitle="'Customers list'"></CardMenu>
+                :subtitle="'Customers List'"></CardMenu>
               <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Site'" :title="'SITE LIST'"
-                :subtitle="'SITE LIST'"></CardMenu>
+                :subtitle="'Sites List'"></CardMenu>
               <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Buildings'" :title="'BUILDING LIST'"
-                :subtitle="'BUILDING LIST'"></CardMenu>
+                :subtitle="'Buildings List'"></CardMenu>
+                <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :newlink="true" :link="'http://141.94.203.43/zabbix/zabbix.php?action=dashboard.view'" :title="'ZABBIX'"
+                :subtitle="'Online Server'"></CardMenu>
             </div>
           </div>
         </div>
@@ -144,6 +147,7 @@ export default {
 
 .menu-card {
   display: flex;
+  margin-bottom: 5px;
 }
 
 .container-cardmenu {

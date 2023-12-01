@@ -15,7 +15,6 @@
                 <BlueButton @click.native="show = true" :icon="'mdi-plus'" title="ADD ORGAN" :val="'blue'" />
             </v-card>
         </div>
-
         <BachupInformation style="height: 100vh" title="ORGANS LIST">
             <Tabs :items="items">
                 <v-tab-item>
@@ -24,10 +23,9 @@
                         <div style="width: 21%">Type</div>
                         <div style="width: 21%">Status</div>
                         <div style="width: 21%">Last Health Time</div>
-                        <div style="width: 24%">Ip adress</div>
+                        <div style="width: 24%">Ip address</div>
                         <!-- <div style="width: 100%">ADD/DELETE</div> -->
                     </div>
-
                     <div v-for="item in this.Organ" :key="item.id">
                         <div v-if="item.organType == 'api server'" class="d-flex mb-2">
                             <div style="width: 100%" class="content-list">
@@ -51,6 +49,7 @@
                             <div class="content-list rounded-r-lg hover">
                                 <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
                                     <v-icon>mdi-arrow-right</v-icon>
+                                    <v-progress-circular v-if="clicked" indeterminate color="primary"></v-progress-circular>
                                 </button>
                             </div>
                         </div>
@@ -62,7 +61,7 @@
                         <div style="width: 21%">Type</div>
                         <div style="width: 21%">Status</div>
                         <div style="width: 21%">Last Health Time</div>
-                        <div style="width: 24%">Ip adress</div>
+                        <div style="width: 24%">Ip address</div>
                         <!-- <div style="width: 100%">ADD/DELETE</div> -->
                     </div>
 
@@ -89,6 +88,7 @@
                             <div class="content-list rounded-r-lg hover">
                                 <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
                                     <v-icon>mdi-arrow-right</v-icon>
+                                    <v-progress-circular v-if="clicked" indeterminate color="primary"></v-progress-circular>
                                 </button>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                         <div style="width: 21%">Type</div>
                         <div style="width: 21%">Status</div>
                         <div style="width: 21%">Last Health Time</div>
-                        <div style="width: 24%">Ip adress</div>
+                        <div style="width: 24%">Ip address</div>
                         <!-- <div style="width: 100%">ADD/DELETE</div> -->
                     </div>
 
@@ -125,8 +125,10 @@
                                 {{ item.ip_adress }}
                             </div>
                             <div class="content-list rounded-r-lg hover">
-                                <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
-                                    <v-icon>mdi-arrow-right</v-icon>
+                                <button class="pr-2" style="height: 100%" @click="displayDetail(item);">
+                                    <v-icon v-if="!clicked">mdi-arrow-right</v-icon>
+                                    <v-progress-circular v-if="clicked" indeterminate size="25"
+                                        color="black"></v-progress-circular>
                                 </button>
                             </div>
                         </div>
@@ -176,6 +178,7 @@ import Tabs from "../Components/Tabs.vue";
 import { mapActions, mapGetters } from "vuex";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+import { mapState } from 'vuex';
 
 
 export default {
@@ -191,6 +194,7 @@ export default {
     },
     data: () => ({
         // token: "",
+        clicked: false,
         formOrgan: {
             name: null,
             mac_adress: null,
@@ -338,13 +342,27 @@ export default {
         },
 
         displayDetail(item) {
-            this.$router.push({ name: "DetailOrgan", query: { id: item.id } });
+            this.clicked = true;
+            setTimeout(() => {
+                this.$router.push({ name: "DetailOrgan", query: { id: item.id } });
+            }, 0);
+
         },
     },
     computed: {
+        ...mapState(['OrganList'])
     },
     created() {
-    }
+    },
+    mounted() {
+        this.$store.dispatch('getOrganList');
+    },
+    watch: {
+        OrganList(newList) {
+            this.Organ = newList;
+            console.log(this.Organ);
+        }
+    },
 }
 </script>
   

@@ -138,7 +138,8 @@ export default {
         this.$store.dispatch('addBuilding', {
           BuildingData: this.formBuilding
         });
-        location.reload();
+        this.show = false;
+        this.$store.dispatch('getBuildingList');
       }
     },
 
