@@ -17,56 +17,16 @@
         </div>
         <BachupInformation style="height: 100vh" title="ORGANS LIST">
             <Tabs :items="items">
-                <v-tab-item>
-                    <div style="margin-top: 20px !important " class="d-flex mb-2 mt-4 ml-2">
-                        <div style="width: 20%;margin-left: 5px;">Name</div>
-                        <div style="width: 21%">Type</div>
-                        <div style="width: 21%">Status</div>
-                        <div style="width: 21%">Last Health Time</div>
-                        <div style="width: 24%">Ip address</div>
-                        <!-- <div style="width: 100%">ADD/DELETE</div> -->
-                    </div>
-                    <div v-for="item in this.Organ" :key="item.id">
-                        <div v-if="item.organType == 'api server'" class="d-flex mb-2">
-                            <div style="width: 100%" class="content-list">
-                                {{ item.name }}
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                {{ item.type }}
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
-                                    v-if="item.status == 'on'">ON</div>
-                                <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
-                                    v-else>OFF</div>
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                {{ item.last_health_time }}
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                {{ item.ip_adress }}
-                            </div>
-                            <div class="content-list rounded-r-lg hover">
-                                <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
-                                    <v-icon>mdi-arrow-right</v-icon>
-                                    <v-progress-circular v-if="clicked" indeterminate color="primary"></v-progress-circular>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </v-tab-item>
-                <v-tab-item>
+                <v-tab-item v-for="tab in this.items" :key="tab">
                     <div class="d-flex mb-2 mt-4 ml-2">
                         <div style="width: 20%;margin-left: 5px;">Name</div>
                         <div style="width: 21%">Type</div>
                         <div style="width: 21%">Status</div>
                         <div style="width: 21%">Last Health Time</div>
-                        <div style="width: 24%">Ip address</div>
-                        <!-- <div style="width: 100%">ADD/DELETE</div> -->
+                        <div style="width: 24%">Mac address</div>
                     </div>
-
-                    <div v-for="item in this.Organ" :key="item.id">
-                        <div v-if="item.organType == 'hub'" class="d-flex mb-2">
+                    <div v-for="item in Organ" :key="item.id">
+                        <div v-if="checkTypeOrgan(item.organType, tab) == 1" class="d-flex mb-2">
                             <div style="width: 100%" class="content-list">
                                 {{ item.name }}
                             </div>
@@ -75,54 +35,15 @@
                             </div>
                             <div style="width: 100%" class="content-list">
                                 <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
-                                    v-if="item.status == 'on'">ON</div>
+                                    v-if="item.status == 1">ON</div>
                                 <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
                                     v-else>OFF</div>
                             </div>
                             <div style="width: 100%" class="content-list">
-                                {{ item.last_health_time }}
+                                {{ convertTimestampToDate(item.lastHealth) }}
                             </div>
                             <div style="width: 100%" class="content-list">
-                                {{ item.ip_adress }}
-                            </div>
-                            <div class="content-list rounded-r-lg hover">
-                                <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
-                                    <v-icon>mdi-arrow-right</v-icon>
-                                    <v-progress-circular v-if="clicked" indeterminate color="primary"></v-progress-circular>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </v-tab-item>
-                <v-tab-item>
-                    <div class="d-flex mb-2 mt-4 ml-2">
-                        <div style="width: 20%;margin-left: 5px;">Name</div>
-                        <div style="width: 21%">Type</div>
-                        <div style="width: 21%">Status</div>
-                        <div style="width: 21%">Last Health Time</div>
-                        <div style="width: 24%">Ip address</div>
-                        <!-- <div style="width: 100%">ADD/DELETE</div> -->
-                    </div>
-
-                    <div v-for="item in this.Organ" :key="item.id">
-                        <div v-if="item.organType != 'hub' && item.organType != 'api server'" class="d-flex mb-2">
-                            <div style="width: 100%" class="content-list">
-                                {{ item.name }}
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                {{ item.type }}
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
-                                    v-if="item.status == 'on'">ON</div>
-                                <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
-                                    v-else>OFF</div>
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                {{ item.last_health_time }}
-                            </div>
-                            <div style="width: 100%" class="content-list">
-                                {{ item.ip_adress }}
+                                {{ item.mac_adress }}
                             </div>
                             <div class="content-list rounded-r-lg hover">
                                 <button class="pr-2" style="height: 100%" @click="displayDetail(item);">
@@ -134,16 +55,16 @@
                         </div>
                     </div>
                 </v-tab-item>
+
             </Tabs>
         </BachupInformation>
-
         <div v-if="show" class="popup_platform">
             <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
                 <div @click="show = false" class="popup-closebtn">
                     <span>X</span>
                 </div>
                 <p class="mb-6">ADD ORGAN</p>
-                <InputUser v-model="formOrgan.name" title="  ORGAN NAME" id="name" />
+                <InputUser v-model="formOrgan.name" title="ORGAN NAME" id="name" />
                 <span class="errors" v-if="$v.formOrgan.name.$error"> Organ Name is required</span>
                 <InputUser v-model="formOrgan.mac_adress" title="MAC ADDRESS" id="mac_address" />
                 <span class="errors" v-if="$v.formOrgan.mac_adress.$error"> Organ mac_address is required</span>
@@ -205,108 +126,11 @@ export default {
         },
         show: false,
         items: [
+            'ORGANS',
             'ORGANS API SERVER',
             'ORGANS HUB',
-            'OTHERS ORGANS',
         ],
         Organ: [
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                organType: 'hub',
-                "status": "off",
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 1"
-            },
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                organType: 'hub',
-                "status": "on",
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 1"
-            },
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                organType: 'hub',
-                "status": "on",
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 1"
-            },
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "off",
-                organType: 'api server',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 4"
-            },
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "off",
-                organType: 'api server',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 4"
-            },
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "on",
-                organType: 'api server',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 4"
-            },
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "on",
-                organType: 'api server',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 4"
-            }, {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "on",
-                organType: 'api server',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 4"
-            }, {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "on",
-                organType: 'api server',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 4"
-            }, {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "on",
-                organType: 'api server',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 4"
-            },
-            {
-                "name": "OrganTest",
-                "type": "MonitoringServiceOrgan",
-                "status": "on",
-                organType: 'other',
-                "ip_adress": "<string>",
-                "id": "22de-f0e9-149e-18adc719527",
-                last_health_time: "test 2 "
-            },
-
         ],
     }),
     validations: {
@@ -333,6 +157,17 @@ export default {
     },
 
     methods: {
+        checkTypeOrgan(organ, tab) {
+            console.log('tesr');
+            if (tab == 'ORGANS' && organ != 'HubOrgan' && organ != 'api-server') {
+                return 1
+            } else if (tab == 'ORGANS API SERVER' && organ == 'api-server') {
+                return 1
+            } else if (tab == 'ORGANS HUB' && organ == 'HubOrgan') {
+                return 1
+            } else
+                return 0;
+        },
         AddOrgan() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
@@ -348,6 +183,12 @@ export default {
             }, 0);
 
         },
+
+        convertTimestampToDate(timestamp) {
+            var date = new Date(timestamp);
+            return date.toLocaleDateString("fr-FR") + ' ' + date.toLocaleTimeString("fr-FR");
+        }
+
     },
     computed: {
         ...mapState(['OrganList'])
@@ -516,7 +357,7 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    font: normal normal normal 11px/13px Charlevoix Pro;
+    font: normal normal normal 11px/13px Charlevoix Pro ;
     letter-spacing: 1.1px;
 }
 </style>
