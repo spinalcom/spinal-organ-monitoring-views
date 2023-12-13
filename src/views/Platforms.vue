@@ -44,8 +44,9 @@
                     <div style="width: 20%" class="content-list">
                         {{ item.organList.length }}
                     </div>
-                    <div style="width: 20%" class="content-list">
-                        {{ item.status }}
+                    <div style="width: 20%;overflow: hidden;cursor: pointer;" class="content-list"
+                        @click="copyToClipboard(item.TokenBosRegister)">
+                        {{ item.TokenBosRegister }}
                     </div>
                     <div class="content-list rounded-r-lg hover">
                         <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -70,9 +71,9 @@
                 <span class="errors" v-if="$v.formPlatform.ipAdress.$error"> Platform IP address is required</span>
                 <InputUser title="  PLATFORM URL" id="userName" v-model="formPlatform.url" />
                 <span class="errors" v-if="$v.formPlatform.url.$error"> Platform IP address is required</span>
-                <InputUser title="  PLATFORM TokenBosRegister" id="userName" v-model="formPlatform.TokenBosRegister" />
+                <!-- <InputUser title="  PLATFORM TokenBosRegister" id="userName" v-model="formPlatform.TokenBosRegister" />
                 <span class="errors" v-if="$v.formPlatform.TokenBosRegister.$error"> Platform TokenBosRegister is
-                    required</span>
+                    required</span> -->
                 <InputUser title="  PLATFORM loginAdmin" id="userName" v-model="formPlatform.loginAdmin" />
                 <span class="errors" v-if="$v.formPlatform.loginAdmin.$error"> Platform login admin is required</span>
                 <InputUser title="  PLATFORM passwordAdmin" id="userName" v-model="formPlatform.passwordAdmin" />
@@ -170,17 +171,23 @@ export default {
             passwordAdmin: {
                 required,
             },
-            TokenBosRegister: {
-                required,
-            }
+
         },
     },
 
     methods: {
+        copyToClipboard(textToCopy) {
+            const temp = document.createElement("textarea");
+            temp.value = textToCopy;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand("copy");
+            document.body.removeChild(temp);
+        },
         AddPlatform() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
-                //AJOUTER LA PLATFORM STORE
+                //AJOUTER LA PLATFORM SABu0Rk3tZnTORE
                 this.$store.dispatch('addPlatform', {
                     platformData: this.formPlatform
                 });
@@ -200,10 +207,13 @@ export default {
         this.$store.dispatch('getPlatformList');
     },
     watch: {
-    PlatformList(newList) {
-      this.platform = newList;
-    }
-  },
+        PlatformList(newList) {
+
+            this.platform = newList;
+            // console.log(this.platform, 'testtt');
+
+        }
+    },
     created() {
     }
 }

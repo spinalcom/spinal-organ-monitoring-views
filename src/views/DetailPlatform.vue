@@ -232,6 +232,7 @@ export default {
                     this.platform = platform;
                 }
             });
+            // console.log(this.platformList, 'maisss');
         }
     },
     created() {

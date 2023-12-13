@@ -143,7 +143,7 @@ export default {
     },
     methods: {
         handleValueEmitted(value) {
-            console.log('Valeur reçue du composant linechart :', value);
+            // console.log('Valeur reçue du composant linechart :', value);
             // Traitez la valeur ici
             this.presentTempo = value
         },
@@ -207,14 +207,15 @@ export default {
         },
         CurrentOrgan(newOrgan) {
             this.organ = newOrgan
+            // console.log(this.organ , 'le reste');
         },
         OrganHealth(newData) {
             this.dataOrganAlive = newData;
-            console.log('tata', this.dataOrganAlive);
+            // console.log('tata', this.dataOrganAlive);
         },
         OrganReboot(newData) {
             this.dataRestartOrgan = newData;
-            console.log('toto', this.dataRestartOrgan);
+            // console.log('toto', this.dataRestartOrgan);
         }
 
     },

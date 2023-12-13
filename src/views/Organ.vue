@@ -158,7 +158,7 @@ export default {
 
     methods: {
         checkTypeOrgan(organ, tab) {
-            console.log('tesr');
+            // console.log('tesr');
             if (tab == 'ORGANS' && organ != 'HubOrgan' && organ != 'api-server') {
                 return 1
             } else if (tab == 'ORGANS API SERVER' && organ == 'api-server') {
@@ -201,7 +201,7 @@ export default {
     watch: {
         OrganList(newList) {
             this.Organ = newList;
-            console.log(this.Organ);
+            // console.log(this.Organ);
         }
     },
 }

@@ -358,7 +358,7 @@ export default {
         addBuilding() {
             this.$v.formBuilding.$touch();
             if (!this.$v.formBuilding.$invalid) {
-                console.log('add');
+                // console.log('add');
                 this.$store.dispatch('linkSiteToBuilding', {
                     siteId: this.$route.query.id,
                     buildingId: this.formBuilding.id,
@@ -392,7 +392,7 @@ export default {
         //SELECT FILE
         handleFileUpload(event) {
             const selectedFile = event.target.files[0];
-            console.log("Fichier sélectionné :", selectedFile);
+            // console.log("Fichier sélectionné :", selectedFile);
         },
 
         // DELETE ELEMENT 
@@ -424,9 +424,9 @@ export default {
             this.site = newSite
         },
         BuildingList(newList) {
-            console.log('log');
+            // console.log('log');
             this.buildingsList = newList;
-            console.log(this.buildingsList);
+            // console.log(this.buildingsList);
         }
     },
     created() {
