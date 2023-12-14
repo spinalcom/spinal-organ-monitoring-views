@@ -498,6 +498,7 @@ export default new Vuex.Store({
       }
     },
     async updatePlatform({ commit }, { PlatformId, PlatformData }) {
+      console.log(PlatformId ,PlatformData);
       try {
         await instanceAxios.instanceAxios.put(`/platforms/${PlatformId}`, PlatformData, {
           headers: {

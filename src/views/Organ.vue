@@ -126,9 +126,9 @@ export default {
         },
         show: false,
         items: [
+            'ORGANS HUB',
             'ORGANS',
             'ORGANS API SERVER',
-            'ORGANS HUB',
         ],
         Organ: [
         ],
@@ -357,7 +357,7 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    font: normal normal normal 11px/13px Charlevoix Pro ;
+    font: normal normal normal 11px/13px Charlevoix Pro;
     letter-spacing: 1.1px;
 }
 </style>

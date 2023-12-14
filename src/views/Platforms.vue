@@ -22,7 +22,7 @@
                 <div style="width: 20%">Platform Type</div>
                 <div style="width: 20%">url</div>
                 <div style="width: 20%">Organ number</div>
-                <div style="width: 22%">status</div>
+                <div style="width: 22%">TokenBosRegister</div>
             </div>
 
             <div v-for="item in this.platform" :key="item.id">
@@ -37,16 +37,19 @@
                     <div style="width: 20%" class="content-list">
                         {{ item.platformType }}
                     </div>
-                    <div style="width: 20%" class="content-list">
+                    <div style="width: 20% ; cursor: pointer; " @click="copyToClipboard(item.url, item.id, 'url')"
+                        class=" content-list copytooltip">
                         {{ item.url }}
+                        <span v-if="clickedItemId2 === item.id" class="tooltip">Token copié</span>
                     </div>
 
                     <div style="width: 20%" class="content-list">
                         {{ item.organList.length }}
                     </div>
-                    <div style="width: 20%;overflow: hidden;cursor: pointer;" class="content-list"
-                        @click="copyToClipboard(item.TokenBosRegister)">
-                        {{ item.TokenBosRegister }}
+                    <div style="width: 20%; overflow: hidden; cursor: pointer;" class="content-list copytooltip"
+                        @click="copyToClipboard(item.TokenBosRegister, item.id)">
+                        Click to copy
+                        <span v-if="clickedItemId === item.id" class="tooltip">Token copié</span>
                     </div>
                     <div class="content-list rounded-r-lg hover">
                         <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -87,7 +90,6 @@
                 </div>
             </v-card>
         </div>
-
     </v-app>
 </template>
   
@@ -116,6 +118,9 @@ export default {
     },
     data: () => ({
         show: false,
+        clickedItemId2: null,
+        clickedItemId: null,
+        showTooltip: false,
         formPlatform: {
             name: null,
             platformType: null,
@@ -176,14 +181,25 @@ export default {
     },
 
     methods: {
-        copyToClipboard(textToCopy) {
+        copyToClipboard(textToCopy, id, type) {
             const temp = document.createElement("textarea");
             temp.value = textToCopy;
             document.body.appendChild(temp);
             temp.select();
             document.execCommand("copy");
             document.body.removeChild(temp);
+            console.log(id);
+
+            if (type == 'url')
+                this.clickedItemId2 = id
+            else
+                this.clickedItemId = id;
+            setTimeout(() => {
+                this.clickedItemId = null;
+                this.clickedItemId2 = null;
+            }, 800);
         },
+
         AddPlatform() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
@@ -194,8 +210,8 @@ export default {
                 this.show = false;
                 this.$store.dispatch('getPlatformList');
             }
-
         },
+
         displayDetail(item) {
             this.$router.push({ name: "DetailPlatform", query: { id: item.id } });
         },
@@ -220,11 +236,26 @@ export default {
 </script>
   
 <style scoped >
+.tooltip {
+    position: absolute;
+    background-color: rgb(50, 199, 62);
+    color: white;
+    border-radius: 4px;
+    height: 32px;
+    width: 135px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-size: 15px;
+    /* Autres styles pour la positionner et l'animer comme souhaité */
+}
+
 .app {
     font: normal normal normal 10px/12px Charlevoix Pro;
     letter-spacing: 1px;
     background: #ffffff00;
 }
+
 
 .errors {
     margin: 0;
@@ -313,7 +344,7 @@ export default {
 }
 
 .content-list {
-    border: 1px solid rgba(216, 216, 216, 0.623);
+    border: 1px solid rgba(227, 227, 227, 0.623);
     background-color: #ffffff;
     display: flex;
     align-items: center;
@@ -323,6 +354,15 @@ export default {
     letter-spacing: 1.2px;
     margin: 1px;
     flex-wrap: wrap;
+}
+
+
+.copytooltip {
+    background-color: rgb(255, 255, 255);
+}
+
+.copytooltip:hover {
+    background-color: rgb(232, 232, 232);
 }
 
 .popup-btn-ajouter {

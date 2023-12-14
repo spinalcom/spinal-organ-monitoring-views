@@ -31,6 +31,8 @@ with this file. If not, see
           <div class="list"></div>
           <div class="list"></div>
         </div>
+
+
         <div v-on:mouseleave="menu2IsOpen = false" v-if="menu2IsOpen" class="menu2">
           <div @click="logout" class="btn_menu2">Déconnexion</div>
         </div>
@@ -56,6 +58,13 @@ with this file. If not, see
           </div>
         </div>
       </div>
+
+      <div @click="back()" class="back-btn">
+        <div class="rounded_element">
+          <v-icon>mdi-arrow-u-left-top</v-icon>
+        </div>
+      </div>
+
     </v-main>
   </v-app>
 </template>
@@ -98,7 +107,12 @@ export default {
     ...mapActions({
       logout: 'login/logout'
     }),
+    back() {
+      this.$router.go(-1);
+    },
   },
+
+
   created() {
     this.checkroute();
   },
@@ -127,6 +141,23 @@ export default {
   cursor: pointer;
   font-size: 12px;
   color: #000000;
+}
+
+.back-btn {
+  width: 60px;
+  height: 60px;
+  background-color: rgb(255, 255, 255);
+  z-index: 99;
+  position: fixed;
+  left: 440px;
+  top: 13px;
+  border-radius: 7px;
+  border-bottom-right-radius: 5px;
+  box-shadow: 0px 3px 10px #49545C29;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  cursor: pointer;
 }
 
 .btn_menu2:hover {
@@ -164,6 +195,15 @@ export default {
   z-index: 99;
 }
 
+.rounded_element {
+  border: 1px solid rgb(233, 232, 232);
+  width: 80%;
+  height: 80%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .navBarDropMenu:hover {
   background-color: #14202C;
