@@ -211,11 +211,16 @@ export default {
 
         //DELETE ELEMENT
         deletebtn() {
-            this.$store.dispatch('deletePlatform', {
-                platformId: this.$route.query.id,
-            });
-            this.$router.push("platforms");
+            const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cet organe ?");
+            if (confirmed) {
+                this.$store.dispatch('deletePlatform', {
+                    platformId: this.$route.query.id,
+                });
+                this.$router.push("platforms");
+            }
         },
+
+
     },
     mounted() {
         this.$store.dispatch('getPlatformList');
