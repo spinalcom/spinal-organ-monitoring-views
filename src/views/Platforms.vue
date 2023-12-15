@@ -37,10 +37,9 @@
                     <div style="width: 20%" class="content-list">
                         {{ item.platformType }}
                     </div>
-                    <div style="width: 20% ; cursor: pointer; " @click="copyToClipboard(item.url, item.id, 'url')"
+                    <div style="width: 20% ; cursor: pointer; overflow: hidden; " @click="openurl(item.url)"
                         class=" content-list copytooltip">
                         {{ item.url }}
-                        <span v-if="clickedItemId2 === item.id" class="tooltip">Token copié</span>
                     </div>
 
                     <div style="width: 20%" class="content-list">
@@ -200,6 +199,10 @@ export default {
             }, 800);
         },
 
+        openurl(url) {
+            window.open(url, '_blank');
+        },
+
         AddPlatform() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
@@ -226,6 +229,7 @@ export default {
         PlatformList(newList) {
 
             this.platform = newList;
+            console.log(this.platform );
             // console.log(this.platform, 'testtt');
 
         }

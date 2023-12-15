@@ -35,13 +35,24 @@
 
             <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="ORGAN LIST">
                 <div class="d-flex mb-2 mt-4">
-                    <div style="width: 48.5%;margin-left: 10px;">Organs Name</div>
+                    <div style="width: 46%;margin-left: 10px;">Organs Name</div>
+                    <div style="width: 46.5%;margin-left: 10px;">Last Health Time</div>
+                    <div style="width: 46.5%;margin-left: 10px;">Status</div>
                     <div style="width: 50%">Id</div>
                 </div>
                 <div v-for="item in this.platform.organList" :key="item.id">
                     <div class="d-flex mb-2">
                         <div style="width: 100%" class="content-list">
                             {{ item.name }}
+                        </div>
+                        <div style="width: 100%" class="content-list">
+                            {{ convertTimestampToDate(item.lastHealth) }}
+                        </div>
+                        <div style="width: 100%" class="content-list">
+                            <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
+                                    v-if="item.status == 1">ON</div>
+                                <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
+                                    v-else>OFF</div>
                         </div>
                         <div style="width: 100%" class="content-list">
                             {{ item.id }}
@@ -176,6 +187,11 @@ export default {
 
     },
     methods: {
+        convertTimestampToDate(timestamp) {
+            var date = new Date(timestamp);
+            return date.toLocaleDateString("fr-FR") + ' ' + date.toLocaleTimeString("fr-FR");
+        },
+
         displayEditPlatform() {
             this.show = true;
             this.formPlatform.name = this.platform.name
@@ -235,6 +251,7 @@ export default {
             this.platformList.forEach(platform => {
                 if (platform.id === this.$route.query.id) {
                     this.platform = platform;
+                    console.log(this.platform);
                 }
             });
             // console.log(this.platformList, 'maisss');

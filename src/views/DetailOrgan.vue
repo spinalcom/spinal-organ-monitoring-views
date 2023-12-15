@@ -27,10 +27,10 @@
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">status</span>
-                        <div v-if="this.organ.status == 'off'"
+                        <div v-if="this.organ.status == '0'"
                             style="background-color: rgb(202, 36, 36);color: white; border-radius: 10px; height: 18px;display: flex;justify-content: center;align-items: center;font-size: 10px;transform: translate(0,-2px);">
                             OFF</div>
-                        <div v-if="this.organ.status == 'on'"
+                        <div v-if="this.organ.status == '1'"
                             style="background-color: rgb(49, 204, 49);color: white; border-radius: 10px; height: 18px;display: flex;justify-content: center;align-items: center;font-size: 10px;transform: translate(0,-2px);">
                             ON</div>
                     </div>
@@ -207,7 +207,8 @@ export default {
         },
         CurrentOrgan(newOrgan) {
             this.organ = newOrgan
-            // console.log(this.organ , 'le reste');
+
+            console.log(this.organ , 'le reste');
         },
         OrganHealth(newData) {
             this.dataOrganAlive = newData;
