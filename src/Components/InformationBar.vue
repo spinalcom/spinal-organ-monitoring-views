@@ -13,7 +13,7 @@
 
         <v-card v-if="btn != 'off'" class="d-flex flex-column ml-2 pt-2 pb-2 bar-bloc-right justify-center rounded-lg"
             elevation="2">
-            <BlueButton @click.native="$emit('btn1')" :icon="'mdi-plus'" :title="btn1Title" :val="'blue'" />
+            <BlueButton v-if="nonebtn1" @click.native="$emit('btn1')" :icon="'mdi-plus'" :title="btn1Title" :val="'blue'" />
             <BlueButton @click.native="$emit('btn2')" :icon="'mdi-pencil-outline'" :title="btn2Title" :val="'blue'" />
             <BlueButton @click.native="$emit('btn3')" :icon="'mdi-close'" :title="btn3Title" :val="'red'" class="mb-2" />
         </v-card>
@@ -56,6 +56,10 @@ export default {
             type: String,
             default: 'SUPPRMIER'
         },
+        nonebtn1:{
+            type: Boolean,
+            default: true
+        }
     }
 };
 </script>

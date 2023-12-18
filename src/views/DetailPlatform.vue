@@ -50,9 +50,9 @@
                         </div>
                         <div style="width: 100%" class="content-list">
                             <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
-                                    v-if="item.status == 1">ON</div>
-                                <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
-                                    v-else>OFF</div>
+                                v-if="item.status == 1">ON</div>
+                            <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
+                                v-else>OFF</div>
                         </div>
                         <div style="width: 100%" class="content-list">
                             {{ item.id }}

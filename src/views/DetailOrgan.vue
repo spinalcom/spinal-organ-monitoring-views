@@ -1,9 +1,9 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar :btn1Title="'ADD ?'" :btn2Title="'EDIT ORGAN'" :btn3Title="'DELETE ORGAN'"
-                v-on:btn1="show = true" v-on:btn2="show = true" v-on:btn3="deletebtn()" title="ORGAN INFORMATION"
-                :title2="this.organ.name" :icon="require('../assets/image/USE_icon.svg')">
+            <InformationBar :nonebtn1="false" :btn1Title="'ADD ?'" :btn2Title="'EDIT ORGAN'" :btn3Title="'DELETE ORGAN'"
+                v-on:btn2="show = true" v-on:btn3="deletebtn()" title="ORGAN INFORMATION" :title2="this.organ.name"
+                :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">NAME</span>
@@ -22,8 +22,8 @@
                         <span class="bar-information">{{ this.organ.mac_adress }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">PLATFORM ID</span>
-                        <span class="bar-information">{{ this.organ.platformId }}</span>
+                        <span class="bar-sub-title">PLATFORM Name</span>
+                        <span @click="goToPlatform()" style="background-color: rgb(179, 179, 179);padding-left: 10px;padding-right: 10px; border-radius: 5px;padding-top: 2px;padding-bottom: 2px;cursor: pointer;" class="bar-information">{{ platformName(this.organ.platformId) }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">status</span>
@@ -48,7 +48,7 @@
                         <span>X</span>
                     </div>
                     <p class="mb-6">EDIT ORGAN</p>
-                    <InputUser v-model="formOrgan.name" title="  ORGAN NAME" id="name" />
+                    <InputUser v-model="formOrgan.name" title="ORGAN NAME" id="name" />
                     <span class="errors" v-if="$v.formOrgan.name.$error"> Organ Name is required</span>
                     <InputUser v-model="formOrgan.mac_adress" title="MAC ADDRESS" id="mac_address" />
                     <span class="errors" v-if="$v.formOrgan.mac_adress.$error"> Organ mac_adress is required</span>
@@ -99,6 +99,7 @@ export default {
     data() {
         return {
             temp: 'day',
+            twentyFourHoursAgo: null,
             presentTempo: 'day',
             formOrgan: {
                 name: null,
@@ -142,6 +143,25 @@ export default {
         },
     },
     methods: {
+        goToPlatform(){
+            // console.log('testtt',this.organ.platformId);
+
+            this.$router.push({ name: "DetailPlatform", query: { id: this.organ.platformId } });
+        },
+
+        platformName(platformid) {
+            // console.log(this.PlatformList);
+
+            for (let platform of this.PlatformList) {
+
+                if (platform.id === platformid) {
+                    return platform.name;
+                }
+
+            }
+            return platformid
+        },
+
         handleValueEmitted(value) {
             // console.log('Valeur reçue du composant linechart :', value);
             // Traitez la valeur ici
@@ -171,35 +191,41 @@ export default {
     computed: {
         ...mapState(['CurrentOrgan']),
         ...mapState(['OrganHealth']),
-        ...mapState(['OrganReboot'])
+        ...mapState(['OrganReboot']),
+        ...mapState(['PlatformList'])
     },
 
     mounted() {
+
+        this.$store.dispatch('getPlatformList');
+
         this.$store.dispatch('getOrgan', {
             organId: this.$route.query.id,
         });
 
         const now = Date.now(); // Obtient le timestamp actuel en millisecondes
-        let twentyFourHoursAgo = now - (24 * 60 * 60 * 1000);
+        this.twentyFourHoursAgo = now - (24 * 60 * 60 * 1000);
 
         if (this.presentTempo == 'week') {
-            twentyFourHoursAgo = now - (7 * 24 * 60 * 60 * 1000);
+            this.twentyFourHoursAgo = now - (7 * 24 * 60 * 60 * 1000);
+            // console.log(this.twentyFourHoursAgo, 'la date');
         }
 
         this.$store.dispatch('gettoto', {
             organId: this.$route.query.id,
-            begin: twentyFourHoursAgo,
+            begin: this.twentyFourHoursAgo,
             end: now,
         });
 
         this.$store.dispatch('getOrganReboot', {
             organId: this.$route.query.id,
-            begin: twentyFourHoursAgo,
+            begin: this.twentyFourHoursAgo,
             end: now,
         });
 
     },
     watch: {
+
 
         etiquettes(newLabels) {
             this.myChart.data.labels = newLabels;
@@ -208,11 +234,11 @@ export default {
         CurrentOrgan(newOrgan) {
             this.organ = newOrgan
 
-            console.log(this.organ , 'le reste');
+            // console.log(this.organ, 'le reste');
         },
         OrganHealth(newData) {
             this.dataOrganAlive = newData;
-            // console.log('tata', this.dataOrganAlive);
+            console.log('tata', this.dataOrganAlive);
         },
         OrganReboot(newData) {
             this.dataRestartOrgan = newData;
