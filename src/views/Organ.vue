@@ -19,31 +19,35 @@
             <Tabs :items="items">
                 <v-tab-item v-for="tab in this.items" :key="tab">
                     <div class="d-flex mb-2 mt-4 ml-2">
-                        <div style="width: 20%;margin-left: 5px;">Name</div>
+                        <div style="width: 21%;margin-left: 5px;">Name</div>
                         <div style="width: 21%">Type</div>
-                        <div style="width: 21%">Status</div>
+                        <div style="width: 22%">Status</div>
                         <div style="width: 21%">Last Health Time</div>
-                        <div style="width: 24%">Mac address</div>
+                        <div style="width: 22%">Mac address</div>
+                        <div style="width: 24%">Platform</div>
                     </div>
                     <div v-for="item in Organ" :key="item.id">
                         <div v-if="checkTypeOrgan(item.organType, tab) == 1" class="d-flex mb-2">
-                            <div style="width: 100%" class="content-list">
+                            <div style="width: 25%" class="content-list">
                                 {{ item.name }}
                             </div>
-                            <div style="width: 100%" class="content-list">
+                            <div style="width: 25%" class="content-list">
                                 {{ item.type }}
                             </div>
-                            <div style="width: 100%" class="content-list">
+                            <div style="width: 25%" class="content-list">
                                 <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
                                     v-if="item.status == 1">ON</div>
                                 <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
                                     v-else>OFF</div>
                             </div>
-                            <div style="width: 100%" class="content-list">
+                            <div style="width: 25%" class="content-list">
                                 {{ convertTimestampToDate(item.lastHealth) }}
                             </div>
-                            <div style="width: 100%" class="content-list">
+                            <div style="width: 25%" class="content-list">
                                 {{ item.mac_adress }}
+                            </div>
+                            <div style="width: 25% ; cursor: pointer;" @click="goToPlatform(platformName(item.id , 'id'))" class="content-list hover">
+                                {{ platformName(item.id , 'name') }}
                             </div>
                             <div class="content-list rounded-r-lg hover">
                                 <button class="pr-2" style="height: 100%" @click="displayDetail(item);">
@@ -132,6 +136,7 @@ export default {
         ],
         Organ: [
         ],
+        platform: []
     }),
     validations: {
         formOrgan: {
@@ -157,6 +162,19 @@ export default {
     },
 
     methods: {
+        platformName(id, type) {
+            for (let platform of this.platform) {
+                for (let organ of platform.organList) {
+                    if (organ.id === id) {
+                        if (type == 'name')
+                            return platform.name;
+                        else
+                            return platform.id
+                    }
+                }
+            }
+            return null; // Retourne null si l'ID n'est pas trouvé
+        },
         checkTypeOrgan(organ, tab) {
             // console.log('tesr');
             if (tab == 'ORGANS' && organ != 'HubOrgan' && organ != 'api-server') {
@@ -176,6 +194,10 @@ export default {
             }
         },
 
+        goToPlatform(id){
+            this.$router.push({ name: "DetailPlatform", query: { id: id } });
+        },
+
         displayDetail(item) {
             this.clicked = true;
             setTimeout(() => {
@@ -191,17 +213,22 @@ export default {
 
     },
     computed: {
-        ...mapState(['OrganList'])
+        ...mapState(['OrganList']),
+        ...mapState(['PlatformList'])
     },
     created() {
     },
     mounted() {
         this.$store.dispatch('getOrganList');
+        this.$store.dispatch('getPlatformList');
     },
     watch: {
         OrganList(newList) {
             this.Organ = newList;
             // console.log(this.Organ);
+        },
+        PlatformList(newList) {
+            this.platform = newList;
         }
     },
 }

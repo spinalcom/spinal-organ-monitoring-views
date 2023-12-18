@@ -15,7 +15,24 @@
                 <BlueButton @click.native="show = true" :icon="'mdi-plus'" title="ADD PLATFORM" :val="'blue'" />
             </v-card>
         </div>
-        <BachupInformation title="LISTE DES PLATEFORMES">
+        <BachupInformation title="PLATFORM LIST">
+            <div class="status_legend">
+
+                <v-badge color="green" style="top:10px; margin : 10px; margin-right: 15px;margin-left: 10px;">
+                    <v-icon size="medium"></v-icon>
+                </v-badge>
+                No Issues
+
+                <v-badge color="orange" style="top:10px; margin : 10px; margin-right: 15px;margin-left: 20px;">
+                    <v-icon size="x-large"></v-icon>
+                </v-badge>
+                Issues Detected
+
+                <v-badge color="#D50000" style="top:10px; margin : 10px; margin-right: 15px;margin-left: 20px;">
+                    <v-icon size="x-large"></v-icon>
+                </v-badge>
+                Everything Down
+            </div>
             <div class="d-flex mb-2 mt-4">
                 <!-- <div style="width: 20%">Platform Id</div> -->
                 <div style="width: 20%">Platform Name</div>
@@ -26,26 +43,24 @@
             </div>
 
             <div v-for="item in this.platform" :key="item.id">
-
-                <div class="d-flex mb-2">
+                <div class="d-flex mb-2" >
                     <!-- <div style="width: 20%" class="content-list rounded-l-lg pl-10">
                         {{ item.id }}
                     </div> -->
-                    <div style="width: 20%" class="content-list">
+                    <div style="width: 20%; " class="content-list"  :style="{ backgroundColor: getItemColor(item) }">
                         {{ item.name }}
                     </div>
-                    <div style="width: 20%" class="content-list">
+                    <div style="width: 20%" class="content-list"  :style="{ backgroundColor: getItemColor(item) }">
                         {{ item.platformType }}
                     </div>
-                    <div style="width: 20% ; cursor: pointer; overflow: hidden; " @click="openurl(item.url)"
-                        class=" content-list copytooltip">
+                    <div style="width: 20% ; cursor: pointer; overflow: hidden; " @click="openurl(item.url) "
+                        class=" content-list copytooltip" :style="{ backgroundColor: getItemColor(item) }">
                         {{ item.url }}
                     </div>
-
-                    <div style="width: 20%" class="content-list">
+                    <div style="width: 20%" class="content-list"  :style="{ backgroundColor: getItemColor(item) }" >
                         {{ item.organList.length }}
                     </div>
-                    <div style="width: 20%; overflow: hidden; cursor: pointer;" class="content-list copytooltip"
+                    <div style="width: 20%; overflow: hidden; cursor: pointer;" class="content-list copytooltip"  :style="{ backgroundColor: getItemColor(item) }"
                         @click="copyToClipboard(item.TokenBosRegister, item.id)">
                         Click to copy
                         <span v-if="clickedItemId === item.id" class="tooltip">Token copié</span>
@@ -180,6 +195,22 @@ export default {
     },
 
     methods: {
+
+        getItemColor(item) {
+            const allStatus = item.organList.map(organ => organ.status);
+            const allZero = allStatus.every(status => status === 0);
+            const allOne = allStatus.every(status => status === 1);
+
+            if (allZero) {
+                return 'rgba(255, 0, 0, 0.095) '; // Tous les organes ont le statut 0
+            } else if (allOne) {
+                return 'rgba(13, 255, 0, 0.08)'; // Tous les organes ont le statut 1
+            } else {
+                return 'rgba(255, 157, 0, 0.184)'; // Mélange de statuts 0 et 1
+            }
+        },
+
+
         copyToClipboard(textToCopy, id, type) {
             const temp = document.createElement("textarea");
             temp.value = textToCopy;
@@ -229,7 +260,7 @@ export default {
         PlatformList(newList) {
 
             this.platform = newList;
-            console.log(this.platform );
+            console.log(this.platform);
             // console.log(this.platform, 'testtt');
 
         }
@@ -240,6 +271,14 @@ export default {
 </script>
   
 <style scoped >
+.status_legend {
+    position: absolute;
+    right: 10px;
+    border: 1px solid rgb(197, 197, 197);
+    padding-right: 5px;
+    border-radius: 5px;
+}
+
 .tooltip {
     position: absolute;
     background-color: rgb(50, 199, 62);
@@ -266,7 +305,7 @@ export default {
     /* position: absolute; */
     transform: translate(0, -10%);
     font-size: 10px;
-    color: red;
+    color: rgb(231, 69, 69);
     padding-left: 2px;
     letter-spacing: 1.1px;
 }
@@ -363,10 +402,11 @@ export default {
 
 .copytooltip {
     background-color: rgb(255, 255, 255);
+    transition: 0.5s;
 }
 
 .copytooltip:hover {
-    background-color: rgb(232, 232, 232);
+    background-color: rgb(194, 194, 194) !important;
 }
 
 .popup-btn-ajouter {
