@@ -43,8 +43,10 @@ export default new Vuex.Store({
     CurrentOrgan: null,
     OrganHealth: null,
     OrganReboot: null,
+    OrganRAM: null,
     InformationText: "default",
     modal: false,
+    OrganStatus : false,
     color: 'green'
   },
 
@@ -82,9 +84,16 @@ export default new Vuex.Store({
     setOrganHealth: (state, Organ) => (
       state.OrganHealth = Organ
     ),
+    setOrganStatus: (state, Organ) => (
+      state.OrganStatus = Organ
+    ),
     setOrganReboot: (state, Organ) => (
       state.OrganReboot = Organ
     ),
+    setOrganRAM: (state, Organ) => (
+      state.OrganRAM = Organ
+    ),
+
     setInformationText: (state, Text) => (
       state.InformationText = Text,
       state.modal = true
@@ -96,6 +105,7 @@ export default new Vuex.Store({
     setColor(state, color) {
       state.color = color;
     },
+    
   },
 
   getters: {
@@ -572,7 +582,7 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        console.log(rep);
+        console.log(rep,'ORGANE LIVE ,');
         commit("setOrganHealth", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);
@@ -591,6 +601,42 @@ export default new Vuex.Store({
         });
         console.log(rep);
         commit("setOrganReboot", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'organe:", error);
+      }
+    },
+
+
+    async getOrganStatus({ commit }, { organId, begin, end }) {
+      console.log('test22------------------------------', organId, begin, end);
+      try {
+        console.log('lalalalaalallala', organId, begin, end);
+        const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/status/${begin}/${end}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        console.log(rep);
+        commit("setOrganStatus", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'organe:", error);
+      }
+    },
+
+
+    async getOrganRAM({ commit }, { organId, begin, end }) {
+      console.log('test22------------------------------', organId, begin, end);
+      try {
+        console.log('lalalalaalallala', organId, begin, end);
+        const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/ram/${begin}/${end}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        console.log(rep,'LA REPPPP');
+        commit("setOrganRAM", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);
       }

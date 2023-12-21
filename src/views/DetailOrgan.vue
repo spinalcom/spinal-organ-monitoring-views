@@ -1,44 +1,43 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar :nonebtn1="false" :btn1Title="'ADD ?'" :btn2Title="'EDIT ORGAN'" :btn3Title="'DELETE ORGAN'"
-                v-on:btn2="show = true" v-on:btn3="deletebtn()" title="ORGAN INFORMATION" :title2="this.organ.name"
-                :icon="require('../assets/image/USE_icon.svg')">
-                <div class="d-flex">
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">NAME</span>
-                        <span class=" bar-information">{{ this.organ.name }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">TYPE</span>
-                        <span class="bar-information">{{ this.organ.type }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">IP ADDRESS</span>
-                        <span class="bar-information">{{ this.organ.ip_adress }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">MAC ADDRESS</span>
-                        <span class="bar-information">{{ this.organ.mac_adress }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">PLATFORM Name</span>
-                        <span @click="goToPlatform()" style="background-color: rgb(179, 179, 179);padding-left: 10px;padding-right: 10px; border-radius: 5px;padding-top: 2px;padding-bottom: 2px;cursor: pointer;" class="bar-information">{{ platformName(this.organ.platformId) }}</span>
-                    </div>
-                    <div class="d-flex flex-column mr-16">
-                        <span class="bar-sub-title">status</span>
-                        <div v-if="this.organ.status == '0'"
-                            style="background-color: rgb(202, 36, 36);color: white; border-radius: 10px; height: 18px;display: flex;justify-content: center;align-items: center;font-size: 10px;transform: translate(0,-2px);">
-                            OFF</div>
-                        <div v-if="this.organ.status == '1'"
-                            style="background-color: rgb(49, 204, 49);color: white; border-radius: 10px; height: 18px;display: flex;justify-content: center;align-items: center;font-size: 10px;transform: translate(0,-2px);">
-                            ON</div>
-                    </div>
-                </div>
-            </InformationBar>
+            <div style="z-index: 9;position: relative;">
+                <InformationBar  :nonebtn1="false" :btn1Title="'ADD ?'" :btn2Title="'EDIT ORGAN'" :btn3Title="'DELETE ORGAN'"
+                    v-on:btn2="show = true" v-on:btn3="deletebtn()" title="ORGAN INFORMATION" :title2="this.organ.name"
+                    :icon="require('../assets/image/USE_icon.svg')">
+                    <div style="position: relative;height: 150px;" class="d-flex">
 
+                        <div style="min-width: 160px;" class="d-flex flex-column mr-16">
+                            <span class="bar-sub-title">PLATFORM Name</span>
+                            <span @click="goToPlatform()"
+                                style="background-color: rgb(179, 179, 179);padding-left: 10px;padding-right: 10px; border-radius: 5px;padding-top: 2px;padding-bottom: 2px;cursor: pointer;"
+                                class="bar-information">{{ platformName(this.organ.platformId) }}</span>
+                        </div>
+                        <div class="d-flex flex-column mr-16">
+                            <span class="bar-sub-title">status</span>
+                            <div v-if="this.organ.status == '0'"
+                                style="background-color: rgb(202, 36, 36);color: white; border-radius: 5px; height: 20px;display: flex;justify-content: center;align-items: center;font-size: 10px;transform: translate(0,-2px);margin: 3px;width: 50px;">
+                                OFF</div>
+                            <div v-if="this.organ.status == '1'"
+                                style="background-color: rgb(49, 204, 49);color: white; border-radius: 5px; height: 20px;display: flex;justify-content: center;align-items: center;font-size: 10px;transform: translate(-8px,-2px);margin: 3px;width: 50px;">
+                                ON
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column mr-16">
+                            <span class="bar-sub-title">lastHealth</span>
+                            <span style="color: black;" class="bar-sub-title">{{ convertTimestampToDate(this.organ.lastHealth) }}</span>
+                        </div>
+
+                        <div style="position: relative;top: -75px;left: 0px;width: 100%;" class="d-flex flex-column mr-16">
+                            <StatusComponent :dataOrganStatus="dataStatusOrgan"></StatusComponent>
+                        </div>
+
+                    </div>
+
+                </InformationBar>
+            </div>
             <!-- LINE CHART  entrer 'week' ou 'day' -->
-            <linechart v-if="this.dataOrganAlive != []" :dataRestartOrgan="dataRestartOrgan"
+            <linechart v-if="this.dataOrganAlive != []" :dataOrganRAM="dataOrganRAM" :dataRestartOrgan="dataRestartOrgan"
                 :dataOrganAlive="dataOrganAlive" :temporalite="temp" @valueEmitted="handleValueEmitted" />
 
 
@@ -71,6 +70,7 @@
 <script>
 import InputUser from "../Components/InputUser";
 import InformationBar from "../Components/InformationBar.vue";
+import StatusComponent from "../Components/StatusComponent.vue";
 import linechart from "../Components/lineChart.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
 import BlueButton from "../Components/BlueButton.vue";
@@ -93,8 +93,8 @@ export default {
         BlueButton,
         InputPass,
         InputUser,
-        linechart
-
+        linechart,
+        StatusComponent
     },
     data() {
         return {
@@ -123,6 +123,8 @@ export default {
             dataRestartOrgan: [
             ],
             dataOrganAlive: [],
+            dataOrganRAM: [],
+            dataStatusOrgan: []
         };
 
     },
@@ -143,7 +145,7 @@ export default {
         },
     },
     methods: {
-        goToPlatform(){
+        goToPlatform() {
             // console.log('testtt',this.organ.platformId);
 
             this.$router.push({ name: "DetailPlatform", query: { id: this.organ.platformId } });
@@ -160,6 +162,10 @@ export default {
 
             }
             return platformid
+        },
+        convertTimestampToDate(timestamp) {
+            var date = new Date(timestamp);
+            return date.toLocaleDateString("fr-FR") + ' ' + date.toLocaleTimeString("fr-FR");
         },
 
         handleValueEmitted(value) {
@@ -191,7 +197,9 @@ export default {
     computed: {
         ...mapState(['CurrentOrgan']),
         ...mapState(['OrganHealth']),
+        ...mapState(['OrganStatus']),
         ...mapState(['OrganReboot']),
+        ...mapState(['OrganRAM']),
         ...mapState(['PlatformList'])
     },
 
@@ -222,6 +230,17 @@ export default {
             begin: this.twentyFourHoursAgo,
             end: now,
         });
+        this.$store.dispatch('getOrganStatus', {
+            organId: this.$route.query.id,
+            begin: this.twentyFourHoursAgo,
+            end: now,
+        });
+
+        this.$store.dispatch('getOrganRAM', {
+            organId: this.$route.query.id,
+            begin: this.twentyFourHoursAgo,
+            end: now,
+        });
 
     },
     watch: {
@@ -243,6 +262,14 @@ export default {
         OrganReboot(newData) {
             this.dataRestartOrgan = newData;
             // console.log('toto', this.dataRestartOrgan);
+        },
+        OrganStatus(newData) {
+            this.dataStatusOrgan = newData;
+            // console.log('toto', this.dataRestartOrgan);
+        },
+        OrganRAM(newData) {
+            this.dataOrganRAM = newData;
+            console.log('rammm', this.dataOrganRAM);
         }
 
     },
