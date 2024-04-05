@@ -3,7 +3,8 @@
         <v-main>
             <InformationBar :btn1Title="'ADD ORGAN'" :btn2Title="'EDIT PLATFORM '" :btn3Title="'DELETE PLATFORM'"
                 v-on:btn1="showOrgan = true" v-on:btn2="displayEditPlatform" v-on:btn3="deletebtn()"
-                title="PLATFORM INFORMATION" :title2="this.platform.name" :icon="require('../assets/image/USE_icon.svg')">
+                title="PLATFORM INFORMATION" :title2="this.platform.name"
+                :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">ID</span>
@@ -33,14 +34,15 @@
             </InformationBar>
 
 
-            <BackupInformation class="app" style="max-height: 70%; min-height: 70%;" title="ORGAN LIST">
+            <BackupInformation class="app" style="max-height: 70vh; min-height: 70%;" title="ORGAN LIST">
+                <input placeholder="Rechercher" class="input-search" label="Rechercher" v-model="searchQuery"></input>
                 <div class="d-flex mb-2 mt-4">
                     <div style="width: 46%;margin-left: 10px;">Organs Name</div>
                     <div style="width: 46.5%;margin-left: 10px;">Last Health Time</div>
                     <div style="width: 46.5%;margin-left: 10px;">Status</div>
                     <div style="width: 50%">Id</div>
                 </div>
-                <div v-for="item in this.platform.organList" :key="item.id">
+                <div v-for="item in filteredOrganList" :key="item.id">
                     <div class="d-flex mb-2">
                         <div style="width: 100%" class="content-list">
                             {{ item.name }}
@@ -81,7 +83,8 @@
                     <InputUser title="  PLATFORM ipAdress" id="userName" v-model="formPlatform.ipAdress" />
                     <span class="errors" v-if="$v.formPlatform.ipAdress.$error"> Platform IP address is required</span>
                     <InputUser title="  PLATFORM loginAdmin" id="userName" v-model="formPlatform.loginAdmin" />
-                    <span class="errors" v-if="$v.formPlatform.loginAdmin.$error"> Platform login admin is required</span>
+                    <span class="errors" v-if="$v.formPlatform.loginAdmin.$error"> Platform login admin is
+                        required</span>
                     <InputUser title="  PLATFORM passwordAdmin" id="userName" v-model="formPlatform.passwordAdmin" />
                     <span class="errors" v-if="$v.formPlatform.passwordAdmin.$error"> Platform password admin is
                         required</span>
@@ -114,7 +117,7 @@
         </div>
     </v-app>
 </template>
-  
+
 <script>
 import InputUser from "../Components/InputUser";
 import InformationBar from "../Components/InformationBar.vue";
@@ -143,7 +146,7 @@ export default {
     },
     data() {
         return {
-
+            searchQuery: '',
             formPlatform: {
                 name: null,
                 platformType: null,
@@ -243,7 +246,16 @@ export default {
     },
     computed: {
         ...mapState(['CurrentPlatform']),
-        ...mapState(['PlatformList'])
+        ...mapState(['PlatformList']),
+        filteredOrganList() {
+            return this.platform.organList.filter(item => {
+                // Convertit tous les éléments de recherche et les valeurs de l'objet en chaînes de caractères en minuscules pour une recherche insensible à la casse
+                const searchStr = this.searchQuery.toLowerCase();
+                return Object.values(item).some(value =>
+                    String(value).toLowerCase().includes(searchStr)
+                );
+            });
+        }
     },
     watch: {
         PlatformList(newList) {
@@ -261,10 +273,20 @@ export default {
     }
 }
 </script>
-  
-<style scoped >
+
+<style scoped>
 *:focus {
     outline: none;
+}
+
+.input-search{
+    background-color: white;
+    width: 200px;
+    height: 40px;
+    min-height: 40px;
+   font-size: 15px;
+   border: 1px solid rgb(187, 187, 187);
+   padding-left: 5px;
 }
 
 .errors {

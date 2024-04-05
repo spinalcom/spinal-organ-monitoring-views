@@ -7,7 +7,7 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js",
-    "serve" : "node server.js"
+    "serve": "node server.js"
   },
   "dependencies": {
     "@vue/composition-api": "^1.7.1",
