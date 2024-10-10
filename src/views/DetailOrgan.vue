@@ -2,9 +2,9 @@
     <v-app>
         <v-main>
             <div style="z-index: 9;position: relative;">
-                <InformationBar  :nonebtn1="false" :btn1Title="'ADD ?'" :btn2Title="'EDIT ORGAN'" :btn3Title="'DELETE ORGAN'"
-                    v-on:btn2="show = true" v-on:btn3="deletebtn()" title="ORGAN INFORMATION" :title2="this.organ.name"
-                    :icon="require('../assets/image/USE_icon.svg')">
+                <InformationBar :nonebtn1="false" :btn1Title="'ADD ?'" :btn2Title="'EDIT ORGAN'"
+                    :btn3Title="'DELETE ORGAN'" v-on:btn2="show = true" v-on:btn3="deletebtn()"
+                    title="ORGAN INFORMATION" :title2="this.organ.name" :icon="require('../assets/image/USE_icon.svg')">
                     <div style="position: relative;height: 150px;" class="d-flex">
 
                         <div style="min-width: 160px;" class="d-flex flex-column mr-16">
@@ -25,10 +25,12 @@
                         </div>
                         <div class="d-flex flex-column mr-16">
                             <span class="bar-sub-title">lastHealth</span>
-                            <span style="color: black;" class="bar-sub-title">{{ convertTimestampToDate(this.organ.lastHealth) }}</span>
+                            <span style="color: black;" class="bar-sub-title">{{
+                                convertTimestampToDate(this.organ.lastHealth) }}</span>
                         </div>
 
-                        <div style="position: relative;top: -75px;left: 0px;width: 100%;" class="d-flex flex-column mr-16">
+                        <div style="position: relative;top: -75px;left: 0px;width: 100%;"
+                            class="d-flex flex-column mr-16">
                             <StatusComponent :dataOrganStatus="dataStatusOrgan"></StatusComponent>
                         </div>
 
@@ -37,9 +39,11 @@
                 </InformationBar>
             </div>
             <!-- LINE CHART  entrer 'week' ou 'day' -->
-            <linechart v-if="this.dataOrganAlive != []" :dataOrganRAM="dataOrganRAM" :dataRestartOrgan="dataRestartOrgan"
-                :dataOrganAlive="dataOrganAlive" :temporalite="temp" @valueEmitted="handleValueEmitted" />
-
+            <div v-if="dataOrganAlive && dataOrganAlive.length > 0">
+                <linechart :dataOrganRAM="dataOrganRAM" :dataRestartOrgan="dataRestartOrgan"
+                    :dataOrganAlive="dataOrganAlive" :temporalite="temp" @emitedTime="emitedTime"
+                    @valueEmitted="handleValueEmitted" />
+            </div>
 
             <div v-if="show" class="popup_platform">
                 <v-card class="popup" style="padding-bottom: 100px;padding-left: 20px; padding-right:20px ;">
@@ -66,7 +70,7 @@
         </v-main>
     </v-app>
 </template>
-  
+
 <script>
 import InputUser from "../Components/InputUser";
 import InformationBar from "../Components/InformationBar.vue";
@@ -124,7 +128,8 @@ export default {
             ],
             dataOrganAlive: [],
             dataOrganRAM: [],
-            dataStatusOrgan: []
+            dataStatusOrgan: [],
+            currentDate: '',
         };
 
     },
@@ -169,9 +174,40 @@ export default {
         },
 
         handleValueEmitted(value) {
-            // console.log('Valeur reçue du composant linechart :', value);
-            // Traitez la valeur ici
+
+
             this.presentTempo = value
+
+            const now = Date.now(); // Obtient le timestamp actuel en millisecondes
+            this.twentyFourHoursAgo = now - (24 * 60 * 60 * 1000);
+
+            if (this.presentTempo == 'week') {
+                this.twentyFourHoursAgo = now - (7 * 24 * 60 * 60 * 1000);
+                // console.log(this.twentyFourHoursAgo, 'la date');
+            }
+
+            this.$store.dispatch('gettoto', {
+                organId: this.$route.query.id,
+                begin: this.twentyFourHoursAgo,
+                end: now,
+            });
+
+            this.$store.dispatch('getOrganReboot', {
+                organId: this.$route.query.id,
+                begin: this.twentyFourHoursAgo,
+                end: now,
+            });
+            this.$store.dispatch('getOrganStatus', {
+                organId: this.$route.query.id,
+                begin: this.twentyFourHoursAgo,
+                end: now,
+            });
+
+            this.$store.dispatch('getOrganRAM', {
+                organId: this.$route.query.id,
+                begin: this.twentyFourHoursAgo,
+                end: now,
+            });
         },
         //VALIDE ELEMENT
         editUserPlatform() {
@@ -191,6 +227,61 @@ export default {
                 this.$router.push("organ");
             }
         },
+
+        emitedTime(value) {
+            console.log(value);
+            this.getNewChartData(value)
+        },
+
+        calculeTimestampDateBegin(date) {
+            var dateBegin = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+            return dateBegin.getTime();
+        },
+
+        calculeTimestampDateEnd(date) {
+            var dateEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+            return dateEnd.getTime();
+        },
+
+        getNewChartData(date) {
+            const today = new Date().toDateString();
+            const inputDate = new Date(date).toDateString();
+            const now = Date.now();
+            let begin = null
+            let end = end;
+
+            if (inputDate != today) {
+                begin = this.calculeTimestampDateBegin(date);
+                end = this.calculeTimestampDateEnd(date);
+            } else {
+                begin = now - (24 * 60 * 60 * 1000);
+                end = now
+            }
+
+            this.$store.dispatch('gettoto', {
+                organId: this.$route.query.id,
+                begin: begin,
+                end: end,
+            });
+
+            this.$store.dispatch('getOrganReboot', {
+                organId: this.$route.query.id,
+                begin: begin,
+                end: end,
+            });
+            this.$store.dispatch('getOrganStatus', {
+                organId: this.$route.query.id,
+                begin: begin,
+                end: end,
+            });
+
+            this.$store.dispatch('getOrganRAM', {
+                organId: this.$route.query.id,
+                begin: begin,
+                end: end,
+            });
+
+        }
 
     },
 
@@ -244,38 +335,36 @@ export default {
 
     },
     watch: {
-
-
-        etiquettes(newLabels) {
-            this.myChart.data.labels = newLabels;
-            this.myChart.update();
-        },
         CurrentOrgan(newOrgan) {
-            this.organ = newOrgan
-
-            // console.log(this.organ, 'le reste');
+            if (newOrgan) {
+                this.organ = newOrgan;
+            }
         },
         OrganHealth(newData) {
-            this.dataOrganAlive = newData;
-            console.log('tata', this.dataOrganAlive);
+            if (newData) {
+                this.dataOrganAlive = newData;
+            }
         },
         OrganReboot(newData) {
-            this.dataRestartOrgan = newData;
-            // console.log('toto', this.dataRestartOrgan);
+            if (newData) {
+                this.dataRestartOrgan = newData;
+            }
         },
         OrganStatus(newData) {
-            this.dataStatusOrgan = newData;
-            // console.log('toto', this.dataRestartOrgan);
+            if (newData) {
+                this.dataStatusOrgan = newData;
+            }
         },
         OrganRAM(newData) {
-            this.dataOrganRAM = newData;
-            console.log('rammm', this.dataOrganRAM);
+            if (newData) {
+                this.dataOrganRAM = newData;
+            }
         }
+    }
 
-    },
 }
 </script>
-  
+
 <style scoped>
 *:focus {
     outline: none;

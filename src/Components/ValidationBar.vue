@@ -30,7 +30,6 @@ export default {
 
     watch: {
         modal(newmodal) {
-            console.log('nouvelle info');
             //mettre le modal a false au bout de 2 sec 
             setTimeout(() => {
                 // Appeler la mutation Vuex pour fermer le modal

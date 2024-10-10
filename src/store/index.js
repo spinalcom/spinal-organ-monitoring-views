@@ -508,7 +508,6 @@ export default new Vuex.Store({
       }
     },
     async updatePlatform({ commit }, { PlatformId, PlatformData }) {
-      console.log(PlatformId ,PlatformData);
       try {
         await instanceAxios.instanceAxios.put(`/platforms/${PlatformId}`, PlatformData, {
           headers: {
@@ -575,14 +574,13 @@ export default new Vuex.Store({
     async gettoto({ commit }, { organId, begin, end }) {
       // console.log('test22', organId, begin, end);
       try {
-        console.log('lalalalaalallala', organId, begin, end);
         const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/health/${begin}/${end}`, {
           headers: {
             "Content-Type": "application/json",
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        console.log(rep,'ORGANE LIVE ,');
+        // console.log(rep,'ORGANE LIVE ,');
         commit("setOrganHealth", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);
@@ -590,16 +588,14 @@ export default new Vuex.Store({
     },
 
     async getOrganReboot({ commit }, { organId, begin, end }) {
-      console.log('test22------------------------------', organId, begin, end);
       try {
-        console.log('lalalalaalallala', organId, begin, end);
         const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/reboot/${begin}/${end}`, {
           headers: {
             "Content-Type": "application/json",
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        console.log(rep);
+        // console.log(rep);
         commit("setOrganReboot", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);
@@ -608,16 +604,13 @@ export default new Vuex.Store({
 
 
     async getOrganStatus({ commit }, { organId, begin, end }) {
-      console.log('test22------------------------------', organId, begin, end);
       try {
-        console.log('lalalalaalallala', organId, begin, end);
         const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/status/${begin}/${end}`, {
           headers: {
             "Content-Type": "application/json",
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        console.log(rep);
         commit("setOrganStatus", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);
@@ -626,16 +619,14 @@ export default new Vuex.Store({
 
 
     async getOrganRAM({ commit }, { organId, begin, end }) {
-      console.log('test22------------------------------', organId, begin, end);
       try {
-        console.log('lalalalaalallala', organId, begin, end);
         const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/ram/${begin}/${end}`, {
           headers: {
             "Content-Type": "application/json",
             "x-access-token": localStorage.getItem("token"),
           }
         });
-        console.log(rep,'LA REPPPP');
+        // console.log(rep,'LA REPPPP');
         commit("setOrganRAM", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);

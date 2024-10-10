@@ -111,12 +111,7 @@ export default {
 
             var test = true;
             var plat = true;
-            console.log(this.platformObjectList.length);
 
-
-
-
-            console.log(this.platformObjectList);//prend l object
             for (const platformObject of this.platformObjectList) {
                 if (platformObject.platformId === this.formPlatformObject.platform.id) {//verification unicité
                     alert("you cannot select platform even twice");
@@ -144,9 +139,7 @@ export default {
 
             if (this.platformObjectList.length > 0) {
                 this.platformObjectList.forEach((element, index) => {
-                    console.log(element.userProfile.userProfileId);
                     if (element.userProfile.userProfileId == undefined) {
-                        console.log('un unedefined');
                         alert("platform vide");
                         // this.nbPlatform--;
                         //  this.disableobjet.splice(-1, 1);
@@ -155,7 +148,6 @@ export default {
                         this.platformObjectList.splice(index, 1); // Supprimer l'élément
                         return;
                     }
-                    console.log(this.platformObjectList);
                 });
             }
             if (plat == true) {
@@ -165,7 +157,6 @@ export default {
                     plat: false,
                 })
             }
-            console.log('log' + this.platformObjectList);
             this.lafonction(this.platformObjectList);
 
 
@@ -186,11 +177,6 @@ export default {
             // if (this.formPlatformObjectapp.appProfileValue.appProfileId) {
             var test = true;
             var plat = true;
-            // console.log(this.formPlatformObjectapp);
-            console.log('log' + this.platformObjectList);
-
-            
-
 
             //if this.platformObjectList est superieur a 0 et tant que this.platformObjectList.toutlesobjet si this.platformObjectList.appprofil.appprofilID == undefined alerte vous ne pouvez pas ajouter de platformvide supprime l element en question
 
@@ -220,9 +206,7 @@ export default {
             }
             if (this.platformObjectList.length > 0) {
                 this.platformObjectList.forEach((element, index) => {
-                    console.log(element.appProfile.appProfileId);
                     if (element.appProfile.appProfileId == undefined) {
-                        console.log('un unedefined');
                         alert("platform vide");
                         // this.nbPlatform--;
                         //  this.disableobjet.splice(-1, 1);
@@ -231,7 +215,6 @@ export default {
                         this.platformObjectList.splice(index, 1); // Supprimer l'élément
                         return;
                     }
-                    console.log(this.platformObjectList);
                 });
             }
 

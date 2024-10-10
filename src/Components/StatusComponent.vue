@@ -56,8 +56,6 @@ export default {
                 y: item.value ? 1 : 0
             }));
 
-            console.log(data3, 'les dataLast24Hours  !!!!!!!!!!!!!!!!!');
-
             this.myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -123,7 +121,6 @@ export default {
     watch: {
         dataOrganStatus(newData) {
             this.createChart();
-            console.log(newData, 'les datas');
         },
 
 
