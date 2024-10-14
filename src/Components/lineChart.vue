@@ -281,20 +281,23 @@ export default {
                             data: data2,
                             backgroundColor: "rgba(255, 99, 132, 0.5)",
                             borderColor: "rgba(255, 99, 132, 1)",
-                            borderWidth: 1,
-                            categoryPercentage: 1,
-                            barThickness: 1.3,
-                            categoryPercentage: 0.1
+                            borderWidth: 4,
+                            barThickness: 4,
+                            categoryPercentage: 3,
+                            // hoverBackgroundColor: "green",
+                            hoverBorderColor : "green",
                         },
                         {
                             label: 'RAM',
                             data: data3,
                             backgroundColor: 'rgba(52, 121, 249, 0.043)',
                             borderColor: "rgba(52, 121, 249, 0.583)",
-                            yAxisID: 'y-axis-2', // Associer au bon axe Y
+                            yAxisID: 'y-axis-2',
                             fill: false,
                             pointRadius: false,
-                            borderWidth: 2.3
+                            borderWidth: 4,
+                            barThickness: 5,
+                            categoryPercentage: 4
                         }
                     ]
                 },
