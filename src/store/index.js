@@ -597,6 +597,7 @@ export default new Vuex.Store({
         });
         // console.log(rep);
         commit("setOrganReboot", rep.data);
+        return rep.data
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);
       }

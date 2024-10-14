@@ -33,82 +33,39 @@
                 </div>
             </InformationBar>
 
-            <!-- <BachupInformation style="height: 100vh" title="ORGANS LIST"> -->
-            <BackupInformation class="app" style="max-height: 74vh ; overflow: hidden;" title="ORGAN LIST">
-                <Tabs :items="items">
-                    <v-tab-item>
-                        <input placeholder="Rechercher" class="input-search" label="Rechercher"
-                            v-model="searchQuery"></input>
-                        <div class="d-flex mb-2 mt-4">
-                            <div style="width: 46%;margin-left: 10px;">Organs Name</div>
-                            <div style="width: 46.5%;margin-left: 10px;">Last Health Time</div>
-                            <div style="width: 46.5%;margin-left: 10px;">Status</div>
-                            <div style="width: 50%">Id</div>
-                        </div>
-                        <div v-for="item in filteredOrganList" :key="item.id">
-                            <div class="d-flex mb-2">
-                                <div style="width: 100%" class="content-list">
-                                    {{ item.name }}
-                                </div>
-                                <div style="width: 100%" class="content-list">
-                                    {{ convertTimestampToDate(item.lastHealth) }}
-                                </div>
-                                <div style="width: 100%" class="content-list">
-                                    <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
-                                        v-if="item.status == 1">ON</div>
-                                    <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
-                                        v-else>OFF</div>
-                                </div>
-                                <div style="width: 100%" class="content-list">
-                                    {{ item.id }}
-                                </div>
-                                <div class="content-list rounded-r-lg hover">
-                                    <button class="pr-2" style="height: 100%" @click="displayDetail(item.id)">
-                                        <v-icon>mdi-arrow-right</v-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </v-tab-item>
-                    <v-tab-item>
-                        <div style="display: flex;">
-                            <div @click="changeDate('previous')"
-                                style="border: 1px solid black ;margin: 3px; width: 100px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
-                                j-1
-                            </div>
-                            <div @click="changeDate('next')"
-                                style="border: 1px solid black ;margin: 3px; width: 100px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
-                                j+1
-                            </div>
-                            <div style="display: flex;justify-content: center;align-items: center;margin-left: 20px;">
-                                {{ formattedDate }}
-                            </div>
-                        </div>
-                        <!-- Affiche un indicateur de chargement si les données sont encore en train d'arriver -->
-                        <v-progress-circular v-if="isLoading" indeterminate color="primary"></v-progress-circular>
 
-                        <!-- Affiche le tableau une fois que les données sont disponibles -->
-                        <v-data-table v-if="!isLoading" :headers="headers" :items="sortedOrganReboots"
-                            :items-per-page="-1" class="elevation-1" :item-class="getRowClass">
-                            <template v-slot:item="{ item }">
-                                <tr
-                                    :style="item.organName === 'Hub' ? { backgroundColor: 'rgba(177, 255, 113, 0.316)', color: 'red' } : {}">
-                                    <td :style="item.organName === 'Hub' ? { backgroundColor: 'rgba(197, 225, 113, 0.316)', color: 'red' } : {}"
-                                        class="text-start">{{ item.organName }}</td>
-                                    <td :style="item.organName === 'Hub' ? { backgroundColor: 'rgba(197, 225, 113, 0.316)', color: 'red' } : {}"
-                                        class="text-start">{{ formatDate(item.date) }}</td>
-                                </tr>
-                            </template>
-                        </v-data-table>
-                    </v-tab-item>
-
-                    <!-- <v-tab-item>
-                        <div style="width: 80%; margin: auto;">
-                            <canvas ref="scatterChart" width="400" height="200"></canvas>
+            <BackupInformation class="app" style="max-height: 70vh; min-height: 70%;" title="ORGAN LIST">
+                <input placeholder="Rechercher" class="input-search" label="Rechercher" v-model="searchQuery"></input>
+                <div class="d-flex mb-2 mt-4">
+                    <div style="width: 46%;margin-left: 10px;">Organs Name</div>
+                    <div style="width: 46.5%;margin-left: 10px;">Last Health Time</div>
+                    <div style="width: 46.5%;margin-left: 10px;">Status</div>
+                    <div style="width: 50%">Id</div>
+                </div>
+                <div v-for="item in filteredOrganList" :key="item.id">
+                    <div class="d-flex mb-2">
+                        <div style="width: 100%" class="content-list">
+                            {{ item.name }}
                         </div>
-                    </v-tab-item> -->
-
-                </Tabs>
+                        <div style="width: 100%" class="content-list">
+                            {{ convertTimestampToDate(item.lastHealth) }}
+                        </div>
+                        <div style="width: 100%" class="content-list">
+                            <div style="height: 22px;color: white;background-color: rgb(31, 182, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(39, 160, 35);"
+                                v-if="item.status == 1">ON</div>
+                            <div style="height: 22px;color: white;background-color: rgb(209, 31, 31);display: flex; justify-content: center;align-items: center;width: 50px;border-radius: 10px;border: solid 2px rgb(177, 40, 40);"
+                                v-else>OFF</div>
+                        </div>
+                        <div style="width: 100%" class="content-list">
+                            {{ item.id }}
+                        </div>
+                        <div class="content-list rounded-r-lg hover">
+                            <button class="pr-2" style="height: 100%" @click="displayDetail(item.id)">
+                                <v-icon>mdi-arrow-right</v-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </BackupInformation>
 
 
@@ -174,7 +131,6 @@ import InputPass from "../Components/InputPassword.vue"
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
 import { mapState } from 'vuex';
-import { Chart } from 'chart.js';
 
 export default {
     name: "App",
@@ -190,11 +146,6 @@ export default {
     },
     data() {
         return {
-            items: [
-                'ORGANS HUB',
-                'ORGAN RESTART LIST',
-                'RESTART ORGAN',
-            ],
             searchQuery: '',
             formPlatform: {
                 name: null,
@@ -210,13 +161,6 @@ export default {
             platform: {},
             show: false,
             showOrgan: false,
-            headers: [
-                { text: 'Organ Name', value: 'organName' },
-                { text: 'Reboot Date', value: 'date' }
-            ],
-            organReboots: [],
-            isLoading: true,
-            date: new Date().toISOString().substr(0, 10)
         };
 
     },
@@ -246,33 +190,10 @@ export default {
 
     },
     methods: {
- 
-        getRowClass(item) {
-            // Si le nom de l'organe est "Hub", applique la classe 'green-row'
-            return item.organName === 'Hub' ? 'green-row' : '';
-        },
         convertTimestampToDate(timestamp) {
             var date = new Date(timestamp);
             return date.toLocaleDateString("fr-FR") + ' ' + date.toLocaleTimeString("fr-FR");
         },
-        changeDate(direction) {
-            // Créer une nouvelle instance de Date à partir de la chaîne `this.date`
-            let currentDate = new Date(this.date);
-
-            // Modifier la date en fonction de la direction
-            if (direction === 'previous') {
-                currentDate.setDate(currentDate.getDate() - 1); // Décrementer d'une journée
-            } else if (direction === 'next') {
-                currentDate.setDate(currentDate.getDate() + 1); // Incrémenter d'une journée
-            }
-
-            // Mettre à jour `this.date` avec la nouvelle date au format YYYY-MM-DD
-            this.date = currentDate.toISOString().substr(0, 10);
-
-            // Récupérer les données pour la nouvelle date
-            this.getOrganReboots();
-        },
-
 
         displayEditPlatform() {
             this.show = true;
@@ -318,102 +239,23 @@ export default {
             }
         },
 
-        changeDate(direction) {
-            if (direction === 'previous') {
-                this.date.setDate(this.date.getDate() - 1); // Décrementer d'une journée
-            } else if (direction === 'next') {
-                this.date.setDate(this.date.getDate() + 1); // Incrémenter d'une journée
-            }
-            this.getOrganReboots(); // Récupérer les données de la nouvelle journée
-        },
-
-        async getOrganReboots() {
-            // Utilisez `this.date` pour obtenir les timestamps début et fin de la journée
-            const startOfDay = new Date(this.date).setHours(0, 0, 0, 0);
-            const endOfDay = new Date(this.date).setHours(23, 59, 59, 999);
-
-            if (!this.platform || !this.platform.organList) {
-                console.error("Aucune liste d'organes disponible");
-                this.isLoading = false; // En cas d'erreur, arrêter l'indicateur de chargement
-                return;
-            }
-
-            const promises = this.platform.organList.map((organ) => {
-                return this.$store.dispatch('getOrganReboot', {
-                    organId: organ.id,
-                    begin: startOfDay,
-                    end: endOfDay,
-                }).then((response) => ({
-                    organName: organ.name,
-                    data: response || [] // S'assurer que les données sont au moins un tableau vide
-                })).catch(error => ({
-                    organName: organ.name,
-                    data: [], // En cas d'erreur, retourner un tableau vide
-                    error
-                }));
-            });
-
-            try {
-                const rebootsByOrgan = await Promise.all(promises);
-                this.organReboots = rebootsByOrgan;
-                console.log(this.organReboots);
-
-            } catch (error) {
-                console.error('Erreur lors de la récupération des reboots : ', error);
-            } finally {
-                this.isLoading = false; // En cas de succès ou d'erreur, arrêter l'indicateur de chargement
-            }
-        }
-        ,
-
-
-        formatDate(timestamp) {
-            // Conversion du timestamp en date et heure lisible
-            const date = new Date(timestamp);
-            return date.toLocaleString(); // Format standard lisible (adapté selon la locale de l'utilisateur)
-        }
-
 
     },
     mounted() {
         this.$store.dispatch('getPlatformList');
-        this.date = new Date();
-        this.getOrganReboots();
-        
     },
     computed: {
         ...mapState(['CurrentPlatform']),
         ...mapState(['PlatformList']),
         filteredOrganList() {
             return this.platform.organList.filter(item => {
+                // Convertit tous les éléments de recherche et les valeurs de l'objet en chaînes de caractères en minuscules pour une recherche insensible à la casse
                 const searchStr = this.searchQuery.toLowerCase();
                 return Object.values(item).some(value =>
                     String(value).toLowerCase().includes(searchStr)
                 );
             });
-        },
-        sortedOrganReboots() {
-            if (!this.organReboots || this.organReboots.length === 0) {
-                return [];
-            }
-
-            return this.organReboots.flatMap(organ =>
-                (organ.data || []).map(reboot => ({
-                    organName: organ.organName,
-                    date: reboot.date
-                }))
-            ).sort((a, b) => a.date - b.date); // Tri par timestamp (du plus ancien au plus récent)
-        },
-        formattedDate() {
-            const date = new Date(this.date);
-            return date.toLocaleDateString("fr-FR", {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        },
-
+        }
     },
     watch: {
         PlatformList(newList) {
@@ -421,11 +263,10 @@ export default {
             this.platformList.forEach(platform => {
                 if (platform.id === this.$route.query.id) {
                     this.platform = platform;
-                    this.getOrganReboots()
-
+                    console.log(this.platform);
                 }
-
             });
+            // console.log(this.platformList, 'maisss');
         }
     },
     created() {
@@ -438,14 +279,14 @@ export default {
     outline: none;
 }
 
-.input-search {
+.input-search{
     background-color: white;
     width: 200px;
     height: 40px;
     min-height: 40px;
-    font-size: 15px;
-    border: 1px solid rgb(187, 187, 187);
-    padding-left: 5px;
+   font-size: 15px;
+   border: 1px solid rgb(187, 187, 187);
+   padding-left: 5px;
 }
 
 .errors {
