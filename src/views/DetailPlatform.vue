@@ -72,27 +72,40 @@
                     </v-tab-item>
                     <v-tab-item>
                         <div style="display: flex;">
-                            <div @click="changeDate('previous')"
-                                style="border: 1px solid black ;margin: 3px; width: 100px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
+
+
+                            <!-- <v-date-input label="Date input"></v-date-input> -->
+
+                            <!-- <div @click="changeDate('previous')"
+                                style="border: 1px solid black ;margin: 3px; width: 50px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
                                 j-1
                             </div>
                             <div @click="changeDate('next')"
-                                style="border: 1px solid black ;margin: 3px; width: 100px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
+                                style="border: 1px solid black ;margin: 3px; width: 50px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
                                 j+1
-                            </div>
-                            <div style="display: flex;justify-content: center;align-items: center;margin-left: 20px;">
+                            </div> -->
+                            <!-- <div style="display: flex;justify-content: center;align-items: center;margin-left: 20px;">
                                 {{ formattedDate }}
+                            </div> -->
+
+                            <div
+                                style="width: 100%;border: 1px solid black ;margin: 3px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
+
+                                <input type="date" name="todayDate" id="todayDate" v-model="todayDate"
+                                    @change="changeDate">
                             </div>
+
+
+
                         </div>
-                        <!-- Affiche un indicateur de chargement si les données sont encore en train d'arriver -->
+
                         <v-progress-circular v-if="isLoading" indeterminate color="primary"></v-progress-circular>
 
-                        <!-- Affiche le tableau une fois que les données sont disponibles -->
                         <v-data-table v-if="!isLoading" :headers="headers" :items="sortedOrganReboots"
                             :items-per-page="-1" class="elevation-1" :item-class="getRowClass">
                             <template v-slot:item="{ item }">
                                 <tr
-                                    :style="item.organName === 'Hub' ? { backgroundColor: 'rgba(177, 255, 113, 0.316)', color: 'red' } : {}">
+                                    :style="item.organName === 'Hub' ? { backgroundColor: 'rgb(31 182 31)', color: 'red' } : {}">
                                     <td :style="item.organName === 'Hub' ? { backgroundColor: 'rgba(197, 225, 113, 0.316)', color: 'red' } : {}"
                                         class="text-start">{{ item.organName }}</td>
                                     <td :style="item.organName === 'Hub' ? { backgroundColor: 'rgba(197, 225, 113, 0.316)', color: 'red' } : {}"
@@ -102,11 +115,16 @@
                         </v-data-table>
                     </v-tab-item>
 
-                    <!-- <v-tab-item>
-                        <div style="width: 80%; margin: auto;">
-                            <canvas ref="scatterChart" width="400" height="200"></canvas>
-                        </div>
-                    </v-tab-item> -->
+                    <v-tab-item>
+                        <!-- <scatterChart :data="organReboots" /> -->
+                        <div
+                                style="border: 1px solid black ;margin: 3px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
+
+                                <input type="date" name="todayDate" id="todayDate" v-model="todayDate"
+                                    @change="changeDate">
+                            </div>
+                        <scatterPlotly :data="organReboots" />
+                    </v-tab-item>
 
                 </Tabs>
             </BackupInformation>
@@ -174,6 +192,8 @@ import InputPass from "../Components/InputPassword.vue"
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
 import { mapState } from 'vuex';
+import scatterChart from "../Components/scatterChart.vue";
+import scatterPlotly from "../Components/scatterPlotly.vue";
 import { Chart } from 'chart.js';
 
 export default {
@@ -186,10 +206,14 @@ export default {
         SelectUser,
         BlueButton,
         InputPass,
-        InputUser
+        InputUser,
+        scatterChart,
+        scatterPlotly
     },
     data() {
         return {
+
+
             items: [
                 'ORGANS HUB',
                 'ORGAN RESTART LIST',
@@ -216,7 +240,8 @@ export default {
             ],
             organReboots: [],
             isLoading: true,
-            date: new Date().toISOString().substr(0, 10)
+            date: new Date().toISOString().substr(0, 10),
+            todayDate: this.getTodayDate()
         };
 
     },
@@ -246,9 +271,12 @@ export default {
 
     },
     methods: {
- 
+        getTodayDate() {
+            const today = new Date();
+            return today.toISOString().split("T")[0];
+        },
+
         getRowClass(item) {
-            // Si le nom de l'organe est "Hub", applique la classe 'green-row'
             return item.organName === 'Hub' ? 'green-row' : '';
         },
         convertTimestampToDate(timestamp) {
@@ -256,20 +284,19 @@ export default {
             return date.toLocaleDateString("fr-FR") + ' ' + date.toLocaleTimeString("fr-FR");
         },
         changeDate(direction) {
-            // Créer une nouvelle instance de Date à partir de la chaîne `this.date`
             let currentDate = new Date(this.date);
 
-            // Modifier la date en fonction de la direction
-            if (direction === 'previous') {
-                currentDate.setDate(currentDate.getDate() - 1); // Décrementer d'une journée
-            } else if (direction === 'next') {
-                currentDate.setDate(currentDate.getDate() + 1); // Incrémenter d'une journée
-            }
+            // if (direction === 'previous') {
+            //     currentDate.setDate(currentDate.getDate() - 1);
+            //     this.date = currentDate
+            // } else if (direction === 'next') {
+            //     currentDate.setDate(currentDate.getDate() + 1);
+            //     this.date = currentDate
+            // }
 
-            // Mettre à jour `this.date` avec la nouvelle date au format YYYY-MM-DD
-            this.date = currentDate.toISOString().substr(0, 10);
-
-            // Récupérer les données pour la nouvelle date
+            // console.warn(this.todayDate);
+            let dateObject = new Date(this.todayDate);
+            this.date = dateObject
             this.getOrganReboots();
         },
 
@@ -307,7 +334,6 @@ export default {
             }
         },
 
-        //DELETE ELEMENT
         deletebtn() {
             const confirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cet organe ?");
             if (confirmed) {
@@ -318,23 +344,18 @@ export default {
             }
         },
 
-        changeDate(direction) {
-            if (direction === 'previous') {
-                this.date.setDate(this.date.getDate() - 1); // Décrementer d'une journée
-            } else if (direction === 'next') {
-                this.date.setDate(this.date.getDate() + 1); // Incrémenter d'une journée
-            }
-            this.getOrganReboots(); // Récupérer les données de la nouvelle journée
-        },
 
         async getOrganReboots() {
-            // Utilisez `this.date` pour obtenir les timestamps début et fin de la journée
+
+            console.log(this.date);
+            console.log(this.todayDate);
+
             const startOfDay = new Date(this.date).setHours(0, 0, 0, 0);
             const endOfDay = new Date(this.date).setHours(23, 59, 59, 999);
 
             if (!this.platform || !this.platform.organList) {
                 console.error("Aucune liste d'organes disponible");
-                this.isLoading = false; // En cas d'erreur, arrêter l'indicateur de chargement
+                this.isLoading = false; 
                 return;
             }
 
@@ -345,10 +366,10 @@ export default {
                     end: endOfDay,
                 }).then((response) => ({
                     organName: organ.name,
-                    data: response || [] // S'assurer que les données sont au moins un tableau vide
+                    data: response || []
                 })).catch(error => ({
                     organName: organ.name,
-                    data: [], // En cas d'erreur, retourner un tableau vide
+                    data: [],
                     error
                 }));
             });
@@ -361,25 +382,25 @@ export default {
             } catch (error) {
                 console.error('Erreur lors de la récupération des reboots : ', error);
             } finally {
-                this.isLoading = false; // En cas de succès ou d'erreur, arrêter l'indicateur de chargement
+                this.isLoading = false;
             }
         }
         ,
 
 
         formatDate(timestamp) {
-            // Conversion du timestamp en date et heure lisible
             const date = new Date(timestamp);
-            return date.toLocaleString(); // Format standard lisible (adapté selon la locale de l'utilisateur)
+            return date.toLocaleString();
         }
 
 
     },
     mounted() {
         this.$store.dispatch('getPlatformList');
-        this.date = new Date();
+        // this.date = new Date();
+        changeDate()
         this.getOrganReboots();
-        
+
     },
     computed: {
         ...mapState(['CurrentPlatform']),

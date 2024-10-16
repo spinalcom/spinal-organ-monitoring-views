@@ -16,6 +16,8 @@
     "axios": "^1.2.2",
     "chart.js": "^2.9.4",
     "chartjs-plugin-zoom": "^0.7.7",
+    "plotly.js-basic-dist-min": "^2.35.2",
+    "plotly.js-dist": "^2.35.2",
     "prettier": "^3.0.3",
     "vue": "^2.5.2",
     "vue-chartjs": "^3.5.1",

@@ -95,19 +95,16 @@ export default {
                 'décembre',
             ];
 
-            // Crée une nouvelle date à partir d'aujourd'hui
             const today = new Date();
 
-            // Ajoute le décalage
+
             today.setDate(today.getDate() + dateNumber);
 
-            // Récupère le nom du jour, le numéro du jour, le mois et l'année
             const dayOfWeek = daysOfWeek[today.getDay()];
             const dayOfMonth = today.getDate();
             const month = months[today.getMonth()];
             const year = today.getFullYear();
 
-            // Construit la chaîne de date complète
             return `${dayOfWeek} ${dayOfMonth} ${month} ${year}`;
         },
 
@@ -123,9 +120,9 @@ export default {
 
         updateChart() {
             if (this.myChart) {
-                this.myChart.destroy();  // Détruit l'ancien graphique
+                this.myChart.destroy(); 
             }
-            this.createChart();  // Crée un nouveau graphique
+            this.createChart();  
         },
 
         toggleTimePeriod() {
@@ -154,14 +151,12 @@ export default {
             let dataIndex = 0;
 
             for (let date = startDate; date <= endDate; date += 60000) {
-                // Optimisation : Recherche continue dans dataOrganAlive pour éviter de répéter find()
                 while (
                     dataIndex < this.dataOrganAlive.length &&
                     this.dataOrganAlive[dataIndex].date < date
                 ) {
                     dataIndex++;
                 }
-                // Vérifier si l'élément actuel correspond à la minute en cours
                 if (
                     dataIndex < this.dataOrganAlive.length &&
                     this.dataOrganAlive[dataIndex].date >= date &&
@@ -179,7 +174,6 @@ export default {
             const edgePoints = [];
             const dataLength = data.length;
 
-            // Trouver la première valeur d'edge point
             let firstEdgeValue = data[0].value;
             for (let i = 1; i < dataLength; i++) {
                 if (data[i].value !== data[i - 1].value) {
@@ -193,7 +187,6 @@ export default {
             edgePoints.push({ date: startOfDay.getTime(), value: firstEdgeValue });
 
             for (let i = 0; i < dataLength; i++) {
-                // Ajouter les points de bord ou ceux qui diffèrent de leurs voisins
                 if (
                     i === 0 || i === dataLength - 1 ||
                     data[i].value !== data[i - 1].value ||
@@ -335,8 +328,8 @@ export default {
                                 position: 'left',
                                 display: true,
                                 ticks: {
-                                    max: 2, // Fixer la valeur max
-                                    min: 0, // Fixer la valeur min
+                                    max: 2, 
+                                    min: 0,
                                     stepSize: 1,
                                     callback: function (value) {
                                         switch (value) {
@@ -356,8 +349,8 @@ export default {
                                 position: 'right',
                                 display: false,
                                 ticks: {
-                                    max: 2, // Fixer la valeur max
-                                    min: 0, // Fixer la valeur min
+                                    max: 2,
+                                    min: 0, 
                                     stepSize: 1
                                 },
                                 gridLines: {
@@ -387,8 +380,8 @@ export default {
                             pan: {
                                 enabled: false,
                                 mode: 'x',
-                                modifierKey: null, // Pas besoin de touche modificatrice
-                                speed: 10, // Ajuste la vitesse de déplacement du panoramique avec le défilement
+                                modifierKey: null,
+                                speed: 10, 
                             },
 
                             zoom: {
