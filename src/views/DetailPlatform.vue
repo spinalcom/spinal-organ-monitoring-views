@@ -217,7 +217,7 @@ export default {
             items: [
                 'ORGANS HUB',
                 'ORGAN RESTART LIST',
-                'RESTART ORGAN',
+                'RESTART ORGAN GRAPH',
             ],
             searchQuery: '',
             formPlatform: {
