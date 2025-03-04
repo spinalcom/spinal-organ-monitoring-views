@@ -134,6 +134,9 @@ export default {
             "last_health_time": "last health time",
             "serverType": "servertype",
         }],
+        // Ajout des données de pagination
+        page: 1,
+        itemsPerPage: 10,
     }),
     validations: {
         formServer: {
@@ -173,8 +176,30 @@ export default {
         },
     },
     computed: {
-
+        // Ajout de la méthode computed pour la pagination
+        pageCount() {
+                    return Math.ceil(this.server.length / this.itemsPerPage);
+                },
+                paginatedData() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.server.slice(start, end);
+                },
     },
+    methods: {
+        AddServer() {
+            this.$v.$touch();
+            if (!this.$v.$invalid) {
+                //add server
+                location.reload();
+            }
+        },
+
+        displayDetail(item) {
+            this.$router.push({ name: "DetailServer", query: { id: item.id } });
+        },
+    },
+
     created() {
     }
 }

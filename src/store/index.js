@@ -35,10 +35,12 @@ export default new Vuex.Store({
     SiteList: null,
     BuildingList: null,
     PlatformList: null,
+    ServerList: null,
     CurrentCustomer: null,
     CurrentSite: null,
     CurrentBuilding: null,
     CurrentPlatform: null,
+    CurrentServer: null,
     OrganList: null,
     CurrentOrgan: null,
     OrganHealth: null,
@@ -65,6 +67,12 @@ export default new Vuex.Store({
     ),
     setCurrentPlatform: (state, platform) => (
       state.CurrentPlatform = platform
+    ),
+    setServerList: (state, ServerList) => (
+      state.ServerList = ServerList
+    ),
+    setCurrentServer: (state, server) => (
+      state.CurrentServer = server
     ),
     setBuildingList: (state, BuildingList) => (
       state.BuildingList = BuildingList
@@ -114,6 +122,7 @@ export default new Vuex.Store({
     SiteList: state => state.SiteList,
     BuildingList: state => state.BuildingList,
     PlatformList: state => state.PlatformList,
+    ServerList: state => state.ServerList,
     CurrentCustomer: state => state.CurrentCustomer,
     CurrentSite: state => state.CurrentSite,
     CurrentOrgan: state => state.CurrentOrgan,
@@ -523,6 +532,88 @@ export default new Vuex.Store({
         commit("setColor", "red");
       }
     },
+
+    //-------------------------------- SERVERS PAGES -------------------------:
+
+    async addServer({ commit }, { serverData }) {
+      try {
+        const response = await instanceAxios.instanceAxios.post(`/servers/`, serverData, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Serveur ajouté");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de l'ajout du serveur:", error);
+        commit("setInformationText", "Echec de l'ajout du serveur");
+        commit("setColor", "red");
+      }
+    }
+    ,
+    async getServerList({ commit }) {
+      try {
+        const rep = await instanceAxios.instanceAxios.get(`/servers`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setServerList", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la liste des serveurs", error);
+      }
+    },
+
+    async getServer({ commit }, { serverId }) {
+      try {
+        const rep = await instanceAxios.instanceAxios.get(`/servers/${serverId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setCurrentServer", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération du serveur:", error);
+      }
+    }
+    ,
+    async deleteServer({ commit }, { serverId }) {
+      try {
+        await instanceAxios.instanceAxios.delete(`/servers/${serverId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Suppression du serveur effectué");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de la suppression du serveur:", error);
+        commit("setInformationText", "Echec de la suppression du serveur");
+        commit("setColor", "red");
+      }
+    }
+    ,
+    async updateServer({ commit }, { ServerId, ServerData }) {
+      try {
+        await instanceAxios.instanceAxios.put(`/servers/${ServerId}`, ServerData, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        commit("setInformationText", "Mise à jour du serveur effectué");
+        commit("setColor", "green");
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du serveur:", error);
+        commit("setInformationText", "Echec de la mise à jour du serveur");
+        commit("setColor", "red");
+      }
+    }
+    ,
 
     //-------------------------------- ORGANS PAGES -------------------------:
 
