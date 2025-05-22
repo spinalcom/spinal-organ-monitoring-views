@@ -100,7 +100,7 @@ import InputPassword from "../Components/InputPassword.vue"
 import { mapActions, mapGetters } from "vuex";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
-
+import { mapState } from 'vuex';
 
 export default {
     name: "App",
@@ -166,8 +166,14 @@ export default {
         AddServer() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
-                //add server
-                location.reload();
+               //AJOUTER LA PLATFORM SABu0Rk3tZnTORE
+                this.$store.dispatch('addServer', {
+                    serverData: this.formServer
+                });
+                this.show = false;
+                this.$store.dispatch('getServerList');
+            
+                //location.reload();
             }
         },
 
@@ -177,27 +183,19 @@ export default {
     },
     computed: {
         // Ajout de la méthode computed pour la pagination
-        pageCount() {
-                    return Math.ceil(this.server.length / this.itemsPerPage);
-                },
-                paginatedData() {
-                    const start = (this.page - 1) * this.itemsPerPage;
-                    const end = start + this.itemsPerPage;
-                    return this.server.slice(start, end);
-                },
+        ...mapState(['ServerList'])
     },
-    methods: {
-        AddServer() {
-            this.$v.$touch();
-            if (!this.$v.$invalid) {
-                //add server
-                location.reload();
-            }
-        },
+    mounted() {
+        this.$store.dispatch('getServerList');
+    },
+    watch: {
+        ServerList(newList) {
 
-        displayDetail(item) {
-            this.$router.push({ name: "DetailServer", query: { id: item.id } });
-        },
+            this.server = newList;
+            console.log(this.server);
+            console.log(this.server, 'testtt');
+
+        }
     },
 
     created() {

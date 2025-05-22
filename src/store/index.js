@@ -536,6 +536,8 @@ export default new Vuex.Store({
     //-------------------------------- SERVERS PAGES -------------------------:
 
     async addServer({ commit }, { serverData }) {
+      console.log('les donne&',serverData);
+      
       try {
         const response = await instanceAxios.instanceAxios.post(`/servers/`, serverData, {
           headers: {
@@ -543,6 +545,8 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+
+        console.log('les donne& repnse : ',response);
         commit("setInformationText", "Serveur ajouté");
         commit("setColor", "green");
       } catch (error) {
@@ -553,6 +557,8 @@ export default new Vuex.Store({
     }
     ,
     async getServerList({ commit }) {
+      console.log('je suis call serverlist');
+      
       try {
         const rep = await instanceAxios.instanceAxios.get(`/servers`, {
           headers: {
@@ -560,6 +566,7 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        console.log('voir reponse server list:',rep.data);
         commit("setServerList", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération de la liste des serveurs", error);
@@ -567,6 +574,8 @@ export default new Vuex.Store({
     },
 
     async getServer({ commit }, { serverId }) {
+      console.log('je suis call server');
+      
       try {
         const rep = await instanceAxios.instanceAxios.get(`/servers/${serverId}`, {
           headers: {
@@ -574,6 +583,8 @@ export default new Vuex.Store({
             "x-access-token": localStorage.getItem("token"),
           }
         });
+        console.log('voir reponse server:',rep.data);
+        
         commit("setCurrentServer", rep.data);
       } catch (error) {
         console.error("Erreur lors de la récupération du serveur:", error);
