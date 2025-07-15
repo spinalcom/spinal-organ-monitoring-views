@@ -118,13 +118,25 @@
                     <v-tab-item>
                         <!-- <scatterChart :data="organReboots" /> -->
                         <div
-                                style="border: 1px solid black ;margin: 3px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
+                            style="border: 1px solid black ;margin: 3px;border-radius:5px ;display: flex ; justify-content: center ; align-items: center;height: 30px ; font-size: 15px;font-weight: bold; cursor: pointer;">
 
-                                <input type="date" name="todayDate" id="todayDate" v-model="todayDate"
-                                    @change="changeDate">
-                            </div>
+                            <input type="date" name="todayDate" id="todayDate" v-model="todayDate" @change="changeDate">
+                        </div>
                         <scatterPlotly :data="organReboots" />
                     </v-tab-item>
+
+                    <v-tab-item>
+                        <div v-if="isLoading || rebootStats.length === 0"
+                            style="display: flex; justify-content: center; align-items: center; height: 300px;">
+                            <v-progress-circular indeterminate color="primary" size="40" />
+                            <span style="margin-left: 10px;">Chargement des données...</span>
+                        </div>
+
+                        <div v-else>
+                            <barPlotly :data="rebootStats" />
+                        </div>
+                    </v-tab-item>
+
 
                 </Tabs>
             </BackupInformation>
@@ -194,6 +206,8 @@ import { required, email, minLength, numeric } from "vuelidate/lib/validators";
 import { mapState } from 'vuex';
 import scatterChart from "../Components/scatterChart.vue";
 import scatterPlotly from "../Components/scatterPlotly.vue";
+import barPlotly from "../Components/barPlotly.vue";
+
 import { Chart } from 'chart.js';
 
 export default {
@@ -208,7 +222,8 @@ export default {
         InputPass,
         InputUser,
         scatterChart,
-        scatterPlotly
+        scatterPlotly,
+        barPlotly
     },
     data() {
         return {
@@ -218,6 +233,7 @@ export default {
                 'ORGANS HUB',
                 'ORGAN RESTART LIST',
                 'RESTART ORGAN GRAPH',
+                'NOMBRE DE RESTART',
             ],
             searchQuery: '',
             formPlatform: {
@@ -239,6 +255,8 @@ export default {
                 { text: 'Reboot Date', value: 'date' }
             ],
             organReboots: [],
+            LargeorganReboots: [],
+            rebootStats: [],
             isLoading: true,
             date: new Date().toISOString().substr(0, 10),
             todayDate: this.getTodayDate()
@@ -344,6 +362,103 @@ export default {
             }
         },
 
+        async getOrganRebootsLst() {
+            console.warn('115 il est ici ?');
+            this.isLoading = true;
+
+            if (!this.platform || !this.platform.organList) {
+                console.error("Aucune liste d'organes disponible");
+                this.isLoading = false;
+                return;
+            }
+
+            const now = new Date();
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+            const dayInMs = 24 * 60 * 60 * 1000;
+            const daysRange = [];
+
+            for (let d = new Date(threeMonthsAgo); d <= now; d = new Date(d.getTime() + dayInMs)) {
+                const startOfDay = new Date(d).setHours(0, 0, 0, 0);
+                const endOfDay = new Date(d).setHours(23, 59, 59, 999);
+                daysRange.push({ startOfDay, endOfDay });
+            }
+
+            // Crée toutes les tâches dans un tableau
+            const tasks = [];
+
+            for (const organ of this.platform.organList) {
+                for (const { startOfDay, endOfDay } of daysRange) {
+                    tasks.push(() => this.$store.dispatch('getLargeOrganReboot', {
+                        organId: organ.id,
+                        begin: startOfDay,
+                        end: endOfDay
+                    }).then((response) => ({
+                        organName: organ.name,
+                        date: new Date(startOfDay),
+                        data: response || []
+                    })).catch(error => ({
+                        organName: organ.name,
+                        date: new Date(startOfDay),
+                        data: [],
+                        error
+                    })));
+                }
+            }
+
+            // Exécute les tâches par lot de 10
+            const batchSize = 10;
+            const results = [];
+
+            for (let i = 0; i < tasks.length; i += batchSize) {
+                const batch = tasks.slice(i, i + batchSize);
+                const batchResults = await Promise.all(batch.map(task => task()));
+                results.push(...batchResults);
+            }
+
+            this.LargeorganReboots = results;
+            console.warn('115', this.LargeorganReboots);
+
+            // const rebootStats = this.aggregateRebootsByDay();
+            this.rebootStats = this.aggregateRebootsByDay();
+            // console.table(rebootStats , ' le tableau de reboot 116'); // ou console.log(rebootStats)
+
+            this.isLoading = false;
+        },
+
+        aggregateRebootsByDay() {
+            const rebootCounts = {};
+
+            for (const item of this.LargeorganReboots) {
+                const day = new Date(item.date);
+                const formattedDate = day.toLocaleDateString('fr-FR'); // ex: "10/10/2025"
+
+                const count = Array.isArray(item.data)
+                    ? item.data.length
+                    : 0;
+
+                if (!rebootCounts[formattedDate]) {
+                    rebootCounts[formattedDate] = 0;
+                }
+
+                rebootCounts[formattedDate] += count;
+            }
+
+            // Tri optionnel par date croissante
+            const sortedEntries = Object.entries(rebootCounts).sort(
+                ([dateA], [dateB]) => {
+                    const [dA, mA, yA] = dateA.split('/').map(Number);
+                    const [dB, mB, yB] = dateB.split('/').map(Number);
+                    return new Date(yA, mA - 1, dA) - new Date(yB, mB - 1, dB);
+                }
+            );
+
+            return sortedEntries.map(([date, count]) => ({ date, count }));
+        }
+
+        ,
+
 
         async getOrganReboots() {
 
@@ -355,7 +470,7 @@ export default {
 
             if (!this.platform || !this.platform.organList) {
                 console.error("Aucune liste d'organes disponible");
-                this.isLoading = false; 
+                this.isLoading = false;
                 return;
             }
 
@@ -400,6 +515,7 @@ export default {
         // this.date = new Date();
         changeDate()
         this.getOrganReboots();
+        this.getOrganRebootsLst();
 
     },
     computed: {
@@ -443,7 +559,7 @@ export default {
                 if (platform.id === this.$route.query.id) {
                     this.platform = platform;
                     this.getOrganReboots()
-
+                    this.getOrganRebootsLst()
                 }
 
             });
