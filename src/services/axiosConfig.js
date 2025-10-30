@@ -21,26 +21,41 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-// const axios = require('axios');
+
 import axios from "axios";
+import router from "../router";
+
+// Instance pour les métriques et serveurs (port 5051)
 export const instanceAxios = axios.create({
-  baseURL: 'http://localhost:5050/',
-  // baseURL: 'https://api-bos-monitoring.spinalcom.com/',
-  timeout: 1000,
+  baseURL: 'http://146.59.157.197:5051/',
+  timeout: 10000,
   headers: { 'X-Custom-Header': 'foobar' },
 });
 
-import router from "../router";
+// Instance pour les processus (port 5053) - socket io
+export const instanceAxiosProcess = axios.create({
+  baseURL: 'http://146.59.157.197:5053/',
+  timeout: 10000,
+  headers: { 'X-Custom-Header': 'foobar' },
+});
 
-instanceAxios.interceptors.response.use((response) => {
-  return response;
-}, (error) => {
-
-  if (error.response.status === 401) {
+// Interceptor commun pour les erreurs
+const errorInterceptor = (error) => {
+  // CORRECTION : Vérifie que error.response existe AVANT de lire status
+  if (error.response && error.response.status === 401) {
     localStorage.removeItem('token');
     router.push("/Login");
-  } if (error.response && error.response.data) {
+  } else if (error.response && error.response.data) {
     return Promise.reject(error.response.data);
   }
   return Promise.reject(error.message);
-});
+};
+
+// Interceptor commun pour les succès
+const responseInterceptor = (response) => {
+  return response;
+};
+
+// Applique les interceptors aux deux instances
+instanceAxios.interceptors.response.use(responseInterceptor, errorInterceptor);
+instanceAxiosProcess.interceptors.response.use(responseInterceptor, errorInterceptor);

@@ -20,14 +20,16 @@
     "plotly.js-basic-dist-min": "^2.35.2",
     "plotly.js-dist": "^2.35.2",
     "prettier": "^3.0.3",
+    "socket.io-client": "^4.8.1",
     "vue": "^2.5.2",
-    "vue-chartjs": "^3.5.1",
+    "vue-chartjs": "^2.8.7",
     "vue-router": "^3.0.1",
     "vuelidate": "^0.7.7",
     "vuetify": "^2.6.12",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/preset-env": "^7.23.2",
     "@mdi/font": "^7.0.96",
     "autoprefixer": "^7.1.2",

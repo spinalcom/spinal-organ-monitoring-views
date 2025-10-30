@@ -155,6 +155,8 @@ export default new Router({
       name: 'DetailCustomer',
       component: DetailCustomer
     },
+
+    
     // {
     //   path: '/AddCustomer',
     //   name: 'AddCustomer',

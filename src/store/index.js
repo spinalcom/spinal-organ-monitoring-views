@@ -32,6 +32,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     CustomerList: null,
+    MetriquesList: null,
     SiteList: null,
     BuildingList: null,
     PlatformList: null,
@@ -70,6 +71,9 @@ export default new Vuex.Store({
     ),
     setServerList: (state, ServerList) => (
       state.ServerList = ServerList
+    ),
+    setMetriquesList: (state, MetriquesList) => (
+      state.MetriquesList = MetriquesList
     ),
     setCurrentServer: (state, server) => (
       state.CurrentServer = server
@@ -119,6 +123,7 @@ export default new Vuex.Store({
   getters: {
     CurrentBuilding: state => state.CurrentBuilding,
     CustomerList: state => state.CustomerList,
+    MetriquesList: state => state.MetriquesList,
     SiteList: state => state.SiteList,
     BuildingList: state => state.BuildingList,
     PlatformList: state => state.PlatformList,
@@ -591,6 +596,25 @@ export default new Vuex.Store({
       }
     }
     ,
+
+    async getMetriquesList({ commit }, { serverId } ) {
+      console.log('je suis call metriques', serverId);
+      
+       try {
+        const rep = await instanceAxios.instanceAxios.get(`/servers/${serverId}/pushDataServer`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        console.log('voir reponse metriques:',rep.data);
+        
+        commit("setMetriquesList", rep.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des metriques:", error);
+      }
+  },
+
     async deleteServer({ commit }, { serverId }) {
       try {
         await instanceAxios.instanceAxios.delete(`/servers/${serverId}`, {
