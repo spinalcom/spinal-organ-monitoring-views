@@ -25,16 +25,19 @@
 import axios from "axios";
 import router from "../router";
 
+
+const baseURL = process.env.VUE_APP_API_URL || 'http://localhost:5051/'; // URL de base par défaut
+
 // Instance pour les métriques et serveurs (port 5051)
 export const instanceAxios = axios.create({
-  baseURL: 'http://146.59.157.197:5051/',
+  baseURL,
   timeout: 10000,
   headers: { 'X-Custom-Header': 'foobar' },
 });
 
 // Instance pour les processus (port 5053) - socket io
 export const instanceAxiosProcess = axios.create({
-  baseURL: 'http://146.59.157.197:5053/',
+  baseURL,
   timeout: 10000,
   headers: { 'X-Custom-Header': 'foobar' },
 });
