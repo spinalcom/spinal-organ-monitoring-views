@@ -46,6 +46,7 @@ export default new Vuex.Store({
     CurrentOrgan: null,
     OrganHealth: null,
     OrganReboot: null,
+    LargeOrganReboot: null,
     OrganRAM: null,
     InformationText: "default",
     modal: false,
@@ -101,6 +102,9 @@ export default new Vuex.Store({
     ),
     setOrganReboot: (state, Organ) => (
       state.OrganReboot = Organ
+    ),
+    setLargeOrganReboot: (state, Organ) => (
+      state.LargeOrganReboot = Organ
     ),
     setOrganRAM: (state, Organ) => (
       state.OrganRAM = Organ
@@ -723,6 +727,22 @@ export default new Vuex.Store({
         });
         // console.log(rep);
         commit("setOrganReboot", rep.data);
+        return rep.data
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'organe:", error);
+      }
+    },
+
+    async getLargeOrganReboot({ commit }, { organId, begin, end }) {
+      try {
+        const rep = await instanceAxios.instanceAxios.get(`/organs/${organId}/reboot/${begin}/${end}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          }
+        });
+        // console.log(rep);
+        commit("setLargeOrganReboot", rep.data);
         return rep.data
       } catch (error) {
         console.error("Erreur lors de la récupération de l'organe:", error);
